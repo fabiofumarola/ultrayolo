@@ -115,7 +115,7 @@ def ResNetBody(input_shape, version='ResNet50V2', num_branches=3):
         Exception: in case a not valid value is provided
 
     Returns:
-        tensorflow.keras.Model  -- 
+        tensorflow.keras.Model  --
     """
     if version == 'ResNet50V2':
         model = tf.keras.applications.ResNet50V2(
@@ -159,7 +159,7 @@ def DenseNetBody(input_shape, version='DenseNet121', num_branches=3):
         Exception: in case a not valid value is provided
 
     Returns:
-        tensorflow.keras.Model  -- 
+        tensorflow.keras.Model  --
     """
     if version == 'DenseNet121':
         model = tf.keras.applications.DenseNet121(
@@ -201,7 +201,7 @@ def MobileNetBody(input_shape, version='MobileNetV2', num_branches=3):
         Exception: in case a not valid value is provided
 
     Returns:
-        tensorflow.keras.Model  -- 
+        tensorflow.keras.Model  --
     """
     if version == 'MobileNetV2':
         model = tf.keras.applications.MobileNetV2(

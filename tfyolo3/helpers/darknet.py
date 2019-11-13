@@ -57,7 +57,8 @@ def freeze_backbone_layers(model, num_layers):
         layer.trainable = False
 
 
-def load_darknet_weights(model, weights_file, tiny=False, for_transfer=False, debug=False):
+def load_darknet_weights(model, weights_file, tiny=False,
+                         for_transfer=False, debug=False):
     wf = open(weights_file, 'rb')
     major, minor, revision, seen, _ = np.fromfile(wf, dtype=np.int32, count=5)
     print('version major {}, minor {}, revision {}, seen {}'.format(

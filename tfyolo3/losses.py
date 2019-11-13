@@ -1,7 +1,8 @@
 import tensorflow as tf
 
 
-def non_max_suppression(outputs, anchors, masks, classes, iou_threshold, score_threshold, max_boxes_per_image, img_size):
+def non_max_suppression(outputs, anchors, masks, classes,
+                        iou_threshold, score_threshold, max_boxes_per_image, img_size):
     """an implementation of non max suppression
 
     Arguments:
@@ -74,8 +75,8 @@ def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
     """conrvet the given boxes into the xy_min xy_max format
 
     Arguments:
-        box_xy {tf.tensor} -- 
-        box_wh {tf,tensor} -- 
+        box_xy {tf.tensor} --
+        box_wh {tf,tensor} --
         grid_size {float} -- the size of the grid used
         anchors_masks {tf.tensor} -- the anchor masks
 
@@ -143,7 +144,7 @@ def Loss(num_classes, anchors_masks, img_size, ignore_iou_threshold=0.7):
         ignore_iou_threshold {float} -- the value below of which do not consider the predictions (default: {0.7})
 
     Returns:
-        function  -- a function that compute the loss 
+        function  -- a function that compute the loss
     """
 
     def yolo_loss(y_true, y_pred):

@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from pathlib import Path
-import tensorflow as tf
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Lambda
 from tensorflow.keras.optimizers import Adam, RMSprop, SGD
-from layers.core import (
+from .layers.core import (
     DarknetBody, ResNetBody, DenseNetBody,
     MobileNetBody, DarknetConv, YoloHead,
     YoloOutput, DarknetBodyTiny
 )
-from losses import process_predictions, non_max_suppression, Loss
-from helpers import darknet
+from .losses import process_predictions, non_max_suppression, Loss
+from .helpers import darknet
 import multiprocessing
 
 import logging
@@ -51,7 +50,7 @@ class BaseModel(object):
         Returns:
             list -- a list of the loss function for each mask
         """
-        if self.loss_function == None:
+        if self.loss_function is None:
             self.loss_function = [
                 Loss(
                     self.num_classes, self.anchors[mask], self.img_shape[0],
@@ -68,7 +67,8 @@ class BaseModel(object):
         elif optimizer_name == 'rmsprop':
             return RMSprop(learning_rate=lrate, clipvalue=1)
         elif optimizer_name == 'sgd':
-            return SGD(learning_rate=lrate, momentum=0.95, nesterov=True, clipvalue=1)
+            return SGD(learning_rate=lrate, momentum=0.95,
+                       nesterov=True, clipvalue=1)
         else:
             raise Exception(f'not valid optimizer {optimizer_name}')
 
@@ -191,7 +191,7 @@ class YoloV3(BaseModel):
 class YoloV3Tiny(BaseModel):
 
     default_anchors = np.array([(10, 14), (23, 27), (37, 58),
-                                (81, 82), (135, 169),  (344, 319)],
+                                (81, 82), (135, 169), (344, 319)],
                                np.float32)
 
     default_masks = np.array([[3, 4, 5], [0, 1, 2]])
