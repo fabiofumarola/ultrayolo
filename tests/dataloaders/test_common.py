@@ -46,12 +46,12 @@ def test_parse_boxes():
 def test_pad_to_fixed_size(test_image, test_boxes):
     target_shape = (512, 512)
     image, boxes = common.pad_to_fixed_size(
-        test_image, test_boxes, target_shape)
+        test_image, target_shape, test_boxes)
     assert image.shape[:2] == target_shape
 
     target_shape = (608, 608)
     image, boxes = common.pad_to_fixed_size(
-        test_image, test_boxes, target_shape)
+        test_image, target_shape, test_boxes)
     assert image.shape[:2] == target_shape
 
 
@@ -61,7 +61,7 @@ def test_pad_batch_to_fixed_size(test_image, test_boxes, test_boxes2):
 
     target_shape = (608,608)
     images, boxes = common.pad_batch_to_fixed_size(
-        batch_images, batch_boxes, target_shape
+        batch_images, target_shape, batch_boxes
     )
 
     for img, src_box, dst_box in zip(images, batch_boxes, boxes):

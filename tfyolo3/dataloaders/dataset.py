@@ -160,7 +160,7 @@ class YoloDatasetMultiFile(Sequence):
     def __getitem__(self, idx):
         start = idx * self.batch_size
         stop = (idx + 1) * self.batch_size
-        batch_images = common.open_image_batch(
+        batch_images = common.batch_open_image(
             self.images_path[start:stop])
         batch_boxes = common.open_boxes_batch(
             self.annotations_path[start:stop])

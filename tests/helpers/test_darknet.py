@@ -38,7 +38,8 @@ def test_freeze_backbone_layers(test_model):
 
 def test_load_darknet():
     #download the file
-    if not Path('yolov3.weights').exists():
+    filepath = Path('yolov3.weights')
+    if not filepath.exists():
         filepath = Path(wget.download('https://pjreddie.com/media/files/yolov3.weights'))
     model = YoloV3(img_shape=(608,608,3),training=True).model
     assert darknet.load_darknet_weights(model, filepath) is True

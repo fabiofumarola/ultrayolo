@@ -77,7 +77,7 @@ def open_image(path):
     return img
 
 
-def open_image_batch(paths):
+def batch_open_image(paths):
     images = [open_image(path) for path in paths]
     return images
 
@@ -125,75 +125,75 @@ def parse_boxes(str_boxes):
     return boxes_class
 
 
-def __transform(image, boxes, augmenters):
+def __transform(image, augmenters, boxes=None):
     """Apply a transformation over a given image and boxes
     Arguments
     --------
     image: an image with shape (H,W,C)
-    boxes: an array of format (xmin, ymin, xmax, ymax)
     augmenters: a pipeline of imgaug augmenters
+    boxes: an array of format (xmin, ymin, xmax, ymax)
 
     Returns
     -------
     image_aug: the image transformed with the given augmenters
-    boxes_aug: the boxes transformed with the given augmenters
+    boxes_aug: the boxes transformed with the given augmenters (optional)
 
     """
-    bbs = BoundingBoxesOnImage(
-        [BoundingBox(*b[:4]) for b in boxes],
-        shape=image.shape
-    )
+    if boxes is not None:
+        bbs = BoundingBoxesOnImage(
+            [BoundingBox(*b[:4]) for b in boxes],
+            shape=image.shape
+        )
 
-    image_aug, boxes_aug = augmenters(image=image, bounding_boxes=bbs)
-    # add back the class
-    boxes_aug = np.concatenate([
-        boxes_aug.to_xyxy_array(),
-        boxes[..., -1:]
-    ], axis=-1)
+        image_aug, boxes_aug = augmenters(image=image, bounding_boxes=bbs)
+        # add back the class
+        boxes_aug = np.concatenate([
+            boxes_aug.to_xyxy_array(),
+            boxes[..., -1:]
+        ], axis=-1)
 
-    return image_aug, boxes_aug
+        return image_aug, boxes_aug
+    else:
+        return augmenters(image=image)
 
 
-def pad_to_fixed_size(image, boxes, target_shape):
+def pad_to_fixed_size(image, target_shape, boxes=None):
     """Resize and pad images and boxes to the target shape
     Arguments
     --------
     image: an image with shape (H,W,C)
-    boxes: an array of format (xmin, ymin, xmax, ymax)
     target_shape: a shape of type (H,W,C)
+    boxes: an array of format (xmin, ymin, xmax, ymax)
+
     Returns
     -------
     image_pad: the image padded
-    boxes_pad: the boxes padded
+    boxes_pad: the boxes padded (optional: if boxes is not None)
 
     """
-
-    if boxes is None:
-        boxes = np.array([[1, 2, 3, 4, 5]])
-
-    aug = iaa.Sequential([
+    augmenters = iaa.Sequential([
         iaa.Resize(
             {"longer-side": target_shape[0], "shorter-side": "keep-aspect-ratio"}),
         iaa.PadToFixedSize(
             height=target_shape[0], width=target_shape[1], position=(1, 1))
     ])
-    return __transform(image, boxes, aug)
+    return __transform(image, augmenters, boxes)
 
 
-def resize(image, boxes, target_shape, keep_aspect_ratio=True):
+def resize(image, target_shape, boxes=None, keep_aspect_ratio=True):
     """Resize images and boxes to the target shape
     Arguments
     --------
     image: an image with shape (H,W,C)
-    boxes: an array of format (xmin, ymin, xmax, ymax)
     target_shape: a shape of type (H,W,C)
+    boxes: an array of format (xmin, ymin, xmax, ymax)
+    keep_aspect_ratio: (default: True)
+
     Returns
     -------
     image_resized: the image resized
-    boxes_resized: the boxes resized
+    boxes_resized: the boxes resized (optional: if boxes is not None)
     """
-    if boxes is None:
-        boxes = np.array([[1, 2, 3, 4, 5]])
 
     if keep_aspect_ratio:
         aug = iaa.Sequential([
@@ -208,61 +208,67 @@ def resize(image, boxes, target_shape, keep_aspect_ratio=True):
     return __transform(image, boxes, aug)
 
 
-def __transform_batch(batch_images, batch_boxes, augmenters):
+def __transform_batch(batch_images, augmenters, batch_boxes=None):
     """Apply a transformation over a given array of image and boxes
     Arguments
     --------
     batch_images: a list of images with shape (H,W,C)
-    batch_boxes: an list of an array ob boxes with format (xmin, ymin, xmax, ymax)
     augmenters: a pipeline of imgaug augmenters
+    batch_boxes: an list of an array ob boxes with format (xmin, ymin, xmax, ymax)
 
     Returns
     -------
     images_aug: a list of images transformed with the given augmenters
-    boxes_aug: a list of a list of boxes transformed with the given augmenters
+    boxes_aug: a list of a list of boxes transformed with the given augmenters (optional: if boxes is not None)
 
     """
-    batch_bbs = []
-    for image, boxes in zip(batch_images, batch_boxes):
-        bbs = BoundingBoxesOnImage(
-            [BoundingBox(*b[:4]) for b in boxes],
-            shape=image.shape
-        )
-        batch_bbs.append(bbs)
+    if batch_boxes is not None:
+        batch_bbs = []
+        for image, boxes in zip(batch_images, batch_boxes):
+            bbs = BoundingBoxesOnImage(
+                [BoundingBox(*b[:4]) for b in boxes],
+                shape=image.shape
+            )
+            batch_bbs.append(bbs)
 
-    # create the batch
-    batch = Batch(images=batch_images, bounding_boxes=batch_bbs)
-    # process the data
-    batch_processed = augmenters.augment_batch(batch)
+        # create the batch
+        batch = Batch(images=batch_images, bounding_boxes=batch_bbs)
+        # process the data
+        batch_processed = augmenters.augment_batch(batch)
 
-    # transform back the boxes to the right form and add back the class
-    boxes_aug = []
-    for src_boxes, dst_boxes in zip(
-            batch_boxes, batch_processed.bounding_boxes_aug):
-        dst_boxes = dst_boxes.to_xyxy_array().tolist()
-        final_boxes = []
-        for src_row, dst_row in zip(src_boxes, dst_boxes):
-            dst_row.append(src_row[-1])
-            final_boxes.append(dst_row)
+        # transform back the boxes to the right form and add back the class
+        boxes_aug = []
+        for src_boxes, dst_boxes in zip(
+                batch_boxes, batch_processed.bounding_boxes_aug):
+            dst_boxes = dst_boxes.to_xyxy_array().tolist()
+            final_boxes = []
+            for src_row, dst_row in zip(src_boxes, dst_boxes):
+                dst_row.append(src_row[-1])
+                final_boxes.append(dst_row)
 
-        boxes_aug.append(final_boxes)
+            boxes_aug.append(final_boxes)
 
-    images_aug = batch_processed.images_aug
+        images_aug = batch_processed.images_aug
+        return images_aug, boxes_aug
+    else:
+        batch = Batch(images=batch_images)
+         # process the data
+        batch_processed = augmenters.augment_batch(batch)
+        return batch_processed.images_aug
 
-    return images_aug, boxes_aug
 
-
-def pad_batch_to_fixed_size(batch_images, batch_boxes, target_shape):
+def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
     """Resize and pad images and boxes to the target shape
     Arguments
     --------
     batch_images: an array of images with shape (H,W,C)
-    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)
     target_shape: a shape of type (H,W,C)
+    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)
+
     Returns
     ------
     images_aug: a list of augmented images
-    boxes_aug: a list of augmented boxes
+    boxes_aug: a list of augmented boxes (optional: if boxes is not None)
     """
     aug = iaa.Sequential([
         iaa.Resize(
@@ -270,25 +276,26 @@ def pad_batch_to_fixed_size(batch_images, batch_boxes, target_shape):
         iaa.PadToFixedSize(
             height=target_shape[0], width=target_shape[1], position=(1, 1))
     ])
-    return __transform_batch(batch_images, batch_boxes, aug)
+    return __transform_batch(batch_images, aug, batch_boxes)
 
 
-def resize_batch(batch_images, batch_boxes, target_shape):
+def resize_batch(batch_images, target_shape, batch_boxes):
     """Resize and pad images and boxes to the target shape
     Arguments
     --------
     batch_images: an array of images with shape (H,W,C)
-    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)
     target_shape: a shape of type (H,W,C)
+    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)
+
     Returns
     ------
     images_aug: a list of augmented images
-    boxes_aug: a list of augmented boxes
+    boxes_aug: a list of augmented boxes (optional: if boxes is not None)
     """
     aug = iaa.Sequential([
         iaa.Resize({"height": target_shape[0], "width": target_shape[1]}),
     ])
-    return __transform_batch(batch_images, batch_boxes, aug)
+    return __transform_batch(batch_images, aug, batch_boxes)
 
 
 def pad_boxes(boxes, max_objects):
@@ -333,12 +340,12 @@ def prepare_batch(batch_images, batch_boxes, target_shape, max_objects,
     """
     resizing_func = pad_batch_to_fixed_size if pad else resize_batch
     batch_images_pad, batch_boxes_pad = resizing_func(
-        batch_images, batch_boxes, target_shape
+        batch_images, target_shape, batch_boxes
     )
     # apply augmentation if defined
     if augmenters:
         batch_images_pad, batch_boxes_pad = __transform_batch(
-            batch_images_pad, batch_boxes_pad, augmenters
+            batch_images_pad, augmenters, batch_boxes_pad
         )
 
     batch_boxes_pad = [pad_boxes(boxes, max_objects)
