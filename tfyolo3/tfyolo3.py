@@ -6,9 +6,10 @@ from tensorflow.keras.layers import Lambda
 from tensorflow.keras.optimizers import Adam, RMSprop, SGD
 from .layers.core import (
     DarknetBody, ResNetBody, DenseNetBody,
-    MobileNetBody, DarknetConv, YoloHead,
+    MobileNetBody, YoloHead,
     YoloOutput, DarknetBodyTiny
 )
+
 from .losses import process_predictions, non_max_suppression, Loss
 from .helpers import darknet
 import multiprocessing
@@ -33,6 +34,9 @@ class BaseModel(object):
         self.model = None
         self.tiny = None
         self.loss_function = None
+
+    def summary(self):
+        return self.model.summary()
 
     def load_weights(self, path):
         if not isinstance(path, Path):

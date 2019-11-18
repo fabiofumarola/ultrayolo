@@ -46,6 +46,7 @@ def freeze_backbone(model):
 
 
 def freeze_backbone_layers(model, num_layers):
+
     """
     Arguments
     --------
@@ -116,4 +117,7 @@ def load_darknet_weights(model, weights_file, tiny=False,
 
     if (len(wf.read()) != 0) and not for_transfer:
         print('failed to read all data')
+        wf.close()
+        return False
     wf.close()
+    return True

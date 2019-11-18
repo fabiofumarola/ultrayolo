@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import (
     ZeroPadding2D, Conv2D, LeakyReLU,
     Add, MaxPool2D, BatchNormalization,
-    UpSampling2D, Concatenate
+    UpSampling2D, Concatenate, Lambda
 )
 from tensorflow.keras.regularizers import l1_l2
 from tensorflow.keras import Input, Model
@@ -21,7 +21,7 @@ def DarknetConv(x, filters, kernel, batch_norm, downsample):
     Returns:
         tf.tensor -- the output tensor
     """
-    if downsample == True:
+    if downsample:
         # top left half-padding
         x = ZeroPadding2D(((1, 0), (1, 0)))(x)
         padding = 'valid'

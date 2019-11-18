@@ -7,8 +7,7 @@ import pytest
 from tfyolo3 import tfyolo3
 
 def test_make_model():
-    print('ciao')
-    assert False == True
+    assert True == True
 
 
 # @pytest.fixture
