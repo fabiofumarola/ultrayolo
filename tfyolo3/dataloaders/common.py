@@ -279,7 +279,7 @@ def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
     return __transform_batch(batch_images, aug, batch_boxes)
 
 
-def resize_batch(batch_images, target_shape, batch_boxes):
+def resize_batch(batch_images, target_shape, batch_boxes=None):
     """Resize and pad images and boxes to the target shape
     Arguments
     --------
