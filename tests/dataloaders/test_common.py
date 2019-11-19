@@ -54,6 +54,15 @@ def test_pad_to_fixed_size(test_image, test_boxes):
         test_image, target_shape, test_boxes)
     assert image.shape[:2] == target_shape
 
+def test_pad_to_fixed_size_images(test_image):
+    target_shape = (512, 512)
+    image = common.pad_to_fixed_size(test_image, target_shape)
+    assert image.shape[:2] == target_shape
+
+    target_shape = (608, 608)
+    image = common.pad_to_fixed_size(test_image, target_shape)
+    assert image.shape[:2] == target_shape
+
 
 def test_pad_batch_to_fixed_size(test_image, test_boxes, test_boxes2):
     batch_images = [test_image, test_image]
