@@ -46,7 +46,6 @@ def freeze_backbone(model):
 
 
 def freeze_backbone_layers(model, num_layers):
-
     """
     Arguments
     --------

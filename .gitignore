@@ -105,3 +105,5 @@ ENV/
 *.weights
 *.tmp
 Untitled*
+
+.vscode

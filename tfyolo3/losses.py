@@ -149,7 +149,8 @@ def Loss(num_classes, anchors, masks, img_size, ignore_iou_threshold=0.7):
         function  -- a function that compute the loss
     """
 
-    def yolo_loss(y_true, y_pred, anchor_masks, ignore_iou_threshold, img_size, num_classes, **kvargs):
+    def yolo_loss(y_true, y_pred, anchor_masks,
+                  ignore_iou_threshold, img_size, num_classes, **kvargs):
         anchors_masks_scaled = anchor_masks / img_size
 
         # 1. transform all pred outputs
@@ -219,7 +220,7 @@ def Loss(num_classes, anchors, masks, img_size, ignore_iou_threshold=0.7):
         return loss
 
     loss_fn = [functools.partial(
-        yolo_loss, 
-        anchor_masks=anchors[m], ignore_iou_threshold=ignore_iou_threshold, 
+        yolo_loss,
+        anchor_masks=anchors[m], ignore_iou_threshold=ignore_iou_threshold,
         img_size=img_size, num_classes=num_classes) for m in masks]
     return loss_fn

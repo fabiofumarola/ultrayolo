@@ -56,7 +56,8 @@ class BaseModel(object):
         """
         if self.loss_function is None:
             self.loss_function = Loss(
-                len(self.num_classes), self.anchors, self.masks, self.img_shape[0]
+                len(
+                    self.num_classes), self.anchors, self.masks, self.img_shape[0]
             )
 
         return self.loss_function
@@ -102,9 +103,8 @@ class BaseModel(object):
             use_multiprocessing = True
 
         return self.model.fit(train_dataset, epochs=epochs, validation_data=val_dataset,
-                       callbacks=callbacks, workers=workers, use_multiprocessing=use_multiprocessing,
-                       max_queue_size=64, initial_epoch=initial_epoch)
-
+                              callbacks=callbacks, workers=workers, use_multiprocessing=use_multiprocessing,
+                              max_queue_size=64, initial_epoch=initial_epoch)
 
     def save(self, path, save_format='h5'):
         """save the model to the given path

@@ -27,7 +27,6 @@ Tensorflow 2 implementation of yolo version 3
 
 
 .. image:: ./images/example_image.png
-
 .. image:: ../images/example_image.png
 
 Features

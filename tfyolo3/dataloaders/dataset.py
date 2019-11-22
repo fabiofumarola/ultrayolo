@@ -35,7 +35,8 @@ class YoloDatasetSingleFile(Sequence):
 
         self.grid_len = img_shape[0] / 32
         if self.grid_len % 2 != 0:
-            raise Exception('the image shape must have same height and width and be divisible per 32 ')
+            raise Exception(
+                'the image shape must have same height and width and be divisible per 32 ')
         self.grid_len = int(self.grid_len)
 
         if not isinstance(annotations_path, Path):
@@ -122,11 +123,12 @@ class YoloDatasetMultiFile(Sequence):
         """
 
         self.grid_len = img_shape[0] / 32
-        
+
         if self.grid_len % 2 != 0:
-            raise Exception('the image shape must have same height and width and be divisible per 32 ')
+            raise Exception(
+                'the image shape must have same height and width and be divisible per 32 ')
         self.grid_len = int(self.grid_len)
-        
+
         if not isinstance(filepath, Path):
             filepath = Path(filepath)
 
