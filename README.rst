@@ -26,7 +26,7 @@ Tensorflow 2 implementation of yolo version 3
 * Documentation: https://tfyolo3.readthedocs.io.
 
 
-.. image:: ../images/example_image.png
+.. image:: ./images/example_image.png
 
 Features
 --------
