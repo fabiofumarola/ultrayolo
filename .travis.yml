@@ -19,12 +19,12 @@ script: tox
 # following command to finish PyPI deployment setup:
 # $ travis encrypt --add deploy.password
 # deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  user: fabiofumarola
-  password:
-    secure: PLEASE_REPLACE_ME
-  on:
-    tags: true
-    repo: fabiofumarola/tfyolo3
-    python: 3.7
+#   provider: pypi
+#   distributions: sdist bdist_wheel
+#   user: fabiofumarola
+#   password:
+#     secure: PLEASE_REPLACE_ME
+#   on:
+#     tags: true
+#     repo: fabiofumarola/tfyolo3
+#     python: 3.7
