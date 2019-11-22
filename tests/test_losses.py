@@ -59,3 +59,19 @@ def test_loss_yolo(test_dataset, test_anchors, test_masks, test_classes):
         loss_value = loss(y_true_grids[i], y_pred_grids[i])
         assert np.all(loss_value >= 0)
         print('loss', i, loss_value)
+
+
+def test_compare_losses(test_dataset, test_anchors, test_masks, test_classes):
+    img_shape = test_dataset.target_shape
+    model  = YoloV3(img_shape, test_dataset.max_objects,
+        anchors=test_anchors, num_classes=len(test_classes), training=True)
+
+    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    x_true, y_true_grids = test_dataset[0]
+    y_pred_grids = model(x_true)
+    y_pred_grids_true = y_true_grids
+
+    for i, loss in enumerate(loss_fn):
+        loss_value = loss(y_true_grids[i], y_pred_grids[i])
+        loss_value_true = loss(y_true_grids[i], y_pred_grids_true[i])
+        assert np.all(loss_value_true <= loss_value)
