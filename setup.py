@@ -47,9 +47,9 @@ setup(
     },
     # scripts
     scripts=[
-            'bin/train.py',
-            'bin/gen_anchors.py'
-        ],
+        'bin/train.py',
+        'bin/gen_anchors.py'
+    ],
     install_requires=requirements,
     include_package_data=True,
     package_data={

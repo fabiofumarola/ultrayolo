@@ -1,4 +1,5 @@
 import tensorflow as tf
+import functools
 
 
 def non_max_suppression(outputs, anchors, masks, classes,
@@ -132,12 +133,13 @@ def __broadcast_iou(box_1, box_2):
     return int_area / (box_1_area + box_2_area - int_area)
 
 
-def Loss(num_classes, anchors_masks, img_size, ignore_iou_threshold=0.7):
+def Loss(num_classes, anchors, masks, img_size, ignore_iou_threshold=0.7):
     """the default Yolo Loss
 
     Arguments:
         num_classes {int} -- the number of classes
-        anchors_masks {tf.tensor} -- the anchors
+        anchors {tf.tensor} -- the anchors used to train the model
+        masks {tf.tensor} -- the masks used select the anchors
         img_size {int} -- the size of the image
 
     Keyword Arguments:
@@ -147,8 +149,9 @@ def Loss(num_classes, anchors_masks, img_size, ignore_iou_threshold=0.7):
         function  -- a function that compute the loss
     """
 
-    def yolo_loss(y_true, y_pred):
-        anchors_masks_scaled = anchors_masks / img_size
+    def yolo_loss(y_true, y_pred, anchor_masks,
+                  ignore_iou_threshold, img_size, num_classes, **kvargs):
+        anchors_masks_scaled = anchor_masks / img_size
 
         # 1. transform all pred outputs
         # y_pred: (batch_size, grid, grid, anchors, (x, y, w, h, obj, ...cls))
@@ -215,4 +218,9 @@ def Loss(num_classes, anchors_masks, img_size, ignore_iou_threshold=0.7):
         # tf.print('class_loss', class_loss)
 
         return loss
-    return yolo_loss
+
+    loss_fn = [functools.partial(
+        yolo_loss,
+        anchor_masks=anchors[m], ignore_iou_threshold=ignore_iou_threshold,
+        img_size=img_size, num_classes=num_classes) for m in masks]
+    return loss_fn

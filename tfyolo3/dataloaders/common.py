@@ -252,7 +252,7 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
         return images_aug, boxes_aug
     else:
         batch = Batch(images=batch_images)
-         # process the data
+        # process the data
         batch_processed = augmenters.augment_batch(batch)
         return batch_processed.images_aug
 
