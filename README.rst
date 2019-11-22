@@ -20,8 +20,7 @@ tfyolo3
 
 
 
-tensorflow 2 implementation of yolo 3 with backbone extensions
-
+Tensorflow 2 implementation of yolo version 3
 
 * Free software: Apache Software License 2.0
 * Documentation: https://tfyolo3.readthedocs.io.
@@ -30,7 +29,16 @@ tensorflow 2 implementation of yolo 3 with backbone extensions
 Features
 --------
 
-* TODO
+Extrayolo implements YOLO object detection paper with the following backbones:
+
+* `Darknet <https://pjreddie.com/darknet/yolo/>`_
+* `ResNet <https://arxiv.org/abs/1512.03385>`_: ['ResNet50V2', 'ResNet101V2', 'ResNet152V2']
+* `DenseNet <https://arxiv.org/abs/1608.06993>`_: ['DenseNet121', 'DenseNet169', 'DenseNet201']
+* `MobileNetV2 <https://arxiv.org/abs/1608.06993>`_: ['MobileNetV2']
+
+
+TODO
+-----
 
 Credits
 -------

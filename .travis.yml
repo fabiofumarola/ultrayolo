@@ -18,7 +18,7 @@ script: tox
 # create the Github repo and add it to Travis, run the
 # following command to finish PyPI deployment setup:
 # $ travis encrypt --add deploy.password
-deploy:
+# deploy:
   provider: pypi
   distributions: sdist bdist_wheel
   user: fabiofumarola
@@ -27,4 +27,4 @@ deploy:
   on:
     tags: true
     repo: fabiofumarola/tfyolo3
-    python: 3.8
+    python: 3.7
