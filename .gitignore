@@ -104,6 +104,7 @@ ENV/
 .DS_Store
 *.tmp
 Untitled*
+
 .idea/
 
 
@@ -118,4 +119,4 @@ datasets/car_dataset/
 
 # notebooks
 notebooks/model.png
-
+.vscode
