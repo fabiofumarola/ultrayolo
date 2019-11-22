@@ -102,8 +102,21 @@ ENV/
 .mypy_cache/
 
 .DS_Store
-*.weights
 *.tmp
 Untitled*
 
+.idea/
+
+
+# datasets
+datasets/test_dataset/
+datasets/test_dataset.tar.gz
+datasets/car_dataset/
+
+# weights
+*.h5
+*.weights
+
+# notebooks
+notebooks/model.png
 .vscode
