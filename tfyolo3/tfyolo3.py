@@ -106,6 +106,7 @@ class BaseModel(object):
                        callbacks=callbacks, workers=workers, use_multiprocessing=use_multiprocessing,
                        max_queue_size=64, initial_epoch=initial_epoch)
 
+
     def save(self, path, save_format='h5'):
         """save the model to the given path
 
@@ -114,6 +115,9 @@ class BaseModel(object):
         """
         path = str(Path(path).absolute())
         self.model.save(path, save_format=save_format)
+
+    def __call__(self, x):
+        return self.model(x)
 
 
 class YoloV3(BaseModel):
@@ -132,9 +136,9 @@ class YoloV3(BaseModel):
 
         self.masks = self.default_masks
         if anchors is None:
-            self.anchors = self.default_anchors
-
-        self.anchors = self.anchors.astype(np.float32)
+            self.anchors = YoloV3.default_anchors.copy()
+        else:
+            self.anchors = anchors.astype(np.float32)
         self.anchors_scaled = self.anchors / img_shape[1]
         self.training = training
         self.backbone = backbone
@@ -208,7 +212,7 @@ class YoloV3Tiny(BaseModel):
 
         self.masks = self.default_masks
         if anchors is None:
-            self.anchors = self.default_anchors
+            self.anchors = YoloV3.default_anchors.copy()
         self.anchors = self.anchors.astype(np.float32)
         self.anchors_scaled = self.anchors / img_shape[1]
         self.training = training

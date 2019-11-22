@@ -8,7 +8,7 @@ from . import common
 class YoloDatasetSingleFile(Sequence):
 
     def __init__(self, annotations_path, img_shape, max_objects, batch_size,
-                 anchors, anchor_masks, grid_len, num_classes,
+                 anchors, anchor_masks, num_classes,
                  is_training=True, augmenters=None, pad_to_fixed_size=True):
         """Create a dataset that expectes
         An Annotation file with image_name, boxes
@@ -21,7 +21,6 @@ class YoloDatasetSingleFile(Sequence):
             batch_size {int} -- the size of the batch for the generator
             anchors {numpy.ndarray} -- the anchors to anchor the images in the dataset
             anchor_masks {numpy.ndarray} -- the mask used for the dataset
-            grid_len {int} -- the base grid length (example: for 256 -> 8, for 512 -> 16)
             num_classes {int} -- the number of classes
 
         Keyword Arguments:
@@ -33,6 +32,12 @@ class YoloDatasetSingleFile(Sequence):
         Returns:
             tensorflow.keras.utils.Sequence -- a dataset sequence
         """
+
+        self.grid_len = img_shape[0] / 32
+        if self.grid_len % 2 != 0:
+            raise Exception('the image shape must have same height and width and be divisible per 32 ')
+        self.grid_len = int(self.grid_len)
+
         if not isinstance(annotations_path, Path):
             annotations_path = Path(annotations_path)
 
@@ -47,7 +52,6 @@ class YoloDatasetSingleFile(Sequence):
         # add scaling for the anchors
         self.anchors = anchors.astype(np.float32) / img_shape[0]
         self.anchor_masks = anchor_masks
-        self.grid_len = grid_len
         self.is_training = is_training
         self.max_objects = max_objects
         self.augmenters = augmenters
@@ -92,7 +96,7 @@ class YoloDatasetSingleFile(Sequence):
 class YoloDatasetMultiFile(Sequence):
 
     def __init__(self, filepath, img_shape, max_objects, batch_size,
-                 anchors, anchor_masks, grid_len, num_classes,
+                 anchors, anchor_masks, num_classes,
                  is_training=True, augmenters=None, pad_to_fixed_size=True):
         """Create a dataset that expectes
         An Annotation file with image_name, boxes
@@ -105,7 +109,6 @@ class YoloDatasetMultiFile(Sequence):
             batch_size {int} -- the size of the batch for the generator
             anchors {numpy.ndarray} -- the anchors to anchor the images in the dataset
             anchor_masks {numpy.ndarray} -- the mask used for the dataset
-            grid_len {int} -- the base grid length (example: for 256 -> 8, for 512 -> 16)
             num_classes {int} -- the number of classes
 
         Keyword Arguments:
@@ -117,6 +120,13 @@ class YoloDatasetMultiFile(Sequence):
         Returns:
             tensorflow.keras.utils.Sequence -- a dataset sequence
         """
+
+        self.grid_len = img_shape[0] / 32
+        
+        if self.grid_len % 2 != 0:
+            raise Exception('the image shape must have same height and width and be divisible per 32 ')
+        self.grid_len = int(self.grid_len)
+        
         if not isinstance(filepath, Path):
             filepath = Path(filepath)
 
@@ -142,7 +152,6 @@ class YoloDatasetMultiFile(Sequence):
         # add scaling for the anchors
         self.anchors = anchors.astype(np.float32) / img_shape[0]
         self.anchor_masks = anchor_masks
-        self.grid_len = grid_len
         self.is_training = is_training
         self.max_objects = max_objects
         self.augmenters = augmenters

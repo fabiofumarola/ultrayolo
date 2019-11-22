@@ -23,7 +23,6 @@ def test_dataset_multi_file(test_classes):
         batch_size = 2,
         anchors = YoloV3.default_anchors,
         anchor_masks = YoloV3.default_masks,
-        grid_len = 8,
         num_classes = len(test_classes),
         is_training=True,
         augmenters=None,
@@ -34,7 +33,7 @@ def test_dataset_multi_file(test_classes):
     for images, grid_data in ds:
         assert images.shape == (2,256,256,3)
         assert len(grid_data) == 3
-        grid_len = 8
+        grid_len = ds.grid_len
         for grid in grid_data:
             print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
@@ -49,7 +48,6 @@ def test_dataset_single_file(test_classes):
         batch_size = 2,
         anchors = YoloV3.default_anchors,
         anchor_masks = YoloV3.default_masks,
-        grid_len = 8,
         num_classes = len(test_classes),
         is_training=True,
         augmenters=None,
@@ -60,7 +58,7 @@ def test_dataset_single_file(test_classes):
     for images, grid_data in ds:
         assert images.shape == (2,256,256,3)
         assert len(grid_data) == 3
-        grid_len = 8
+        grid_len = ds.grid_len
         for grid in grid_data:
             print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
