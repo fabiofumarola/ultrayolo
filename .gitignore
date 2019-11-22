@@ -105,3 +105,8 @@ ENV/
 *.weights
 *.tmp
 Untitled*
+.idea/
+
+# datasets
+datasets/test_dataset/
+datasets/car_dataset/
