@@ -55,12 +55,9 @@ class BaseModel(object):
             list -- a list of the loss function for each mask
         """
         if self.loss_function is None:
-            self.loss_function = [
-                Loss(
-                    self.num_classes, self.anchors[mask], self.img_shape[0],
-                    ignore_iou_threshold=self.iou_threshold
-                ) for mask in self.masks
-            ]
+            self.loss_function = Loss(
+                len(self.num_classes), self.anchors, self.masks, self.img_shape[0]
+            )
 
         return self.loss_function
 
@@ -87,22 +84,24 @@ class BaseModel(object):
         darknet.unfreeze(self.model)
         darknet.freeze_backbone_layers(self.model, num_layers_to_train)
 
-    def compile(self, optimizer, loss, run_eagerly):
+    def compile(self, optimizer, loss, run_eagerly, summary=True):
         self.model.compile(optimizer, loss, run_eagerly=run_eagerly)
-        self.model.summary()
+        if summary:
+            self.model.summary()
 
     def fit(self, train_dataset, val_dataset, epochs, callbacks=None,
-            run_eagerly=False, workers=1, max_queue_size=64, initial_epoch=0):
+            workers=1, max_queue_size=64, initial_epoch=0):
 
-        logging.info('training for %d epochs on the dataset %s',
+        logging.info('training for %s epochs on the dataset %d',
                      train_dataset.base_path, epochs)
         if workers == -1:
             workers = multiprocessing.cpu_count()
 
+        use_multiprocessing = False
         if workers > 1:
             use_multiprocessing = True
 
-        self.model.fit(train_dataset, epochs=epochs, validation_data=val_dataset,
+        return self.model.fit(train_dataset, epochs=epochs, validation_data=val_dataset,
                        callbacks=callbacks, workers=workers, use_multiprocessing=use_multiprocessing,
                        max_queue_size=64, initial_epoch=initial_epoch)
 

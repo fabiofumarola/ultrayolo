@@ -188,13 +188,14 @@ def DenseNetBody(input_shape, version='DenseNet121', num_branches=3):
 
 def MobileNetBody(input_shape, version='MobileNetV2', num_branches=3):
     """a yolo mobile net body
+    It suports only shapes as [96, 128, 160, 192, 224]
 
     Arguments:
         input_shape {tuple} -- [description]
 
     Keyword Arguments:
         version {str} -- a version of mobilenet (default: {'MobileNetV2'},
-            values: ['MobileNetV2', 'MobileNet'])
+            values: ['MobileNetV2'])
         num_branches {int} -- [description] (default: {3}, values: [3,4])
 
     Raises:
@@ -206,18 +207,15 @@ def MobileNetBody(input_shape, version='MobileNetV2', num_branches=3):
     if version == 'MobileNetV2':
         model = tf.keras.applications.MobileNetV2(
             input_shape=input_shape, include_top=False)
-    elif version == 'MobileNet':
-        model = tf.keras.applications.MobileNet(
-            input_shape=input_shape, include_top=False)
+
+        inputs = model.input
+        x36 = model.get_layer('block_5_add').output
+        x61 = model.get_layer('block_12_add').output
+        x96 = model.get_layer('block_12_add').output
+        x = model.output
     else:
         msg = f'invalid value {version} for the class name'
         raise Exception(msg)
-
-    inputs = model.input
-    x36 = model.get_layer('block_5_add').output
-    x61 = model.get_layer('block_12_add').output
-    x96 = model.get_layer('block_12_add').output
-    x = model.output
 
     if num_branches == 3:
         return Model(inputs, [x36, x61, x], name=version)

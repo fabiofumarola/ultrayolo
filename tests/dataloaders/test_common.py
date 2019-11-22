@@ -149,7 +149,7 @@ def test_best_anchors_iou():
         [7],
         [0]]])
 
-    print(result)
+    # print(result)
 
     assert np.all(result == expected)
 
