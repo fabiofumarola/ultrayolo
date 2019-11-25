@@ -205,7 +205,7 @@ def resize(image, target_shape, boxes=None, keep_aspect_ratio=True):
             iaa.Resize({"height": target_shape[0], "width": target_shape[1]}),
         ])
 
-    return __transform(image, boxes, aug)
+    return __transform(image, aug, boxes=boxes)
 
 
 def __transform_batch(batch_images, augmenters, batch_boxes=None):
