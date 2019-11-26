@@ -18,7 +18,7 @@ def outline(o, lw):
         linewidth=lw, foreground='black'), patheffects.Normal()])
 
 
-def draw_point(ax, xy, color='red'):
+def point(ax, xy, color='red'):
     ax.add_patch(patches.Circle(
         xy, fill=True, edgecolor=color, color=color, lw=0))
 
