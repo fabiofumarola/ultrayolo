@@ -1,4 +1,4 @@
-tensorflow
-imageio
-imgaug
+tensorflow==2.0.0
+imageio==2.6.1
+imgaug==0.3.0
 pandas

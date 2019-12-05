@@ -109,9 +109,7 @@ Untitled*
 
 
 # datasets
-datasets/test_dataset/
-datasets/test_dataset.tar.gz
-datasets/car_dataset/
+datasets/*
 
 # weights
 *.h5
@@ -119,4 +117,9 @@ datasets/car_dataset/
 
 # notebooks
 notebooks/model.png
+notebooks/checkpoints
+notebooks/toy_dataset
+notebooks/test.jpg
 .vscode
+
+*.gz

@@ -7,3 +7,4 @@ __email__ = 'fabiofumarola@gmail.com'
 __version__ = '1.0.0'
 
 from tfyolo3.tfyolo3 import YoloV3Tiny, YoloV3
+from tfyolo3.helpers import callbacks

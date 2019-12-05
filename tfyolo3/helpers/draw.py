@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import patches, patheffects
 import matplotlib.pyplot as plt
-import imgaug.augmenters as iaa
 
 
 def show_img(im, figsize=None, ax=None):

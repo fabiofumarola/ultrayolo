@@ -7,7 +7,7 @@ import pytest
 from tfyolo3 import YoloV3, YoloV3Tiny
 from pathlib import Path
 from tfyolo3.dataloaders import YoloDatasetMultiFile, common
-from tfyolo3.losses import Loss
+from tfyolo3 import losses
 import numpy as np
 
 
@@ -48,7 +48,11 @@ def test_model_darknet(test_dataset, test_anchors, test_masks, test_classes):
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='DarkNet',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -60,7 +64,11 @@ def test_model_resnet50(test_dataset, test_anchors, test_masks, test_classes):
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='ResNet50V2',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -72,7 +80,11 @@ def test_model_resnet101(test_dataset, test_anchors, test_masks, test_classes):
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='ResNet101V2',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -84,7 +96,11 @@ def test_model_resnet152(test_dataset, test_anchors, test_masks, test_classes):
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='ResNet152V2',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -97,7 +113,11 @@ def test_model_DenseNet121(test_dataset, test_anchors,
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='DenseNet121',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -110,7 +130,11 @@ def test_model_DenseNet169(test_dataset, test_anchors,
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='DenseNet169',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -123,7 +147,11 @@ def test_model_DenseNet201(test_dataset, test_anchors,
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='DenseNet201',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
@@ -136,7 +164,11 @@ def test_model_MobileNetV2(test_dataset, test_anchors,
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='MobileNetV2',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)

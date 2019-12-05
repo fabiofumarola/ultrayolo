@@ -10,7 +10,7 @@ from .layers.core import (
     YoloOutput, DarknetBodyTiny
 )
 
-from .losses import process_predictions, non_max_suppression, Loss
+from .losses import process_predictions, non_max_suppression, make_loss
 from .helpers import darknet
 import multiprocessing
 
@@ -36,9 +36,19 @@ class BaseModel(object):
         self.loss_function = None
 
     def summary(self):
-        return self.model.summary()
+        """return the tensorflow model summary
+
+        """
+        self.model.summary()
 
     def load_weights(self, path):
+        """load:
+            * saved checkpoints in h5 format
+            * saved weights in darknet format
+
+        Arguments:
+            path {str} -- the path where the weights are saved
+        """
         if not isinstance(path, Path):
             path = Path(path)
 
@@ -55,14 +65,24 @@ class BaseModel(object):
             list -- a list of the loss function for each mask
         """
         if self.loss_function is None:
-            self.loss_function = Loss(
-                len(
-                    self.num_classes), self.anchors, self.masks, self.img_shape[0]
-            )
+            self.loss_function = make_loss(self.num_classes, self.anchors,
+                                           self.masks, self.img_shape[0])
 
         return self.loss_function
 
     def get_optimizer(self, optimizer_name, lrate):
+        """helper to create the optimizer using the class defined members
+
+        Arguments:
+            optimizer_name {str} -- the name of the optimizer to use: (values: adam, rmsprop, sgd)
+            lrate {float} -- a valid starting value for the learning rate
+
+        Raises:
+            Exception: raise an exception if the optimizer is not supported
+
+        Returns:
+            tensorflow.keras.optimizer -- an instance of the selected optimizer
+        """
         logging.info('using %s optimize', optimizer_name)
         if optimizer_name == 'adam':
             return Adam(learning_rate=lrate, clipvalue=1)
@@ -75,23 +95,58 @@ class BaseModel(object):
             raise Exception(f'not valid optimizer {optimizer_name}')
 
     def set_mode_train(self):
+        """unfreeze all the net read for a full training
+        """
         darknet.unfreeze(self.model)
 
     def set_mode_transfer(self):
+        """freeze the backbone of the network, check that the head and output layers are unfreezed
+        """
         logging.info('freeze backbone')
         darknet.freeze_backbone(self.model)
 
     def set_mode_fine_tuning(self, num_layers_to_train):
+        """unfreeze the backbone and freeze the first `num_layers_to_train` layers
+
+        Arguments:
+            num_layers_to_train {[type]} -- [description]
+        """
         darknet.unfreeze(self.model)
         darknet.freeze_backbone_layers(self.model, num_layers_to_train)
 
     def compile(self, optimizer, loss, run_eagerly, summary=True):
+        """compile the model
+
+        Arguments:
+            optimizer {tf.keras.optimizers} -- a valid tensorflow optimizer
+            loss {tfyolo3.losses.Loss} -- the loss function for yolo
+            run_eagerly {bool} -- if True is uses eager mode, that is you can see more explainable stack traces
+
+        Keyword Arguments:
+            summary {bool} -- if True print the summary of the model (default: {True})
+        """
         self.model.compile(optimizer, loss, run_eagerly=run_eagerly)
         if summary:
             self.model.summary()
 
     def fit(self, train_dataset, val_dataset, epochs, callbacks=None,
             workers=1, max_queue_size=64, initial_epoch=0):
+        """train the model
+
+        Arguments:
+            train_dataset {tfyolo3.dataloader.Dataset} -- an instance of the dataset
+            val_dataset {tfyolo3.dataloader.Dataset} -- an instance of the dataset
+            epochs {int} -- the number of epochs
+
+        Keyword Arguments:
+            callbacks {[type]} -- [description] (default: {None})
+            workers {int} -- [description] (default: {1})
+            max_queue_size {int} -- [description] (default: {64})
+            initial_epoch {int} -- [description] (default: {0})
+
+        Returns:
+            [type] -- [description]
+        """
 
         logging.info('training for %s epochs on the dataset %d',
                      train_dataset.base_path, epochs)
@@ -130,6 +185,22 @@ class YoloV3(BaseModel):
     def __init__(self, img_shape=(None, None, 3), max_objects=100,
                  iou_threshold=0.7, score_threshold=0.7,
                  anchors=None, num_classes=80, training=False, backbone='DarkNet'):
+        """The class that implement yolo v3
+
+        Keyword Arguments:
+            img_shape {tuple} -- the tuple (Height, Width, Channel) to represent the target image shape (default: {(None, None, 3)})
+            max_objects {int} -- the maximum number of objects that can be detected (default: {100})
+            iou_threshold {float} -- the intersection over union threshold used to filter out the multiple boxes for the same object (default: {0.7})
+            score_threshold {float} -- the minimum confidence score for the output (default: {0.7})
+            anchors {np.ndarray} -- the list of the anchors used for the detection (default: {None})
+            num_classes {int} -- the number of classes (default: {80})
+            training {bool} -- True if the model is used for training (default: {False})
+            backbone {str} -- a valid backbone among the following: (default: {'DarkNet'})
+                    * DarkNet
+                    * 'ResNet50V2', 'ResNet101V2', 'ResNet152V2'
+                    * 'DenseNet121', 'DenseNet169', 'DenseNet201'
+                    * 'MobileNetV2'
+        """
         super().__init__(img_shape, max_objects, iou_threshold, score_threshold,
                          anchors, num_classes)
 
@@ -206,6 +277,17 @@ class YoloV3Tiny(BaseModel):
     def __init__(self, img_shape=(None, None, 3), max_objects=100,
                  iou_threshold=0.7, score_threshold=0.7,
                  anchors=None, num_classes=80, training=False):
+        """The class that implement yolo v3 tiny
+
+        Keyword Arguments:
+            img_shape {tuple} -- the tuple (Height, Width, Channel) to represent the target image shape (default: {(None, None, 3)})
+            max_objects {int} -- the maximum number of objects that can be detected (default: {100})
+            iou_threshold {float} -- the intersection over union threshold used to filter out the multiple boxes for the same object (default: {0.7})
+            score_threshold {float} -- the minimum confidence score for the output (default: {0.7})
+            anchors {np.ndarray} -- the list of the anchors used for the detection (default: {None})
+            num_classes {int} -- the number of classes (default: {80})
+            training {bool} -- True if the model is used for training (default: {False})
+        """
         super().__init__(img_shape, max_objects, iou_threshold, score_threshold,
                          anchors, num_classes)
 

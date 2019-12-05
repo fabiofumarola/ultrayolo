@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from tfyolo3.losses import Loss
+from tfyolo3 import losses
 from tfyolo3.dataloaders import YoloDatasetMultiFile, common
 from tfyolo3 import YoloV3
 import numpy as np
@@ -44,7 +44,11 @@ def test_loss_initialized_yolo(
     model = YoloV3(img_shape, test_dataset.max_objects,
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        len(test_classes),
+        test_anchors,
+        test_masks,
+        img_shape[0])
     x_true, y_true_grids = test_dataset[0]
     y_pred_grids = model(x_true)
 
@@ -56,7 +60,11 @@ def test_loss_initialized_yolo(
 
 def test_loss_yolo(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        len(test_classes),
+        test_anchors,
+        test_masks,
+        img_shape[0])
     _, y_true_grids = test_dataset[0]
     y_pred_grids = y_true_grids
 
@@ -71,7 +79,11 @@ def test_compare_losses(test_dataset, test_anchors, test_masks, test_classes):
     model = YoloV3(img_shape, test_dataset.max_objects,
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-    loss_fn = Loss(len(test_classes), test_anchors, test_masks, img_shape[0])
+    loss_fn = losses.make_loss(
+        len(test_classes),
+        test_anchors,
+        test_masks,
+        img_shape[0])
     x_true, y_true_grids = test_dataset[0]
     y_pred_grids = model(x_true)
     y_pred_grids_true = y_true_grids

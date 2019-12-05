@@ -7,8 +7,7 @@ from . import common
 
 class YoloDatasetSingleFile(Sequence):
 
-    def __init__(self, annotations_path, img_shape, max_objects, batch_size,
-                 anchors, anchor_masks, num_classes,
+    def __init__(self, annotations_path, img_shape, max_objects, batch_size, anchors, anchor_masks,
                  is_training=True, augmenters=None, pad_to_fixed_size=True):
         """Create a dataset that expectes
         An Annotation file with image_name, boxes
@@ -21,7 +20,6 @@ class YoloDatasetSingleFile(Sequence):
             batch_size {int} -- the size of the batch for the generator
             anchors {numpy.ndarray} -- the anchors to anchor the images in the dataset
             anchor_masks {numpy.ndarray} -- the mask used for the dataset
-            num_classes {int} -- the number of classes
 
         Keyword Arguments:
             is_training {bool} -- true if the dataset is used for training false if used to display (default: {True})
@@ -39,8 +37,7 @@ class YoloDatasetSingleFile(Sequence):
                 'the image shape must have same height and width and be divisible per 32 ')
         self.grid_len = int(self.grid_len)
 
-        if not isinstance(annotations_path, Path):
-            annotations_path = Path(annotations_path)
+        annotations_path = Path(annotations_path)
 
         self.images_path = annotations_path.parent / 'images'
         self.lines = annotations_path.read_text().strip().split('\n')
@@ -48,7 +45,10 @@ class YoloDatasetSingleFile(Sequence):
 
         self.target_shape = img_shape
         self.batch_size = batch_size
-        self.num_classes = num_classes
+
+        self.classes = common.load_classes(
+            annotations_path.parent / 'classes.txt')
+        self.num_classes = len(self.classes)
 
         # add scaling for the anchors
         self.anchors = anchors.astype(np.float32) / img_shape[0]
@@ -96,8 +96,7 @@ class YoloDatasetSingleFile(Sequence):
 
 class YoloDatasetMultiFile(Sequence):
 
-    def __init__(self, filepath, img_shape, max_objects, batch_size,
-                 anchors, anchor_masks, num_classes,
+    def __init__(self, filepath, img_shape, max_objects, batch_size, anchors, anchor_masks,
                  is_training=True, augmenters=None, pad_to_fixed_size=True):
         """Create a dataset that expectes
         An Annotation file with image_name, boxes
@@ -110,7 +109,6 @@ class YoloDatasetMultiFile(Sequence):
             batch_size {int} -- the size of the batch for the generator
             anchors {numpy.ndarray} -- the anchors to anchor the images in the dataset
             anchor_masks {numpy.ndarray} -- the mask used for the dataset
-            num_classes {int} -- the number of classes
 
         Keyword Arguments:
             is_training {bool} -- true if the dataset is used for training false if used to display (default: {True})
@@ -149,7 +147,9 @@ class YoloDatasetMultiFile(Sequence):
 
         self.target_shape = img_shape
         self.batch_size = batch_size
-        self.num_classes = num_classes
+
+        self.classes = common.load_classes(self.base_path / 'classes.txt')
+        self.num_classes = len(self.classes)
 
         # add scaling for the anchors
         self.anchors = anchors.astype(np.float32) / img_shape[0]

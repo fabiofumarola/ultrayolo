@@ -24,7 +24,6 @@ def test_dataset_multi_file(test_classes):
         batch_size=2,
         anchors=YoloV3.default_anchors,
         anchor_masks=YoloV3.default_masks,
-        num_classes=len(test_classes),
         is_training=True,
         augmenters=None,
         pad_to_fixed_size=True
@@ -50,7 +49,6 @@ def test_dataset_single_file(test_classes):
         batch_size=2,
         anchors=YoloV3.default_anchors,
         anchor_masks=YoloV3.default_masks,
-        num_classes=len(test_classes),
         is_training=True,
         augmenters=None,
         pad_to_fixed_size=True
