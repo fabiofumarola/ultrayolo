@@ -3,4 +3,5 @@ from __future__ import division
 from __future__ import print_function
 
 from .dataset import YoloDatasetSingleFile, YoloDatasetMultiFile
-from .common import load_anchors, load_classes
+from .common import load_anchors, load_classes, make_masks
+from .anchors import gen_anchors

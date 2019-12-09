@@ -57,6 +57,19 @@ def load_classes(path, as_dict=False):
 
     return classes
 
+def make_masks(nelems):
+    """generate the default masks for the model
+    
+    Arguments:
+        nelems {int} -- the number of elements for the mask
+    
+    Returns:
+        np.ndarray -- a numpy array with the masks
+    """
+
+    masks = np.arange(0, nelems)
+    masks = masks.reshape((-1, 3))
+    return masks[::-1]
 
 def open_image(path):
     """Open an image using imageio

@@ -209,3 +209,19 @@ def test_prepare_ydata():
         ebox = box.tolist() + class_.tolist()
         # check that the row is in the original y_data
         assert np.all(np.isin(ebox, y_data))
+
+def test_masks():
+    masks = common.make_masks(9)
+
+    assert np.all(masks == np.array([
+        [6, 7, 8],
+        [3, 4, 5],
+        [0, 1, 2]
+        ]))
+
+    masks = common.make_masks(6)
+
+    assert np.all(masks == np.array([
+        [3, 4, 5],
+        [0, 1, 2]
+        ]))
