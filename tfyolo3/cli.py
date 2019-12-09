@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Console script for tfyolo3."""
-import yaml 
+import yaml
 from dotmap import DotMap
 from argparse import ArgumentParser
 import imgaug.augmenters as iaa
@@ -14,8 +14,9 @@ logger = logging.getLogger('tfyolo3')
 
 
 def load_config(path):
-    with open(path,'r') as fh:
+    with open(path, 'r') as fh:
         return DotMap(yaml.safe_load(fh))
+
 
 def load_anchors(dataset_config):
     ismultifile = True if dataset_config.mode == 'multifile' else False
@@ -32,6 +33,7 @@ def load_anchors(dataset_config):
     else:
         anchors = dataloaders.load_anchors(dataset_config.anchors.path)
     return anchors
+
 
 def make_augmentations(max_number_augs=5):
     augmentation = iaa.SomeOf((0, max_number_augs), [
@@ -55,11 +57,11 @@ def make_augmentations(max_number_augs=5):
     ])
     return augmentation
 
+
 def load_datasets(ds_conf):
     anchors = load_anchors(ds_conf)
     masks = dataloaders.make_masks(len(anchors))
     augmenters = make_augmentations(4) if ds_conf.augment else None
-
 
     if ds_conf.mode == 'multifile':
         train_dataset = dataloaders.YoloDatasetMultiFile
@@ -95,7 +97,7 @@ def main(config):
             anchors=train_dataset.anchor_masks,
             num_classes=train_dataset.num_classes,
             training=True
-            )
+        )
     else:
         logger.info('loading large model')
         model = YoloV3(
@@ -115,13 +117,12 @@ def main(config):
 
     loss = model.get_loss_function()
     optimizer = model.get_optimizer(config.fit.optimizer.name,
-        config.fit.optimizer.lrate.value)
+                                    config.fit.optimizer.lrate.value)
 
     checkpoints_path = Path(config.dataset.annotations.train) / 'checkpoints'
     checkpoints_path.mkdir(exist_ok=True)
     logger.info('saving checkpoints %s', str(checkpoints_path.absolute()))
     model_run_path = helpers.create_run_path(checkpoints_path)
-
 
     callbacks = helpers.default_callbacks(
         model, model_run_path, config.fit.optimizer.lrate.mode,
@@ -131,35 +132,42 @@ def main(config):
     if config.fit.mode == 'train':
         logger.info('training the model for %d epochs', config.fit.epochs.train)
         model.compile(optimizer, loss, config.fit.run_eagerly)
-        model.fit(train_dataset, val_dataset, 
-            config.fit.epochs.train, callbacks, -1, 0)
+        model.fit(train_dataset, val_dataset,
+                  config.fit.epochs.train, callbacks, -1, 0)
     elif config.fit.mode == 'transfer':
         model.set_mode_transfer()
         model.compile(optimizer, loss, config.fit.run_eagerly)
-        logger.info('transfer the model for %d epochs', config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset, 
-            config.fit.epochs.transfer, callbacks, -1, 0)
+        logger.info(
+            'transfer the model for %d epochs',
+            config.fit.epochs.transfer)
+        model.fit(train_dataset, val_dataset,
+                  config.fit.epochs.transfer, callbacks, -1, 0)
     elif config.fit.mode == 'finetuning':
         model.set_mode_transfer()
         model.compile(optimizer, loss, config.fit.run_eagerly)
-        logger.info('transfer the model for %d epochs', config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset, 
-            config.fit.epochs.transfer, callbacks, -1, 0)
-        
+        logger.info(
+            'transfer the model for %d epochs',
+            config.fit.epochs.transfer)
+        model.fit(train_dataset, val_dataset,
+                  config.fit.epochs.transfer, callbacks, -1, 0)
+
         finetuning = config.fit.epochs.transfer + config.fit.epochs.finetuning
         model.set_mode_fine_tuning(config.fit.freezed_layers)
         model.compile(optimizer, loss, config.fit.run_eagerly)
-        logger.info('fine tuning the model for %d epochs', config.fit.epochs.finetuning)
-        model.fit(train_dataset, val_dataset, 
-            finetuning, callbacks, -1, config.fit.epochs.transfer)
+        logger.info(
+            'fine tuning the model for %d epochs',
+            config.fit.epochs.finetuning)
+        model.fit(train_dataset, val_dataset,
+                  finetuning, callbacks, -1, config.fit.epochs.transfer)
 
     logging.info('saving final model')
     model.save(model_run_path / 'final_model.h5')
 
+
 if __name__ == '__main__':
     parser = ArgumentParser('train extra yolo')
-    parser.add_argument('--config', required=True, 
-        help='the path of the yaml config file')
+    parser.add_argument('--config', required=True,
+                        help='the path of the yaml config file')
 
     args = parser.parse_args()
     config = load_config(args.config)

@@ -12,10 +12,10 @@ def prepare_single_file(filepath):
         filepath = Path(filepath)
 
     lines = filepath.read_text().strip().split('\n')
-    images_boxes = [common.parse_boxes(
+    boxes = [common.parse_boxes(
         line.split(' ')[1:]) for line in lines]
 
-    boxes = np.array([b[:4] for _, box in images_boxes for b in box])
+    boxes = np.array([b[:4] for box in boxes for b in box])
     boxes_xywh = np.array(
         [common.to_center_width_height(b) for b in boxes])
 
@@ -136,6 +136,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     multifile = args.multifile
     anchors = gen_anchors(
-        args.dataset, args.num_clusters, 
+        args.dataset, args.num_clusters,
         multifile, args.scaling_factor)
     save_anchors(args.outfilename, anchors)

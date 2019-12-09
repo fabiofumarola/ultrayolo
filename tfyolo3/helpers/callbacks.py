@@ -3,7 +3,6 @@ from pathlib import Path
 from ..learningrates import cyclic_learning_rate
 
 
-
 def save_model(model, checkpoints_path):
     """method to save the model
 
@@ -52,7 +51,7 @@ def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
     Arguments:
         model {tf.keras.Model} -- a valid tensorflow model
         run_path {str} -- the path to save the checkpoints
-        lrate_mode {str} -- the mode for the learning rate scheduler 
+        lrate_mode {str} -- the mode for the learning rate scheduler
             (values: cyclic, exp_range, reduce_on_plateau)
         lrate_value {float} -- the initial value for the learning rate
         verbose {int} -- 0 for no verbose, 1 for verbose (default: 1)

@@ -4,12 +4,13 @@ from .callbacks import (
 from datetime import datetime
 from pathlib import Path
 
+
 def create_run_path(checkpoints_path):
     """create the run path to save the checkpoints of the model
-    
+
     Arguments:
         checkpoints_path {str} -- the path to save the checkpoints
-    
+
     Returns:
         Path -- the path to save the checkpoints
     """
