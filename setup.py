@@ -46,9 +46,7 @@ setup(
         ],
     },
     # scripts
-    scripts=[
-        'bin/gen_anchors.py'
-    ],
+    scripts=[],
     install_requires=requirements,
     include_package_data=True,
     package_data={

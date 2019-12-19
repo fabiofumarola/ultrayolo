@@ -14,11 +14,27 @@ logger = logging.getLogger('tfyolo3')
 
 
 def load_config(path):
+    """load config from yaml
+
+    Arguments:
+        path {str} -- the path of the yaml file
+
+    Returns:
+        object -- an object with the given configurations
+    """
     with open(path, 'r') as fh:
         return DotMap(yaml.safe_load(fh))
 
 
 def load_anchors(dataset_config):
+    """load or compute the anchors given a dataset
+
+    Arguments:
+        dataset_config {object} -- the configuration of the dataset
+
+    Returns:
+        [type] -- [description]
+    """
     ismultifile = True if dataset_config.mode == 'multifile' else False
     annotations_path = dataset_config.annotations.train
     num_anchors = dataset_config.anchors.number
@@ -36,6 +52,14 @@ def load_anchors(dataset_config):
 
 
 def make_augmentations(max_number_augs=5):
+    """apply data augmentations to the dataset
+
+    Keyword Arguments:
+        max_number_augs {int} -- the max number of augmentation to apply to each image (default: {5})
+
+    Returns:
+        [type] -- [description]
+    """
     augmentation = iaa.SomeOf((0, max_number_augs), [
         iaa.GaussianBlur(sigma=(0.0, 3.0)),
         iaa.Affine(scale=(1., 2.5), rotate=(-90, 90), shear=(-16, 16),
@@ -59,8 +83,17 @@ def make_augmentations(max_number_augs=5):
 
 
 def load_datasets(ds_conf):
+    """load a dataset from configs
+
+    Arguments:
+        ds_conf {object} -- the configutations
+
+    Returns:
+        tuple -- train and test dataset tf.keras.Sequence objects
+    """
     anchors = load_anchors(ds_conf)
     masks = dataloaders.make_masks(len(anchors))
+    # FIXME make 4 a parameter
     augmenters = make_augmentations(4) if ds_conf.augment else None
 
     if ds_conf.mode == 'multifile':
@@ -84,6 +117,11 @@ def load_datasets(ds_conf):
 
 
 def main(config):
+    """the main to train the algorithm
+
+    Arguments:
+        config {object} -- the configurations to run the algorithm
+    """
 
     train_dataset, val_dataset = load_datasets(config.dataset)
 
@@ -132,33 +170,35 @@ def main(config):
     if config.fit.mode == 'train':
         logger.info('training the model for %d epochs', config.fit.epochs.train)
         model.compile(optimizer, loss, config.fit.run_eagerly)
-        model.fit(train_dataset, val_dataset,
-                  config.fit.epochs.train, callbacks, -1, 0)
+        model.fit(train_dataset, val_dataset, config.fit.epochs.train,
+                  0, callbacks, -1)
+
     elif config.fit.mode == 'transfer':
         model.set_mode_transfer()
         model.compile(optimizer, loss, config.fit.run_eagerly)
         logger.info(
             'transfer the model for %d epochs',
             config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset,
-                  config.fit.epochs.transfer, callbacks, -1, 0)
+        model.fit(train_dataset, val_dataset, config.fit.epochs.train,
+                  0, callbacks, -1)
+
     elif config.fit.mode == 'finetuning':
         model.set_mode_transfer()
         model.compile(optimizer, loss, config.fit.run_eagerly)
         logger.info(
             'transfer the model for %d epochs',
             config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset,
-                  config.fit.epochs.transfer, callbacks, -1, 0)
+        model.fit(train_dataset, val_dataset, config.fit.epochs.train,
+                  0, callbacks, -1)
 
-        finetuning = config.fit.epochs.transfer + config.fit.epochs.finetuning
+        finetuning_epochs = config.fit.epochs.transfer + config.fit.epochs.finetuning
         model.set_mode_fine_tuning(config.fit.freezed_layers)
         model.compile(optimizer, loss, config.fit.run_eagerly)
         logger.info(
             'fine tuning the model for %d epochs',
             config.fit.epochs.finetuning)
-        model.fit(train_dataset, val_dataset,
-                  finetuning, callbacks, -1, config.fit.epochs.transfer)
+        model.fit(train_dataset, val_dataset, finetuning_epochs,
+                  config.fit.epochs.transfer, callbacks, -1)
 
     logging.info('saving final model')
     model.save(model_run_path / 'final_model.h5')

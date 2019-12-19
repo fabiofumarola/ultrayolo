@@ -129,8 +129,8 @@ class BaseModel(object):
         if summary:
             self.model.summary()
 
-    def fit(self, train_dataset, val_dataset, epochs, callbacks=None,
-            workers=1, max_queue_size=64, initial_epoch=0):
+    def fit(self, train_dataset, val_dataset, epochs, initial_epoch=0,
+            callbacks=None, workers=1, max_queue_size=64):
         """train the model
 
         Arguments:
@@ -139,10 +139,10 @@ class BaseModel(object):
             epochs {int} -- the number of epochs
 
         Keyword Arguments:
+            initial_epoch {int} -- [description] (default: {0})
             callbacks {[type]} -- [description] (default: {None})
             workers {int} -- [description] (default: {1})
             max_queue_size {int} -- [description] (default: {64})
-            initial_epoch {int} -- [description] (default: {0})
 
         Returns:
             [type] -- [description]
