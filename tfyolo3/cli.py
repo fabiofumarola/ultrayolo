@@ -93,6 +93,7 @@ def load_datasets(ds_conf):
     """
     anchors = load_anchors(ds_conf)
     masks = dataloaders.make_masks(len(anchors))
+
     # FIXME make 4 a parameter
     augmenters = make_augmentations(4) if ds_conf.augment else None
 
@@ -115,6 +116,10 @@ def load_datasets(ds_conf):
     )
     return train_dataset, val_dataset
 
+def to_tuple(value):
+    values = value[1:-1].split(',')
+    values = [int(v.strip()) for v in values]
+    return tuple(values)
 
 def main(config):
     """the main to train the algorithm
@@ -123,16 +128,18 @@ def main(config):
         config {object} -- the configurations to run the algorithm
     """
 
+    config.dataset.image_shape = to_tuple(config.dataset.image_shape)
+
     train_dataset, val_dataset = load_datasets(config.dataset)
 
-    if train_dataset.anchor_masks == 6:
+    if len(train_dataset.anchor_masks) == 6:
         logger.info('loading tiny model')
         model = YoloV3Tiny(
             img_shape=config.dataset.image_shape,
             max_objects=config.dataset.max_objects,
             iou_threshold=config.model.thresholds.intersection_over_union,
             score_threshold=config.model.thresholds.object_score,
-            anchors=train_dataset.anchor_masks,
+            anchors=train_dataset.anchors,
             num_classes=train_dataset.num_classes,
             training=True
         )
@@ -143,7 +150,7 @@ def main(config):
             max_objects=config.dataset.max_objects,
             iou_threshold=config.model.thresholds.intersection_over_union,
             score_threshold=config.model.thresholds.object_score,
-            anchors=train_dataset.anchor_masks,
+            anchors=train_dataset.anchors,
             num_classes=train_dataset.num_classes,
             training=True,
             backbone=config.model.backbone
@@ -151,13 +158,13 @@ def main(config):
 
     if config.model.reload.path:
         logger.info('reload weigths at path %s', config.model.reload.path)
-        model.load_weights(config.model.reload.path)
+        model.load_weights(config.model.reload.path, config.model.backbone)
 
     loss = model.get_loss_function()
     optimizer = model.get_optimizer(config.fit.optimizer.name,
                                     config.fit.optimizer.lrate.value)
 
-    checkpoints_path = Path(config.dataset.annotations.train) / 'checkpoints'
+    checkpoints_path = Path(config.model.checkpoints.path)
     checkpoints_path.mkdir(exist_ok=True)
     logger.info('saving checkpoints %s', str(checkpoints_path.absolute()))
     model_run_path = helpers.create_run_path(checkpoints_path)
@@ -171,7 +178,7 @@ def main(config):
         logger.info('training the model for %d epochs', config.fit.epochs.train)
         model.compile(optimizer, loss, config.fit.run_eagerly)
         model.fit(train_dataset, val_dataset, config.fit.epochs.train,
-                  0, callbacks, -1)
+                  0, callbacks, 1)
 
     elif config.fit.mode == 'transfer':
         model.set_mode_transfer()
@@ -179,8 +186,8 @@ def main(config):
         logger.info(
             'transfer the model for %d epochs',
             config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset, config.fit.epochs.train,
-                  0, callbacks, -1)
+        model.fit(train_dataset, val_dataset, config.fit.epochs.transfer,
+                  0, callbacks, 1)
 
     elif config.fit.mode == 'finetuning':
         model.set_mode_transfer()
@@ -188,8 +195,8 @@ def main(config):
         logger.info(
             'transfer the model for %d epochs',
             config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset, config.fit.epochs.train,
-                  0, callbacks, -1)
+        model.fit(train_dataset, val_dataset, config.fit.epochs.transfer,
+                  0, callbacks, 1)
 
         finetuning_epochs = config.fit.epochs.transfer + config.fit.epochs.finetuning
         model.set_mode_fine_tuning(config.fit.freezed_layers)
@@ -198,7 +205,7 @@ def main(config):
             'fine tuning the model for %d epochs',
             config.fit.epochs.finetuning)
         model.fit(train_dataset, val_dataset, finetuning_epochs,
-                  config.fit.epochs.transfer, callbacks, -1)
+                  config.fit.epochs.transfer, callbacks, 1)
 
     logging.info('saving final model')
     model.save(model_run_path / 'final_model.h5')

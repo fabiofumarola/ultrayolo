@@ -123,3 +123,8 @@ notebooks/test.jpg
 .vscode
 
 *.gz
+
+!train.template.yml
+*.yml
+
+checkpoints

@@ -119,7 +119,6 @@ class YoloDatasetMultiFile(Sequence):
         Returns:
             tensorflow.keras.utils.Sequence -- a dataset sequence
         """
-
         self.grid_len = img_shape[0] / 32
 
         if self.grid_len % 2 != 0:

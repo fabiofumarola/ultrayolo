@@ -33,6 +33,8 @@ model:
     intersection_over_union: 0.7
     object_score: 0.7
   reload:
+    path:
+  checkpoint:
     path: 
   
 fit:

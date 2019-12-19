@@ -41,7 +41,7 @@ class BaseModel(object):
         """
         self.model.summary()
 
-    def load_weights(self, path):
+    def load_weights(self, path, backbone):
         """load:
             * saved checkpoints in h5 format
             * saved weights in darknet format
@@ -53,7 +53,7 @@ class BaseModel(object):
             path = Path(path)
 
         print('loaded checkopoint from', str(path.absolute()))
-        if path.name.split('.')[-1] == 'weights':
+        if path.name.split('.')[-1] == 'weights' and backbone == 'DarkNet':
             darknet.load_darknet_weights(self.model, path, self.tiny)
         elif path.name.split('.')[-1] == 'h5':
             self.model.load_weights(str(path.absolute()))

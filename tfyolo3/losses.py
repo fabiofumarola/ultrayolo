@@ -225,7 +225,6 @@ def make_loss(num_classes, anchors, masks, img_size, ignore_iou_threshold=0.7):
     Returns:
         function  -- a function that compute the loss
     """
-
     loss_fns = [
         Loss(anchors[m], ignore_iou_threshold, img_size, num_classes, f'yolo_loss{i}') for i, m in enumerate(masks)
     ]
