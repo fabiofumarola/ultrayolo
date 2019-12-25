@@ -45,7 +45,7 @@ def load_anchors(dataset_config):
     elif dataset_config.anchors.mode == 'default':
         anchors = YoloV3.default_anchors
     elif dataset_config.anchors.mode == 'default_tiny':
-        anchors = YoloV3.default_anchors
+        anchors = YoloV3Tiny.default_anchors
     else:
         anchors = dataloaders.load_anchors(dataset_config.anchors.path)
     return anchors
@@ -91,6 +91,7 @@ def load_datasets(ds_conf):
     Returns:
         tuple -- train and test dataset tf.keras.Sequence objects
     """
+    ds_conf.image_shape = to_tuple(ds_conf.image_shape)
     anchors = load_anchors(ds_conf)
     masks = dataloaders.make_masks(len(anchors))
 
@@ -116,10 +117,12 @@ def load_datasets(ds_conf):
     )
     return train_dataset, val_dataset
 
+
 def to_tuple(value):
     values = value[1:-1].split(',')
     values = [int(v.strip()) for v in values]
     return tuple(values)
+
 
 def main(config):
     """the main to train the algorithm
@@ -129,7 +132,6 @@ def main(config):
     """
 
     config.dataset.image_shape = to_tuple(config.dataset.image_shape)
-
     train_dataset, val_dataset = load_datasets(config.dataset)
 
     if len(train_dataset.anchor_masks) == 6:
