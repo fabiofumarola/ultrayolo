@@ -29,11 +29,6 @@ Tensorflow 2 implementation of yolo version 3
 .. image:: ./images/example_image.png
 
 
-Setup
------
-
-
-
 Features
 --------
 
@@ -44,6 +39,17 @@ tfyolo3 implements YOLO object detection paper with the following backbones:
 * `DenseNet <https://arxiv.org/abs/1608.06993>`_: `['DenseNet121', 'DenseNet169', 'DenseNet201']`
 * `MobileNetV2 <https://arxiv.org/abs/1608.06993>`_: `['MobileNetV2']`
 
+
+Installation
+-----
+
+
+Evaluation
+-----
+
+
+Training
+-----
 
 TODO
 -----

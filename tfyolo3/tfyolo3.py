@@ -10,7 +10,7 @@ from .layers.core import (
     YoloOutput, DarknetBodyTiny
 )
 
-from .losses import process_predictions, non_max_suppression, make_loss
+from . import losses
 from .helpers import darknet
 import multiprocessing
 
@@ -48,6 +48,7 @@ class BaseModel(object):
 
         Arguments:
             path {str} -- the path where the weights are saved
+            backbone {str} -- the name of the backbone used
         """
         if not isinstance(path, Path):
             path = Path(path)
@@ -65,7 +66,7 @@ class BaseModel(object):
             list -- a list of the loss function for each mask
         """
         if self.loss_function is None:
-            self.loss_function = make_loss(self.num_classes, self.anchors,
+            self.loss_function = losses.make_loss(self.num_classes, self.anchors,
                                            self.masks, self.img_shape[0])
 
         return self.loss_function
@@ -170,8 +171,8 @@ class BaseModel(object):
         path = str(Path(path).absolute())
         self.model.save(path, save_format=save_format)
 
-    def __call__(self, x):
-        return self.model(x)
+    # def __call__(self, x):
+    #     return self.model(x)
 
 
 class YoloV3(BaseModel):
@@ -241,24 +242,24 @@ class YoloV3(BaseModel):
                 inputs, [output0, output1, output2], name='yolov3')
         else:
             boxes0 = Lambda(
-                lambda x: process_predictions(
+                lambda x: losses.process_predictions(
                     x, self.num_classes, self.anchors_scaled[self.masks[0]]),
                 name='yolo_boxes_0'
             )(output0)
 
             boxes1 = Lambda(
-                lambda x: process_predictions(
+                lambda x: losses.process_predictions(
                     x, self.num_classes, self.anchors_scaled[self.masks[1]]),
                 name='yolo_boxes_1'
             )(output1)
 
             boxes2 = Lambda(
-                lambda x: process_predictions(
+                lambda x: losses.process_predictions(
                     x, self.num_classes, self.anchors_scaled[self.masks[2]]),
                 name='yolo_boxes_2'
             )(output2)
 
-            outputs = Lambda(lambda x: non_max_suppression(
+            outputs = Lambda(lambda x: losses.non_max_suppression(
                 x, self.anchors_scaled, self.masks, self.num_classes, self.iou_threshold, self.score_threshold, self.max_objects, self.img_shape[
                     0]
             ), name='yolo_nms')((boxes0[:3], boxes1[:3], boxes2[:3]))
@@ -314,18 +315,18 @@ class YoloV3Tiny(BaseModel):
             self.model = Model(inputs, [output0, output1], name='yolov3')
         else:
             boxes0 = Lambda(
-                lambda x: process_predictions(
+                lambda x: losses.process_predictions(
                     x, self.num_classes, self.anchors_scaled[self.masks[0]]),
                 name='yolo_boxes_0'
             )(output0)
 
             boxes1 = Lambda(
-                lambda x: process_predictions(
+                lambda x: losses.process_predictions(
                     x, self.num_classes, self.anchors_scaled[self.masks[1]]),
                 name='yolo_boxes_1'
             )(output1)
 
-            outputs = Lambda(lambda x: non_max_suppression(
+            outputs = Lambda(lambda x: losses.non_max_suppression(
                 x, self.anchors_scaled, self.masks, self.num_classes, self.iou_threshold, self.score_threshold, self.max_objects, self.img_shape[
                     0]
             ), name='yolo_nms')((boxes0[:3], boxes1[:3]))

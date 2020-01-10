@@ -58,6 +58,7 @@ def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
     Returns:
         list -- a list of tf.keras.callbacks
     """
+    run_path = Path(run_path)
     run_path_str = str(run_path.absolute())
 
     callbacks = [

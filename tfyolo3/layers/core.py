@@ -6,6 +6,11 @@ from tensorflow.keras.layers import (
 )
 from tensorflow.keras.regularizers import l1_l2
 from tensorflow.keras import Input, Model
+from tensorflow.keras.applications import (
+    ResNet50V2, ResNet101V2, ResNet152V2,
+    DenseNet121, DenseNet169, DenseNet201,
+    MobileNetV2
+)
 
 
 def DarknetConv(x, filters, kernel, batch_norm, downsample):
@@ -33,7 +38,7 @@ def DarknetConv(x, filters, kernel, batch_norm, downsample):
     x = Conv2D(filters=filters, kernel_size=kernel,
                strides=strides, padding=padding,
                use_bias=not batch_norm, kernel_regularizer=l1_l2(0.0005, 0.0005),
-               kernel_initializer=tf.random_normal_initializer(stddev=0.01)
+               kernel_initializer= tf.random_normal_initializer(stddev=0.01)
                )(x)
     if batch_norm:
         x = BatchNormalization()(x)
@@ -118,13 +123,13 @@ def ResNetBody(input_shape, version='ResNet50V2', num_branches=3):
         tensorflow.keras.Model  --
     """
     if version == 'ResNet50V2':
-        model = tf.keras.applications.ResNet50V2(
+        model = ResNet50V2(
             input_shape=input_shape, include_top=False)
     elif version == 'ResNet101V2':
-        model = tf.keras.applications.ResNet101V2(
+        model = ResNet101V2(
             input_shape=input_shape, include_top=False)
     elif version == 'ResNet152V2':
-        model = tf.keras.applications.ResNet152V2(
+        model = ResNet152V2(
             input_shape=input_shape, include_top=False)
     else:
         msg = f'invalid value {version} for the class name'
@@ -162,13 +167,13 @@ def DenseNetBody(input_shape, version='DenseNet121', num_branches=3):
         tensorflow.keras.Model  --
     """
     if version == 'DenseNet121':
-        model = tf.keras.applications.DenseNet121(
+        model = DenseNet121(
             input_shape=input_shape, include_top=False)
     elif version == 'DenseNet169':
-        model = tf.keras.applications.DenseNet169(
+        model = DenseNet169(
             input_shape=input_shape, include_top=False)
     elif version == 'DenseNet201':
-        model = tf.keras.applications.DenseNet201(
+        model = DenseNet201(
             input_shape=input_shape, include_top=False)
     else:
         msg = f'invalid value {version} for the class name'
@@ -205,7 +210,7 @@ def MobileNetBody(input_shape, version='MobileNetV2', num_branches=3):
         tensorflow.keras.Model  --
     """
     if version == 'MobileNetV2':
-        model = tf.keras.applications.MobileNetV2(
+        model = MobileNetV2(
             input_shape=input_shape, include_top=False)
 
         inputs = model.input
@@ -288,7 +293,6 @@ def YoloOutput(x_in, filters, num_mask, num_classes, name=None):
                                     (-1, tf.shape(x)[1], tf.shape(x)[2],
                                      num_mask, 5 + num_classes)))(x)
     # add this layers to replace all the nan with 0
-    x = Lambda(lambda w: tf.where(tf.math.is_nan(w),
-                                  tf.zeros_like(w), w))(x)
+    x = Lambda(lambda w: tf.where(tf.math.is_nan(w), tf.zeros_like(w), w))(x)
 
     return Model(input_, x, name=name)(x_in)

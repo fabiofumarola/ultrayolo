@@ -209,6 +209,12 @@ class Loss():
 
         return tf.reduce_mean(loss)
 
+    def __str__(self):
+        return self.__name__
+
+    def __repr__(self):
+        return f'{self.__name__} at {hex(id(self))}'
+
 
 def make_loss(num_classes, anchors, masks, img_size, ignore_iou_threshold=0.7):
     """the default Yolo Loss
