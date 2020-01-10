@@ -26,7 +26,7 @@ Tensorflow 2 implementation of yolo version 3
 * Documentation: https://tfyolo3.readthedocs.io.
 
 
-.. image:: ../images/example_image.png
+.. image:: ./images/example_image.png
 
 Features
 --------
@@ -41,6 +41,11 @@ Extrayolo implements YOLO object detection paper with the following backbones:
 
 TODO
 -----
+
+
+* add support to tf.data to load datasets
+* add mean average precision evaluation script
+
 
 Credits
 -------

@@ -1,6 +1,8 @@
 Welcome to tfyolo3's documentation!
 ======================================
 
+Tensorflow 2 implementation of yolo version 3
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -8,6 +10,7 @@ Welcome to tfyolo3's documentation!
    readme
    installation
    usage
+   train
    modules
    contributing
    authors

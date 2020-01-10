@@ -32,3 +32,5 @@ To use tfyolo3 in a project::
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=False)
     history = model.fit(train_dataset, val_dataset, 5)
+
+
