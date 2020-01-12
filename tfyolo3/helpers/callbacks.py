@@ -19,7 +19,6 @@ def save_model(model, checkpoints_path):
         loss = logs['loss']
         file_path = save_checkpoints_path + "/" + \
             f"weights_train.{epoch:03d}-{loss:.3f}.h5"
-        print(file_path)
         if epoch % 10 == 0:
             model.save(file_path, save_format='h5')
 

@@ -9,6 +9,7 @@ from pathlib import Path
 from tfyolo3.dataloaders import YoloDatasetMultiFile, common
 from tfyolo3 import losses
 import numpy as np
+import tensorflow as tf
 
 
 BASE_PATH = Path(__file__).parent / 'data'
@@ -21,7 +22,7 @@ def test_anchors():
     x = np.arange(5, 46, 5)
     anchors = np.array(list(zip(x, x)))
     anchors[:, 1] += np.random.randint(0, 10, 9)
-    return anchors
+    return anchors.astype(np.float32)
 
 
 @pytest.fixture()
@@ -173,3 +174,31 @@ def test_model_MobileNetV2(test_dataset, test_anchors,
     model.compile(optimizer, loss_fn, run_eagerly=True)
     history = model.fit(test_dataset, test_dataset, 1)
     assert history is not None
+
+
+def test_reload_model(test_dataset, test_anchors,
+                           test_masks, test_classes):
+    img_shape = test_dataset.target_shape
+    model = YoloV3(img_shape, test_dataset.max_objects, backbone='MobileNetV2',
+                   anchors=test_anchors, num_classes=len(test_classes), training=True)
+
+    loss_fn = losses.make_loss(
+        model.num_classes,
+        test_anchors,
+        test_masks,
+        img_shape[0])
+    optimizer = model.get_optimizer('adam', 1e-4)
+    model.compile(optimizer, loss_fn, run_eagerly=True)
+    model.fit(test_dataset, test_dataset, 1)
+
+    save_path = BASE_PATH.parent / 'model.h5'
+    model.save(save_path)
+
+    del model
+
+    model = YoloV3(img_shape, test_dataset.max_objects, backbone='MobileNetV2',
+                   anchors=test_anchors, num_classes=len(test_classes), training=False)
+    model.load_weights(save_path)
+
+    boxes, scores, classes, valid_detections = model.predict(tf.zeros((1, *img_shape)))
+    assert len(valid_detections) > 0

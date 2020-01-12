@@ -7,9 +7,8 @@ from argparse import ArgumentParser
 import imgaug.augmenters as iaa
 from tfyolo3 import dataloaders, YoloV3, YoloV3Tiny
 from tfyolo3 import helpers
-import logging
 from pathlib import Path
-
+import logging
 logger = logging.getLogger('tfyolo3')
 
 

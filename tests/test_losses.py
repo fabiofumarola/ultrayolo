@@ -16,7 +16,7 @@ def test_anchors():
     x = np.arange(5, 46, 5)
     anchors = np.array(list(zip(x, x)))
     anchors[:, 1] += np.random.randint(0, 10, 9)
-    return anchors
+    return anchors.astype(np.float32)
 
 
 @pytest.fixture()

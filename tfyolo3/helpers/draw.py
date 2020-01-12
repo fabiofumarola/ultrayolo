@@ -22,7 +22,7 @@ def point(ax, xy, color='red'):
         xy, fill=True, edgecolor=color, color=color, lw=0))
 
 
-def rect(ax, b, color='white', lw=4):
+def rect(ax, b, color='#9cff1d', lw=4):
     """
     Parameters
     --------
@@ -36,6 +36,7 @@ def rect(ax, b, color='white', lw=4):
 
 
 def text(ax, xy, txt, sz=14):
+    xy = xy - [0,10]
     text = ax.text(*xy, txt, verticalalignment='top',
                    color='white', fontsize=sz, weight='bold')
     outline(text, 1)
