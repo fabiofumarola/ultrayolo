@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 
 def non_max_suppression(outputs, anchors, masks, classes,
@@ -73,17 +74,20 @@ def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
     return box_xyxy
 
 
-def process_predictions(y_pred, num_classes, anchors_masks):
+def process_predictions(y_pred, num_classes, anchors, masks):
     """process the predictions
 
     Arguments:
         y_pred {tf.tensor} -- the predictions
         num_classes {int} -- the number of classes
-        anchors_masks {tf.tensor} -- the anchors masks
+        anchors {tf.tensor} -- the anchors masks
+        masks --
 
     Returns:
         tuple -- box,xyxy, perd_obj, pred_class, pred_xywh
     """
+    anchors_masks = np.array(anchors)[np.array(masks)]
+
     pred_xy, pred_wh, pred_obj, pred_class = tf.split(
         y_pred, (2, 2, 1, num_classes), axis=-1
     )

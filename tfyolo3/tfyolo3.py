@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from pathlib import Path
+import tensorflow as tf
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Lambda
 from tensorflow.keras.optimizers import Adam, RMSprop, SGD
@@ -205,12 +206,12 @@ class YoloV3(BaseModel):
         super().__init__(img_shape, max_objects, iou_threshold, score_threshold,
                          anchors, num_classes)
 
-        self.masks = self.default_masks
+        self.masks = np.array(self.default_masks)
         if anchors is None:
             self.anchors = YoloV3.default_anchors.copy()
         else:
             self.anchors = anchors.astype(np.float32)
-        self.anchors_scaled = self.anchors / img_shape[1]
+        self.anchors_scaled = np.array(self.anchors / img_shape[1])
         self.training = training
         self.backbone = backbone
         self.tiny = False
@@ -225,43 +226,46 @@ class YoloV3(BaseModel):
         elif 'MobileNet' in backbone:
             x36, x61, x = MobileNetBody(img_shape, version=backbone)(x)
 
+        masks = np.array(self.masks)
+        anchors_scaled = np.array(self.anchors_scaled)
+
         x = YoloHead(x, 512, name='yolo_head_0')
         output0 = YoloOutput(x, 512, len(
-            self.masks[0]), num_classes, name='yolo_output_0')
+            masks[0]), num_classes, name='yolo_output_0')
 
         x = YoloHead((x, x61), 256, name='yolo_head_1')
         output1 = YoloOutput(x, 256, len(
-            self.masks[1]), num_classes, name='yolo_output_1')
+            masks[1]), num_classes, name='yolo_output_1')
 
         x = YoloHead((x, x36), 128, name='yolo_head_2')
         output2 = YoloOutput(x, 128, len(
-            self.masks[2]), num_classes, name='yolo_output_2')
+            masks[2]), num_classes, name='yolo_output_2')
 
         if training:
             self.model = Model(
                 inputs, [output0, output1, output2], name='yolov3')
         else:
+            anchors_scaled = np.array(self.anchors_scaled)
             boxes0 = Lambda(
                 lambda x: losses.process_predictions(
-                    x, self.num_classes, self.anchors_scaled[self.masks[0]]),
+                    x, num_classes, anchors_scaled, masks[0]),
                 name='yolo_boxes_0'
             )(output0)
 
             boxes1 = Lambda(
                 lambda x: losses.process_predictions(
-                    x, self.num_classes, self.anchors_scaled[self.masks[1]]),
+                    x, num_classes, anchors_scaled, masks[1]),
                 name='yolo_boxes_1'
             )(output1)
 
             boxes2 = Lambda(
                 lambda x: losses.process_predictions(
-                    x, self.num_classes, self.anchors_scaled[self.masks[2]]),
+                    x, num_classes, anchors_scaled, masks[2]),
                 name='yolo_boxes_2'
             )(output2)
 
             outputs = Lambda(lambda x: losses.non_max_suppression(
-                x, self.anchors_scaled, self.masks, self.num_classes, self.iou_threshold, self.score_threshold, self.max_objects, self.img_shape[
-                    0]
+                x, anchors_scaled, masks, num_classes, iou_threshold, score_threshold, max_objects, img_shape[0]
             ), name='yolo_nms')((boxes0[:3], boxes1[:3], boxes2[:3]))
 
             self.model = Model(inputs, outputs, name='yolov3')
