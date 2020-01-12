@@ -16,67 +16,52 @@ from .helpers import darknet
 import multiprocessing
 
 import logging
-logger = logging.getLogger('tfyolo3')
-
-# logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 @tf.function
-def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
-    """convert the given boxes into the xy_min xy_max format
-    Arguments:
-        box_xy {tf.tensor} --
-        box_wh {tf,tensor} --
-        grid_size {float} -- the size of the grid used
-        anchors_masks {tf.tensor} -- the anchor masks
-    Returns:
-        tf.tensor -- the boxes
-    """
-    # !!! grid[x][y] == (y, x)
-    grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
-    grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
-
-    box_xy = (box_xy + tf.cast(grid, tf.float32)) / \
-        tf.cast(grid_size, tf.float32)
-    box_wh = tf.exp(box_wh) * anchors_masks
-
-    box_wh = tf.where(tf.math.is_inf(box_wh),
-                      tf.zeros_like(box_wh), box_wh)
-
-    box_x1y1 = box_xy - box_wh / 2
-    box_x2y2 = box_xy + box_wh / 2
-    box_xyxy = tf.concat([box_x1y1, box_x2y2], axis=-1)
-
-    return box_xyxy
-
-@tf.function
-def process_predictions(y_pred, num_classes, anchors, masks):
-    """process the predictions
+def non_max_suppression(outputs, anchors, masks, classes,
+                        iou_threshold, score_threshold, max_boxes_per_image, img_size):
+    """an implementation of non max suppression
 
     Arguments:
-        y_pred {tf.tensor} -- the predictions
-        num_classes {int} -- the number of classes
-        anchors {tf.tensor} -- the anchors masks
-        masks --
+        outputs {tf.tensor} -- the outputs of the yolo branches
+        anchors {np.ndarray} -- the anchors scaled in [0,1]
+        masks {np.ndarray} -- the list of the anchors to use
+        classes {list} -- the list of classes
+        iou_threshold {float} -- the minimum intersection over union threshold
+        score_threshold {float} -- the minimum confidence score to use
+        max_boxes_per_image {int} -- the number of maximum boxes to show
+        img_size {int} -- the size of the image
 
     Returns:
-        tuple -- box,xyxy, perd_obj, pred_class, pred_xywh
+        (boxes, scores, classes, valid_detections) -- a tuple of the results
     """
-    anchors_masks = tf.gather(anchors, masks)
+    # boxes, conf, type
+    b, c, t = [], [], []
 
-    pred_xy, pred_wh, pred_obj, pred_class = tf.split(
-        y_pred, (2, 2, 1, num_classes), axis=-1
+    for o in outputs:
+        b.append(tf.reshape(o[0], (tf.shape(o[0])[0], -1, tf.shape(o[0])[-1])))
+        c.append(tf.reshape(o[1], (tf.shape(o[1])[0], -1, tf.shape(o[1])[-1])))
+        t.append(tf.reshape(o[2], (tf.shape(o[2])[0], -1, tf.shape(o[2])[-1])))
+
+    bbox = tf.concat(b, axis=1)
+    confidence = tf.concat(c, axis=1)
+    class_probs = tf.concat(t, axis=1)
+
+    scores = confidence * class_probs
+
+    boxes, scores, classes, valid_detections = tf.image.combined_non_max_suppression(
+        boxes=tf.reshape(bbox, (tf.shape(bbox)[0], -1, 1, 4)),
+        scores=tf.reshape(
+            scores, (tf.shape(scores)[0], -1, tf.shape(scores)[-1])),
+        max_output_size_per_class=max_boxes_per_image,
+        max_total_size=max_boxes_per_image,
+        iou_threshold=iou_threshold,
+        score_threshold=score_threshold
     )
 
-    pred_xy = tf.sigmoid(pred_xy)
-    pred_obj = tf.sigmoid(pred_obj)
-    pred_class = tf.sigmoid(pred_class)
-    pred_xywh = tf.concat((pred_xy, pred_wh), axis=-1)
-
-    grid_size = tf.shape(y_pred)[1]
-    box_xyxy = to_box_xyxy(pred_xy, pred_wh, grid_size, anchors_masks)
-
-    return box_xyxy, pred_obj, pred_class, pred_xywh
+    return tf.math.ceil(boxes * img_size), scores, classes, valid_detections
 
 class BaseModel(object):
 
@@ -101,7 +86,7 @@ class BaseModel(object):
         """
         self.model.summary()
 
-    def load_weights(self, path, backbone):
+    def load_weights(self, path):
         """load:
             * saved checkpoints in h5 format
             * saved weights in darknet format
@@ -110,11 +95,10 @@ class BaseModel(object):
             path {str} -- the path where the weights are saved
             backbone {str} -- the name of the backbone used
         """
-        if not isinstance(path, Path):
-            path = Path(path)
+        path = Path(path)
 
-        print('loaded checkopoint from', str(path.absolute()))
-        if path.name.split('.')[-1] == 'weights' and backbone == 'DarkNet':
+        logger.info('loading checkpoint from %s', str(path.absolute()))
+        if path.name.split('.')[-1] == 'weights':
             darknet.load_darknet_weights(self.model, path, self.tiny)
         elif path.name.split('.')[-1] == 'h5':
             self.model.load_weights(str(path.absolute()))
@@ -127,7 +111,7 @@ class BaseModel(object):
         """
         if self.loss_function is None:
             self.loss_function = losses.make_loss(self.num_classes, self.anchors,
-                                           self.masks, self.img_shape[0])
+                                                  self.masks, self.img_shape[0])
 
         return self.loss_function
 
@@ -210,7 +194,7 @@ class BaseModel(object):
         """
 
         logger.info('training for %s epochs on the dataset %d',
-                     train_dataset.base_path, epochs)
+                    train_dataset.base_path, epochs)
         if workers == -1:
             workers = multiprocessing.cpu_count()
 
@@ -231,6 +215,9 @@ class BaseModel(object):
         path = str(Path(path).absolute())
         self.model.save(path, save_format=save_format)
 
+    def predict(self, x):
+        return self.model.predict(x)
+
     def __call__(self, x):
         return self.model(x)
 
@@ -244,14 +231,15 @@ class YoloV3(BaseModel):
                                np.float32)
 
     def __init__(self, img_shape=(None, None, 3), max_objects=100,
-                 iou_threshold=0.7, score_threshold=0.7,
+                 iou_threshold=0.5, score_threshold=0.7,
                  anchors=None, num_classes=80, training=False, backbone='DarkNet'):
         """The class that implement yolo v3
 
         Keyword Arguments:
             img_shape {tuple} -- the tuple (Height, Width, Channel) to represent the target image shape (default: {(None, None, 3)})
             max_objects {int} -- the maximum number of objects that can be detected (default: {100})
-            iou_threshold {float} -- the intersection over union threshold used to filter out the multiple boxes for the same object (default: {0.7})
+            iou_threshold {float} -- the intersection over union threshold used to filter out the multiple boxes for the same object (default: {0.5}),
+                an higher value generate more candidates while a lower prunes away duplicates
             score_threshold {float} -- the minimum confidence score for the output (default: {0.7})
             anchors {np.ndarray} -- the list of the anchors used for the detection (default: {None})
             num_classes {int} -- the number of classes (default: {80})
@@ -265,12 +253,12 @@ class YoloV3(BaseModel):
         super().__init__(img_shape, max_objects, iou_threshold, score_threshold,
                          anchors, num_classes)
 
-        self.masks = np.array(self.default_masks)
+        self.masks = self.default_masks
         if anchors is None:
-            self.anchors = YoloV3.default_anchors.copy()
+            self.anchors = YoloV3.default_anchors
         else:
             self.anchors = anchors.astype(np.float32)
-        self.anchors_scaled = np.array(self.anchors / img_shape[1])
+        self.anchors_scaled = self.anchors / img_shape[1]
         self.training = training
         self.backbone = backbone
         self.tiny = False
@@ -285,46 +273,52 @@ class YoloV3(BaseModel):
         elif 'MobileNet' in backbone:
             x36, x61, x = MobileNetBody(img_shape, version=backbone)(x)
 
-        masks = np.array(self.masks)
-        anchors_scaled = np.array(self.anchors_scaled)
+        # created copies because tensorflow cannot save models with object
+        # thread loc variables
+        masks = self.masks.copy()
+        anchors = self.anchors.copy()
+        anchors_scaled = self.anchors_scaled.copy()
 
         x = YoloHead(x, 512, name='yolo_head_0')
-        output0 = YoloOutput(x, 512, len(
-            masks[0]), num_classes, name='yolo_output_0')
+        output0 = YoloOutput(
+            x, 512, len(
+                masks[0]), num_classes, name='yolo_output_0')
 
         x = YoloHead((x, x61), 256, name='yolo_head_1')
-        output1 = YoloOutput(x, 256, len(
-            masks[1]), num_classes, name='yolo_output_1')
+        output1 = YoloOutput(
+            x, 256, len(
+                masks[1]), num_classes, name='yolo_output_1')
 
         x = YoloHead((x, x36), 128, name='yolo_head_2')
-        output2 = YoloOutput(x, 128, len(
-            masks[2]), num_classes, name='yolo_output_2')
+        output2 = YoloOutput(
+            x, 128, len(
+                masks[2]), num_classes, name='yolo_output_2')
 
         if training:
             self.model = Model(
                 inputs, [output0, output1, output2], name='yolov3')
         else:
-            anchors_scaled = np.array(self.anchors_scaled)
             boxes0 = Lambda(
-                lambda x: process_predictions(
-                    x, num_classes, anchors_scaled, masks[0]),
+                lambda x: losses.process_predictions(
+                    x, num_classes, tf.gather(anchors_scaled, masks[0])),
                 name='yolo_boxes_0'
             )(output0)
 
             boxes1 = Lambda(
-                lambda x: process_predictions(
-                    x, num_classes, anchors_scaled, masks[1]),
+                lambda x: losses.process_predictions(
+                    x, num_classes, tf.gather(anchors_scaled, masks[1])),
                 name='yolo_boxes_1'
             )(output1)
 
             boxes2 = Lambda(
-                lambda x: process_predictions(
-                    x, num_classes, anchors_scaled, masks[2]),
+                lambda x: losses.process_predictions(
+                    x, num_classes, tf.gather(anchors_scaled, masks[2])),
                 name='yolo_boxes_2'
             )(output2)
 
             outputs = Lambda(lambda x: non_max_suppression(
-                x, anchors_scaled, masks, num_classes, iou_threshold, score_threshold, max_objects, img_shape[0]
+                x, anchors_scaled, masks, num_classes, iou_threshold, score_threshold, max_objects, img_shape[
+                    0]
             ), name='yolo_nms')((boxes0[:3], boxes1[:3], boxes2[:3]))
 
             self.model = Model(inputs, outputs, name='yolov3')
@@ -389,7 +383,7 @@ class YoloV3Tiny(BaseModel):
                 name='yolo_boxes_1'
             )(output1)
 
-            outputs = Lambda(lambda x: losses.non_max_suppression(
+            outputs = Lambda(lambda x: non_max_suppression(
                 x, self.anchors_scaled, self.masks, self.num_classes, self.iou_threshold, self.score_threshold, self.max_objects, self.img_shape[
                     0]
             ), name='yolo_nms')((boxes0[:3], boxes1[:3]))

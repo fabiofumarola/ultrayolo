@@ -1,49 +1,6 @@
 import tensorflow as tf
 import numpy as np
 
-@tf.function
-def non_max_suppression(outputs, anchors, masks, classes,
-                        iou_threshold, score_threshold, max_boxes_per_image, img_size):
-    """an implementation of non max suppression
-
-    Arguments:
-        outputs {tf.tensor} -- the outputs of the yolo branches
-        anchors {np.ndarray} -- the anchors scaled in [0,1]
-        masks {np.ndarray} -- the list of the anchors to use
-        classes {list} -- the list of classes
-        iou_threshold {float} -- the minimum intersection over union threshold
-        score_threshold {float} -- the minimum confidence score to use
-        max_boxes_per_image {int} -- the number of maximum boxes to show
-        img_size {int} -- the size of the image
-
-    Returns:
-        (boxes, scores, classes, valid_detections) -- a tuple of the results
-    """
-    # boxes, conf, type
-    b, c, t = [], [], []
-
-    for o in outputs:
-        b.append(tf.reshape(o[0], (tf.shape(o[0])[0], -1, tf.shape(o[0])[-1])))
-        c.append(tf.reshape(o[1], (tf.shape(o[1])[0], -1, tf.shape(o[1])[-1])))
-        t.append(tf.reshape(o[2], (tf.shape(o[2])[0], -1, tf.shape(o[2])[-1])))
-
-    bbox = tf.concat(b, axis=1)
-    confidence = tf.concat(c, axis=1)
-    class_probs = tf.concat(t, axis=1)
-
-    scores = confidence * class_probs
-
-    boxes, scores, classes, valid_detections = tf.image.combined_non_max_suppression(
-        boxes=tf.reshape(bbox, (tf.shape(bbox)[0], -1, 1, 4)),
-        scores=tf.reshape(
-            scores, (tf.shape(scores)[0], -1, tf.shape(scores)[-1])),
-        max_output_size_per_class=max_boxes_per_image,
-        max_total_size=max_boxes_per_image,
-        iou_threshold=iou_threshold,
-        score_threshold=score_threshold
-    )
-
-    return tf.math.ceil(boxes * img_size), scores, classes, valid_detections
 
 @tf.function
 def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
@@ -59,9 +16,9 @@ def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
     # !!! grid[x][y] == (y, x)
     grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
     grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
+    grid = tf.cast(grid, tf.float32)
 
-    box_xy = (box_xy + tf.cast(grid, tf.float32)) / \
-        tf.cast(grid_size, tf.float32)
+    box_xy = (box_xy + grid) / tf.cast(grid_size, tf.float32)
     box_wh = tf.exp(box_wh) * anchors_masks
 
     box_wh = tf.where(tf.math.is_inf(box_wh),
@@ -73,20 +30,20 @@ def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
 
     return box_xyxy
 
+
 @tf.function
-def process_predictions(y_pred, num_classes, anchors, masks):
+def process_predictions(y_pred, num_classes, anchors_masks):
     """process the predictions
 
     Arguments:
         y_pred {tf.tensor} -- the predictions
         num_classes {int} -- the number of classes
-        anchors {tf.tensor} -- the anchors masks
-        masks --
+        anchors_masks {tf.tensor} -- the anchors masks
 
     Returns:
         tuple -- box,xyxy, perd_obj, pred_class, pred_xywh
     """
-    anchors_masks = tf.gather(anchors, masks)
+    # anchors_masks = tf.gather(anchors, masks)
 
     pred_xy, pred_wh, pred_obj, pred_class = tf.split(
         y_pred, (2, 2, 1, num_classes), axis=-1
@@ -107,11 +64,11 @@ class Loss():
 
     def __init__(self, anchor_masks, ignore_iou_threshold,
                  img_size, num_classes, name):
-        self.anchor_masks = anchor_masks
+        self.anchor_masks = anchor_masks.astype(np.float32)
         self.ignore_iou_threshold = ignore_iou_threshold
         self.img_size = img_size
         self.num_classes = num_classes
-        self.anchors_masks_scaled = anchor_masks / img_size
+        self.anchors_masks_scaled = self.anchor_masks / img_size
         self.__name__ = name
 
     @staticmethod
@@ -169,6 +126,7 @@ class Loss():
         grid_size = tf.shape(y_true)[1]
         grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
         grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)
+
         true_xy = true_xy * tf.cast(grid_size, tf.float32) - \
             tf.cast(grid, tf.float32)
         true_wh = tf.math.log(true_wh / self.anchors_masks_scaled)

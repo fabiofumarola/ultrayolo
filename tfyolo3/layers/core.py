@@ -38,7 +38,7 @@ def DarknetConv(x, filters, kernel, batch_norm, downsample):
     x = Conv2D(filters=filters, kernel_size=kernel,
                strides=strides, padding=padding,
                use_bias=not batch_norm, kernel_regularizer=l1_l2(0.0005, 0.0005),
-               kernel_initializer= tf.random_normal_initializer(stddev=0.01)
+               kernel_initializer=tf.random_normal_initializer(stddev=0.01)
                )(x)
     if batch_norm:
         x = BatchNormalization()(x)
