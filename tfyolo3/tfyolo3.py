@@ -16,8 +16,67 @@ from .helpers import darknet
 import multiprocessing
 
 import logging
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+logger = logging.getLogger('tfyolo3')
 
+# logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+
+
+@tf.function
+def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
+    """convert the given boxes into the xy_min xy_max format
+    Arguments:
+        box_xy {tf.tensor} --
+        box_wh {tf,tensor} --
+        grid_size {float} -- the size of the grid used
+        anchors_masks {tf.tensor} -- the anchor masks
+    Returns:
+        tf.tensor -- the boxes
+    """
+    # !!! grid[x][y] == (y, x)
+    grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
+    grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
+
+    box_xy = (box_xy + tf.cast(grid, tf.float32)) / \
+        tf.cast(grid_size, tf.float32)
+    box_wh = tf.exp(box_wh) * anchors_masks
+
+    box_wh = tf.where(tf.math.is_inf(box_wh),
+                      tf.zeros_like(box_wh), box_wh)
+
+    box_x1y1 = box_xy - box_wh / 2
+    box_x2y2 = box_xy + box_wh / 2
+    box_xyxy = tf.concat([box_x1y1, box_x2y2], axis=-1)
+
+    return box_xyxy
+
+@tf.function
+def process_predictions(y_pred, num_classes, anchors, masks):
+    """process the predictions
+
+    Arguments:
+        y_pred {tf.tensor} -- the predictions
+        num_classes {int} -- the number of classes
+        anchors {tf.tensor} -- the anchors masks
+        masks --
+
+    Returns:
+        tuple -- box,xyxy, perd_obj, pred_class, pred_xywh
+    """
+    anchors_masks = tf.gather(anchors, masks)
+
+    pred_xy, pred_wh, pred_obj, pred_class = tf.split(
+        y_pred, (2, 2, 1, num_classes), axis=-1
+    )
+
+    pred_xy = tf.sigmoid(pred_xy)
+    pred_obj = tf.sigmoid(pred_obj)
+    pred_class = tf.sigmoid(pred_class)
+    pred_xywh = tf.concat((pred_xy, pred_wh), axis=-1)
+
+    grid_size = tf.shape(y_pred)[1]
+    box_xyxy = to_box_xyxy(pred_xy, pred_wh, grid_size, anchors_masks)
+
+    return box_xyxy, pred_obj, pred_class, pred_xywh
 
 class BaseModel(object):
 
@@ -85,7 +144,7 @@ class BaseModel(object):
         Returns:
             tensorflow.keras.optimizer -- an instance of the selected optimizer
         """
-        logging.info('using %s optimize', optimizer_name)
+        logger.info('using %s optimize', optimizer_name)
         if optimizer_name == 'adam':
             return Adam(learning_rate=lrate, clipvalue=1)
         elif optimizer_name == 'rmsprop':
@@ -104,7 +163,7 @@ class BaseModel(object):
     def set_mode_transfer(self):
         """freeze the backbone of the network, check that the head and output layers are unfreezed
         """
-        logging.info('freeze backbone')
+        logger.info('freeze backbone')
         darknet.freeze_backbone(self.model)
 
     def set_mode_fine_tuning(self, num_layers_to_train):
@@ -150,7 +209,7 @@ class BaseModel(object):
             [type] -- [description]
         """
 
-        logging.info('training for %s epochs on the dataset %d',
+        logger.info('training for %s epochs on the dataset %d',
                      train_dataset.base_path, epochs)
         if workers == -1:
             workers = multiprocessing.cpu_count()
@@ -172,8 +231,8 @@ class BaseModel(object):
         path = str(Path(path).absolute())
         self.model.save(path, save_format=save_format)
 
-    # def __call__(self, x):
-    #     return self.model(x)
+    def __call__(self, x):
+        return self.model(x)
 
 
 class YoloV3(BaseModel):
@@ -247,24 +306,24 @@ class YoloV3(BaseModel):
         else:
             anchors_scaled = np.array(self.anchors_scaled)
             boxes0 = Lambda(
-                lambda x: losses.process_predictions(
+                lambda x: process_predictions(
                     x, num_classes, anchors_scaled, masks[0]),
                 name='yolo_boxes_0'
             )(output0)
 
             boxes1 = Lambda(
-                lambda x: losses.process_predictions(
+                lambda x: process_predictions(
                     x, num_classes, anchors_scaled, masks[1]),
                 name='yolo_boxes_1'
             )(output1)
 
             boxes2 = Lambda(
-                lambda x: losses.process_predictions(
+                lambda x: process_predictions(
                     x, num_classes, anchors_scaled, masks[2]),
                 name='yolo_boxes_2'
             )(output2)
 
-            outputs = Lambda(lambda x: losses.non_max_suppression(
+            outputs = Lambda(lambda x: non_max_suppression(
                 x, anchors_scaled, masks, num_classes, iou_threshold, score_threshold, max_objects, img_shape[0]
             ), name='yolo_nms')((boxes0[:3], boxes1[:3], boxes2[:3]))
 

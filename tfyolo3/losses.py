@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-
+@tf.function
 def non_max_suppression(outputs, anchors, masks, classes,
                         iou_threshold, score_threshold, max_boxes_per_image, img_size):
     """an implementation of non max suppression
@@ -45,7 +45,7 @@ def non_max_suppression(outputs, anchors, masks, classes,
 
     return tf.math.ceil(boxes * img_size), scores, classes, valid_detections
 
-
+@tf.function
 def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
     """convert the given boxes into the xy_min xy_max format
     Arguments:
@@ -73,7 +73,7 @@ def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
 
     return box_xyxy
 
-
+@tf.function
 def process_predictions(y_pred, num_classes, anchors, masks):
     """process the predictions
 
@@ -86,7 +86,7 @@ def process_predictions(y_pred, num_classes, anchors, masks):
     Returns:
         tuple -- box,xyxy, perd_obj, pred_class, pred_xywh
     """
-    anchors_masks = np.array(anchors)[np.array(masks)]
+    anchors_masks = tf.gather(anchors, masks)
 
     pred_xy, pred_wh, pred_obj, pred_class = tf.split(
         y_pred, (2, 2, 1, num_classes), axis=-1
