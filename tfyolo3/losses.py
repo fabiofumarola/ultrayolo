@@ -41,7 +41,7 @@ def process_predictions(y_pred, num_classes, anchors_masks):
         anchors_masks {tf.tensor} -- the anchors masks
 
     Returns:
-        tuple -- box,xyxy, perd_obj, pred_class, pred_xywh
+        tuple -- box_xyxy, pred_obj, pred_class, pred_xywh
     """
     # anchors_masks = tf.gather(anchors, masks)
 
