@@ -184,17 +184,17 @@ class BaseModel(object):
             epochs {int} -- the number of epochs
 
         Keyword Arguments:
-            initial_epoch {int} -- [description] (default: {0})
-            callbacks {[type]} -- [description] (default: {None})
-            workers {int} -- [description] (default: {1})
-            max_queue_size {int} -- [description] (default: {64})
+            initial_epoch {int} -- the inital epoch (default: {0})
+            callbacks {[type]} -- a list of callbacks for the model (default: {None})
+            workers {int} -- the number of workers (default: {1})
+            max_queue_size {int} -- the max size of the queue (default: {64})
 
         Returns:
             [type] -- [description]
         """
 
         logger.info('training for %s epochs on the dataset %d',
-                    train_dataset.base_path, epochs)
+                     epochs, train_dataset.base_path)
         if workers == -1:
             workers = multiprocessing.cpu_count()
 
