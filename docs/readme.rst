@@ -28,16 +28,28 @@ Tensorflow 2 implementation of yolo version 3
 
 .. image:: ./images/example_image.png
 
+
 Features
 --------
 
-Extrayolo implements YOLO object detection paper with the following backbones:
+tfyolo3 implements YOLO object detection paper with the following backbones:
 
-* `Darknet <https://pjreddie.com/darknet/yolo/>`_
-* `ResNet <https://arxiv.org/abs/1512.03385>`_: ['ResNet50V2', 'ResNet101V2', 'ResNet152V2']
-* `DenseNet <https://arxiv.org/abs/1608.06993>`_: ['DenseNet121', 'DenseNet169', 'DenseNet201']
-* `MobileNetV2 <https://arxiv.org/abs/1608.06993>`_: ['MobileNetV2']
+* `Darknet <https://pjreddie.com/darknet/yolo/>`_: the original architecture
+* `ResNet <https://arxiv.org/abs/1512.03385>`_: `['ResNet50V2', 'ResNet101V2', 'ResNet152V2']`
+* `DenseNet <https://arxiv.org/abs/1608.06993>`_: `['DenseNet121', 'DenseNet169', 'DenseNet201']`
+* `MobileNetV2 <https://arxiv.org/abs/1608.06993>`_: `['MobileNetV2']`
 
+
+Installation
+-----
+
+
+Evaluation
+-----
+
+
+Training
+-----
 
 TODO
 -----
