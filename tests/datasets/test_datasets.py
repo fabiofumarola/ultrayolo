@@ -1,4 +1,4 @@
-from tfyolo3.dataloaders import YoloDatasetMultiFile, YoloDatasetSingleFile, load_classes
+from tfyolo3.datasets import YoloDatasetMultiFile, YoloDatasetSingleFile, load_classes
 from tfyolo3 import YoloV3, YoloV3Tiny
 from pathlib import Path
 import pytest
@@ -18,7 +18,7 @@ def test_classes():
 def test_dataset_multi_file(test_classes):
 
     ds = YoloDatasetMultiFile(
-        filepath=BASE_PATH / 'manifest.txt',
+        annotations_path=BASE_PATH / 'manifest.txt',
         img_shape=(256, 256, 3),
         max_objects=10,
         batch_size=2,

@@ -5,7 +5,7 @@ import yaml
 from dotmap import DotMap
 from argparse import ArgumentParser
 import imgaug.augmenters as iaa
-from tfyolo3 import dataloaders, YoloV3, YoloV3Tiny
+from tfyolo3 import datasets, YoloV3, YoloV3Tiny
 from tfyolo3 import helpers
 from pathlib import Path
 import logging
@@ -39,14 +39,14 @@ def load_anchors(dataset_config):
     num_anchors = dataset_config.anchors.number
 
     if dataset_config.anchors.mode == 'compute':
-        anchors = dataloaders.gen_anchors(
+        anchors = datasets.gen_anchors(
             annotations_path, num_anchors, ismultifile)
     elif dataset_config.anchors.mode == 'default':
         anchors = YoloV3.default_anchors
     elif dataset_config.anchors.mode == 'default_tiny':
         anchors = YoloV3Tiny.default_anchors
     else:
-        anchors = dataloaders.load_anchors(dataset_config.anchors.path)
+        anchors = datasets.load_anchors(dataset_config.anchors.path)
     return anchors
 
 
@@ -92,17 +92,17 @@ def load_datasets(ds_conf):
     """
     ds_conf.image_shape = to_tuple(ds_conf.image_shape)
     anchors = load_anchors(ds_conf)
-    masks = dataloaders.make_masks(len(anchors))
+    masks = datasets.make_masks(len(anchors))
 
     # FIXME make 4 a parameter
     augmenters = make_augmentations(4) if ds_conf.augment else None
 
     if ds_conf.mode == 'multifile':
-        train_dataset = dataloaders.YoloDatasetMultiFile
-        val_dataset = dataloaders.YoloDatasetMultiFile
+        train_dataset = datasets.YoloDatasetMultiFile
+        val_dataset = datasets.YoloDatasetMultiFile
     elif ds_conf.mode == 'singlefile':
-        train_dataset = dataloaders.YoloDatasetSingleFile
-        val_dataset = dataloaders.YoloDatasetSingleFile
+        train_dataset = datasets.YoloDatasetSingleFile
+        val_dataset = datasets.YoloDatasetSingleFile
 
     train_dataset = train_dataset(
         ds_conf.annotations.train, ds_conf.image_shape,

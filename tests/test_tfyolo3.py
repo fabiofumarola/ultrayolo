@@ -6,7 +6,7 @@
 import pytest
 from tfyolo3 import YoloV3, YoloV3Tiny
 from pathlib import Path
-from tfyolo3.dataloaders import YoloDatasetMultiFile, common
+from tfyolo3.datasets import YoloDatasetMultiFile, common
 from tfyolo3 import losses
 import numpy as np
 import tensorflow as tf
@@ -177,7 +177,7 @@ def test_model_MobileNetV2(test_dataset, test_anchors,
 
 
 def test_reload_model(test_dataset, test_anchors,
-                           test_masks, test_classes):
+                      test_masks, test_classes):
     img_shape = test_dataset.target_shape
     model = YoloV3(img_shape, test_dataset.max_objects, backbone='MobileNetV2',
                    anchors=test_anchors, num_classes=len(test_classes), training=True)
@@ -200,5 +200,6 @@ def test_reload_model(test_dataset, test_anchors,
                    anchors=test_anchors, num_classes=len(test_classes), training=False)
     model.load_weights(save_path)
 
-    boxes, scores, classes, valid_detections = model.predict(tf.zeros((1, *img_shape)))
+    boxes, scores, classes, valid_detections = model.predict(
+        tf.zeros((1, *img_shape)))
     assert len(valid_detections) > 0

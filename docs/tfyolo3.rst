@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-   tfyolo3.dataloaders
+   tfyolo3.datasets
    tfyolo3.helpers
    tfyolo3.layers
 
