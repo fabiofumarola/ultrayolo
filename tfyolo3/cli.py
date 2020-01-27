@@ -8,9 +8,10 @@ import imgaug.augmenters as iaa
 from tfyolo3 import datasets, YoloV3, YoloV3Tiny
 from tfyolo3 import helpers
 from pathlib import Path
-import logging
-logger = logging.getLogger('tfyolo3')
 
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+logger = logging.getLogger('tfyolo3')
 
 def load_config(path):
     """load config from yaml
@@ -90,7 +91,10 @@ def load_datasets(ds_conf):
     Returns:
         tuple -- train and test dataset tf.keras.Sequence objects
     """
-    ds_conf.image_shape = to_tuple(ds_conf.image_shape)
+    if isinstance(ds_conf.image_shape, str):
+        ds_conf.image_shape = to_tuple(ds_conf.image_shape)
+    else:
+        ds_conf.image_shape = ds_conf.image_shape
     anchors = load_anchors(ds_conf)
     masks = datasets.make_masks(len(anchors))
 
@@ -157,7 +161,7 @@ def main(config):
             backbone=config.model.backbone
         )
 
-    if config.model.reload.path:
+    if len(config.model.reload.path):
         logger.info('reload weigths at path %s', config.model.reload.path)
         model.load_weights(config.model.reload.path, config.model.backbone)
 

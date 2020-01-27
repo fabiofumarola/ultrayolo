@@ -192,7 +192,6 @@ class YoloDatasetMultiFile(BaseDataset):
         batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
                                                          self.target_shape, self.max_objects, self.augmenters,
                                                          self.pad_to_fixed_size)
-        
         if self.is_training:
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
@@ -253,7 +252,8 @@ class CocoFormatDataset(Sequence):
         self.augmenters = augmenters
         self.pad_to_fixed_size = pad_to_fixed_size
 
-        self.coco_data = json.load(self.annotations_path.read_bytes())
+        with open(self.annotations_path, 'r') as fp:
+            self.coco_data = json.load(fp)
         self.classes = self.coco_data['categories']
         self.num_classes = len(self.classes)
 
@@ -263,13 +263,16 @@ class CocoFormatDataset(Sequence):
             if ann['image_id'] not in self.idx_annotations_doc:
                 self.idx_annotations_doc[ann['image_id']] = []
             self.idx_annotations_doc[ann['image_id']].append(ann)
-        self.idxs = np.array(self.idx_image.keys)
+        self.idxs = np.array(list(self.idx_image_doc.keys()))
 
     def on_epoch_end(self):
         np.random.shuffle(self.idxs)
 
     def __len__(self):
-        return math.ceil(len(self.idx) / self.batch_size)
+        return math.ceil(len(self.idxs) / self.batch_size)
+
+    def __to_xymin_xymax(self, x, y, width, height):
+        return [x, y, x + width, y + height]
 
 
     def __getitem__(self, idx):
@@ -292,8 +295,8 @@ class CocoFormatDataset(Sequence):
             boxes = []
             classes = []
             for doc in self.idx_annotations_doc[img_id]:
-                boxes = boxes.append(doc['bbox'])
-                classes = boxes.append([doc['category_id']])
+                boxes.append(self.__to_xymin_xymax(*doc['bbox']))
+                classes.append([doc['category_id']])
             batch_boxes.append(np.array(boxes))
             batch_classes.append(np.array(classes))
 
