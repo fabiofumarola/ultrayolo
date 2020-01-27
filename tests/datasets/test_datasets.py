@@ -63,3 +63,7 @@ def test_dataset_single_file(test_classes):
             print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
             grid_len *= 2
+
+
+def test_coco_dataset():
+    pass

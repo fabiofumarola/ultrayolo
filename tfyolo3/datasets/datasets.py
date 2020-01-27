@@ -211,7 +211,7 @@ class CocoFormatDataset(Sequence):
     """
 
     def __init__(self, annotations_path, img_shape, max_objects, batch_size, anchors, anchor_masks,
-                 is_training=True, augmenters=None, pad_to_fixed_size=True):
+                 is_training=True, augmenters=None, pad_to_fixed_size=True, images_folder='images'):
         """Create a dataset from taking a file in coco format
 
 
@@ -228,6 +228,7 @@ class CocoFormatDataset(Sequence):
             augmenters {imgaug.augmenters} -- the augmenters used for data augmentation (default: {None})
             pad_to_fixed_size {bool} -- if the image is padded to fixed size,
                 otherwise the images are resized to the img_shape (default: {True})
+            image_folder {str} -- the subfodler where the images are stored
         """
         self.grid_len = img_shape[0] / 32
         if self.grid_len % 2 != 0:
@@ -237,7 +238,7 @@ class CocoFormatDataset(Sequence):
         self.annotations_path = Path(annotations_path)
         self.base_path = self.annotations_path.parent
 
-        self.images_path = self.base_path / 'images'
+        self.images_path = self.base_path / images_folder
         if not self.images_path.exists():
             raise Exception(f'missing images folder in {self.images_path}')
 
@@ -282,6 +283,7 @@ class CocoFormatDataset(Sequence):
         batch_boxes = []
         batch_classes = []
         for doc in batch_images_doc:
+            # process the image
             img_id = doc['id']
             img_path = self.images_path / doc['file_name']
             img = common.open_image(img_path)
@@ -291,7 +293,7 @@ class CocoFormatDataset(Sequence):
             classes = []
             for doc in self.idx_annotations_doc[img_id]:
                 boxes = boxes.append(doc['bbox'])
-                classes = boxes.append(doc['category_id'])
+                classes = boxes.append([doc['category_id']])
             batch_boxes.append(np.array(boxes))
             batch_classes.append(np.array(classes))
 
