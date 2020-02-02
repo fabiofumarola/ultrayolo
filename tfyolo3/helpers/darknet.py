@@ -1,9 +1,9 @@
+import logging
 import tensorflow as tf
 import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 
-import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -69,9 +69,9 @@ def load_darknet_weights(model, weights_file, tiny=False,
 
     wf = open(weights_file, 'rb')
     major, minor, revision, seen, _ = np.fromfile(wf, dtype=np.int32, count=5)
-    logger.info('version major %s, minor %s, revision %s, seen %s' ,
-        major, minor, revision, seen
-    )
+    logger.info('version major %s, minor %s, revision %s, seen %s',
+                major, minor, revision, seen
+                )
 
     if tiny:
         layers = YOLOV3_TINY_LAYER_LIST
@@ -108,7 +108,7 @@ def load_darknet_weights(model, weights_file, tiny=False,
                 wf, dtype=np.float32, count=np.product(conv_shape))
 
             logger.debug("%s/%s %s %s",
-                sub_model.name, layer.name, 'bn' if batch_norm else 'bias', conv_shape)
+                         sub_model.name, layer.name, 'bn' if batch_norm else 'bias', conv_shape)
 
             # tf shape (height, width, in_dim, out_dim)
             conv_weights = conv_weights.reshape(

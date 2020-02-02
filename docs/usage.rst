@@ -5,22 +5,22 @@ Usage
 To use tfyolo3 in a project::
 
     from tfyolo3 import YoloV3
-    from tfyolo3 import dataloaders
+    from tfyolo3 import datasets
     from tfyolo3.losses import Loss
 
     image_shape = (256,256,3)
     max_objects = 100
-    anchors = dataloaders.load_anchors('the path of the anchors')
-    classes = dataloaders.load_classes('the file of the classes')
+    anchors = datasets.load_anchors('the path of the anchors')
+    classes = datasets.load_classes('the file of the classes')
     
     train_annotation_path = ''
-    train_dataset = dataloaders.YoloDatasetMultiFile(
+    train_dataset = datasets.YoloDatasetMultiFile(
         train_annotation_path, image_shape, max_objects, 2, 
         anchors, YoloV3.default_masks, len(classes)
     )
 
     val_annotation_path = ''
-    val_dataset = dataloaders.YoloDatasetMultiFile(
+    val_dataset = datasets.YoloDatasetMultiFile(
         val_annotation_path, image_shape, max_objects, 2, 
         anchors, YoloV3.default_masks, len(classes)
     )
