@@ -487,7 +487,7 @@ def best_anchors_iou(boxes, anchors):
 
 
 def transform_target(boxes_data, classes_data, anchors, anchor_masks,
-                     grid_len, num_classes, target_shape):
+                     grid_len, num_classes, target_shape, classes=None):
     """Transform y_data in yolo format
 
     """
@@ -524,7 +524,12 @@ def transform_target(boxes_data, classes_data, anchors, anchor_masks,
                                ).astype(np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
-                    one_hot[int(classes_data[i, j, 0])] = 1.
+                    # FIXME
+                    if classes:
+                        pos = np.argwhere(classes == classes_data[i, j, 0])
+                        one_hot[int(pos)] = 1.
+                    else:
+                        one_hot[int(classes_data[i, j, 0])] = 1.
 
                     # grid[i, y, x, anchor] = (tx, ty, bw, bh, obj, class)
                     y_out[i, grid_xy[1], grid_xy[0],

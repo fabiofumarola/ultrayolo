@@ -2,7 +2,7 @@ dataset:
   # support mode singlefile, multifile, coco
   mode: multifile
   # the size of the image (X,X,3)
-  image_shape: (512, 512, 3)
+  image_shape: [512, 512, 3]
   # max number of objects that can be detected
   max_objects: 100
   # the size of the batch

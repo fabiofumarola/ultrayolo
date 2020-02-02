@@ -245,6 +245,7 @@ class CocoFormatDataset(Sequence):
         self.batch_size = batch_size
 
         # add scaling for the anchors
+        self.anchors = anchors
         self.anchors_scaled = anchors.astype(np.float32) / img_shape[0]
         self.anchor_masks = anchor_masks
         self.is_training = is_training
@@ -254,7 +255,7 @@ class CocoFormatDataset(Sequence):
 
         with open(self.annotations_path, 'r') as fp:
             self.coco_data = json.load(fp)
-        self.classes = self.coco_data['categories']
+        self.classes = sorted([cat['id'] for cat in self.coco_data['categories']])
         self.num_classes = len(self.classes)
 
         self.idx_image_doc = {
@@ -307,7 +308,7 @@ class CocoFormatDataset(Sequence):
         if self.is_training:
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape
+                self.num_classes, self.target_shape, self.classes
             )
 
         return batch_images, batch_boxes

@@ -128,3 +128,4 @@ notebooks/test.jpg
 *.yml
 
 checkpoints
+coco_dataset
