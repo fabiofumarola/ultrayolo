@@ -1,5 +1,5 @@
 dataset:
-  # support mode singlefile, multifile
+  # support mode singlefile, multifile, coco
   mode: multifile
   # the size of the image (X,X,3)
   image_shape: (512, 512, 3)
@@ -13,14 +13,13 @@ dataset:
    #the number of anchors can be 6 or 9, 12
     number: 9
     path: 
-  images:
-    pad_to_fixed_size: true
+    
+  pad_to_fixed_size: true
 
-  annotations:
-    # path of the annotations
-    train:
-    # path of the annotations for validation
-    val:
+  # path of the annotations
+  train_path:
+  # path of the annotations for validation
+  val_path:
 
   # if use data augmentation true or false
   augment: true
@@ -29,13 +28,9 @@ model:
   # The backbone for the model, default DarkNet, accepted values (ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNet, MobileNetV2)
   backbone: ResNet50V2
   # the training mode: transfer, fine_tune, train
-  thresholds:
-    intersection_over_union: 0.7
-    object_score: 0.7
-  reload:
-    path:
-  checkpoint:
-    path: 
+  iou: 0.7
+  object_score: 0.7
+  reload_weights: 
   
 fit:
   #mode train, transfer, finetuning

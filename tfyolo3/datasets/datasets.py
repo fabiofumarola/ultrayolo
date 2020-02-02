@@ -54,6 +54,7 @@ class BaseDataset(Sequence):
         self.num_classes = len(self.classes)
 
         # add scaling for the anchors
+        self.anchors = anchors
         self.anchors_scaled = anchors.astype(np.float32) / img_shape[0]
         self.anchor_masks = anchor_masks
         self.is_training = is_training
@@ -115,10 +116,10 @@ class YoloDatasetSingleFile(BaseDataset):
             boxes, classes = common.parse_boxes(str_boxes)
             batch_boxes.append(boxes)
             batch_classes.append(classes)
-        
+
         batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
-                                                         self.target_shape, self.max_objects, self.augmenters,
-                                                         self.pad_to_fixed_size)
+                                                                        self.target_shape, self.max_objects, self.augmenters,
+                                                                        self.pad_to_fixed_size)
 
         if self.is_training:
             batch_boxes = common.transform_target(
@@ -190,8 +191,8 @@ class YoloDatasetMultiFile(BaseDataset):
             self.annotations_path[start:stop])
 
         batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
-                                                         self.target_shape, self.max_objects, self.augmenters,
-                                                         self.pad_to_fixed_size)
+                                                                        self.target_shape, self.max_objects, self.augmenters,
+                                                                        self.pad_to_fixed_size)
         if self.is_training:
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
@@ -200,7 +201,6 @@ class YoloDatasetMultiFile(BaseDataset):
             return batch_images, batch_boxes
         else:
             return batch_images, batch_boxes, batch_classes
-
 
 class CocoFormatDataset(Sequence):
     """this class handles dataset into the `COCO format <http://cocodataset.org/>`_.
@@ -257,7 +257,8 @@ class CocoFormatDataset(Sequence):
         self.classes = self.coco_data['categories']
         self.num_classes = len(self.classes)
 
-        self.idx_image_doc = {doc['id']: doc for doc in self.coco_data['images']}
+        self.idx_image_doc = {
+            doc['id']: doc for doc in self.coco_data['images']}
         self.idx_annotations_doc = dict()
         for ann in tqdm(self.coco_data['annotations'], 'load coco annotations'):
             if ann['image_id'] not in self.idx_annotations_doc:
@@ -273,7 +274,6 @@ class CocoFormatDataset(Sequence):
 
     def __to_xymin_xymax(self, x, y, width, height):
         return [x, y, x + width, y + height]
-
 
     def __getitem__(self, idx):
         start = idx * self.batch_size
@@ -301,8 +301,8 @@ class CocoFormatDataset(Sequence):
             batch_classes.append(np.array(classes))
 
         batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
-                                                        self.target_shape, self.max_objects, self.augmenters,
-                                                        self.pad_to_fixed_size)
+                                                                        self.target_shape, self.max_objects, self.augmenters,
+                                                                        self.pad_to_fixed_size)
 
         if self.is_training:
             batch_boxes = common.transform_target(

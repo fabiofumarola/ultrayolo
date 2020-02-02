@@ -41,7 +41,7 @@ def test_open_image(test_image):
 
 def test_open_boxes(test_boxes_classes):
     assert np.all(test_boxes_classes[0] == np.array([
-        [0, 22, 520, 258], [  0,   0, 442, 500]
+        [0, 22, 520, 258], [0, 0, 442, 500]
     ]))
     assert np.all(test_boxes_classes[1] == np.array([[2], [2]]))
 
@@ -50,8 +50,9 @@ def test_parse_boxes():
     line = '178,226,196,236,1 74,190,98,200,3 128,62,152,72,2 215,166,239,176,2 235,58,259,68,3 93,199,117,209,0 175,124,199,134,0 68,31,86,41,1 50,198,74,208,2'
     boxes, classes = common.parse_boxes(line)
     assert len(boxes) == 9
-    assert boxes.shape == (9,4)
-    assert classes.shape == (9,1)
+    assert boxes.shape == (9, 4)
+    assert classes.shape == (9, 1)
+
 
 def test_parse_boxes_batch():
     lines = [
@@ -61,10 +62,10 @@ def test_parse_boxes_batch():
     boxes, classes = common.parse_boxes_batch(lines)
     assert len(boxes) == 2
     assert len(classes) == 2
-    assert boxes[0].shape == (9,4)
-    assert boxes[1].shape == (8,4)
-    assert classes[0].shape == (9,1)
-    assert classes[1].shape == (8,1)
+    assert boxes[0].shape == (9, 4)
+    assert boxes[1].shape == (8, 4)
+    assert classes[0].shape == (9, 1)
+    assert classes[1].shape == (8, 1)
 
 
 def test_pad_to_fixed_size(test_image, test_boxes_classes):
@@ -74,13 +75,14 @@ def test_pad_to_fixed_size(test_image, test_boxes_classes):
         test_image, target_shape, test_boxes)
 
     assert image.shape[:2] == target_shape
-    assert boxes.shape == (2,4)
+    assert boxes.shape == (2, 4)
 
     target_shape = (608, 608)
     image, boxes = common.pad_to_fixed_size(
         test_image, target_shape, test_boxes)
     assert image.shape[:2] == target_shape
-    assert boxes.shape == (2,4)
+    assert boxes.shape == (2, 4)
+
 
 def test_pad_to_fixed_size_images(test_image):
     target_shape = (512, 512)
@@ -92,7 +94,8 @@ def test_pad_to_fixed_size_images(test_image):
     assert image.shape[:2] == target_shape
 
 
-def test_pad_batch_to_fixed_size(test_image, test_boxes_classes, test_boxes_classes2):
+def test_pad_batch_to_fixed_size(
+        test_image, test_boxes_classes, test_boxes_classes2):
     batch_images = [test_image, test_image]
     batch_boxes = [test_boxes_classes[0], test_boxes_classes2[0]]
 
@@ -117,15 +120,20 @@ def test_pad_boxes():
     assert boxes_padded.shape == (15, 4)
     assert isinstance(boxes_padded, np.ndarray)
 
+
 def test_pad_list_boxes():
-    list_boxes = [np.zeros((10,4)), np.zeros((20,4))]
-    boxes_padded = np.array([common.pad_boxes(boxes, 12) for boxes in list_boxes])
-    assert boxes_padded.shape == (2,12,4)
+    list_boxes = [np.zeros((10, 4)), np.zeros((20, 4))]
+    boxes_padded = np.array([common.pad_boxes(boxes, 12)
+                             for boxes in list_boxes])
+    assert boxes_padded.shape == (2, 12, 4)
+
 
 def test_pad_classes():
-    list_classes = [np.zeros((10,1)), np.zeros((20,1))]
-    classes_padded = np.array([common.pad_classes(classes, 12) for classes in list_classes])
-    assert classes_padded.shape == (2,12,1)
+    list_classes = [np.zeros((10, 1)), np.zeros((20, 1))]
+    classes_padded = np.array([common.pad_classes(classes, 12)
+                               for classes in list_classes])
+    assert classes_padded.shape == (2, 12, 1)
+
 
 def test_prepare_batch(test_image, test_boxes_classes, test_boxes_classes2):
     max_objects = 100
@@ -134,9 +142,6 @@ def test_prepare_batch(test_image, test_boxes_classes, test_boxes_classes2):
     batch_images = [test_image, test_image]
     batch_boxes = [test_boxes_classes[0], test_boxes_classes2[0]]
     batch_classes = [test_boxes_classes[1], test_boxes_classes2[1]]
-
-    print(batch_boxes)
-    print(batch_classes)
 
     images, boxes, classes = common.prepare_batch(
         batch_images, batch_boxes, batch_classes, target_shape, max_objects, pad=True
@@ -158,7 +163,7 @@ def test_prepare_batch_no_boxes(test_image):
     )
 
     assert images.shape == (2, *target_shape, 3)
-    assert len(boxes) == 0 
+    assert len(boxes) == 0
     assert len(classes) == 0
 
 
@@ -216,48 +221,47 @@ def test_best_anchors_iou():
 
 def test_transform_target():
 
-    boxes_data = np.array([[[  3,  10,  45,  50],
-                        [ 92,  16, 255,  68],
-                        [ 42,  28, 173, 103],
-                        [102,  24, 255,  91],
-                        [121, 105, 255, 255],
-                        [  0,  28,  45, 104],
-                        [  0, 117,  33, 255],
-                        [ 42,  99, 174, 255],
-                        [ 99,  11, 255,  52],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0],
-                        [  0,   0,   0,   0]]])
+    boxes_data = np.array([[[3, 10, 45, 50],
+                            [92, 16, 255, 68],
+                            [42, 28, 173, 103],
+                            [102, 24, 255, 91],
+                            [121, 105, 255, 255],
+                            [0, 28, 45, 104],
+                            [0, 117, 33, 255],
+                            [42, 99, 174, 255],
+                            [99, 11, 255, 52],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0],
+                            [0, 0, 0, 0]]])
 
-    
     classes_data = np.array([[[1],
-                            [0],
-                            [2],
-                            [1],
-                            [3],
-                            [2],
-                            [1],
-                            [0],
-                            [2],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0],
-                            [0]]])
+                              [0],
+                              [2],
+                              [1],
+                              [3],
+                              [2],
+                              [1],
+                              [0],
+                              [2],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0],
+                              [0]]])
 
     anchors = np.array([(10, 13), (16, 30), (33, 23), (30, 61), (62, 45),
                         (59, 119), (116, 90), (156, 198), (373, 326)],
@@ -298,3 +302,8 @@ def test_masks():
         [3, 4, 5],
         [0, 1, 2]
     ]))
+
+def test_anchors_to_string():
+    a = np.arange(18).reshape((-1,2))
+    res = common.anchors_to_string(a)
+    assert res == '0,1 2,3 4,5 6,7 8,9 10,11 12,13 14,15 16,17'

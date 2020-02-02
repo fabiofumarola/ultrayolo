@@ -13,6 +13,7 @@ import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 logger = logging.getLogger('tfyolo3')
 
+
 def load_config(path):
     """load config from yaml
 
@@ -23,31 +24,31 @@ def load_config(path):
         object -- an object with the given configurations
     """
     with open(path, 'r') as fh:
-        return DotMap(yaml.safe_load(fh))
+        return yaml.safe_load(fh)
 
 
-def load_anchors(dataset_config):
+def load_anchors(mode, number, path, ds_mode, ds_train_path):
     """load or compute the anchors given a dataset
-
+    
     Arguments:
-        dataset_config {object} -- the configuration of the dataset
-
+        mode {str} -- siniglefile, multifile, coco
+        number {int} -- the number of anchors
+        path {str} -- the path to the anchors
+        ds_mode {str} -- the mode of the dataset
+        ds_train_path {str} -- the path to the dataset
     Returns:
-        [type] -- [description]
+        np.ndarray -- the anchors for the algorithm
     """
-    ismultifile = True if dataset_config.mode == 'multifile' else False
-    annotations_path = dataset_config.annotations.train
-    num_anchors = dataset_config.anchors.number
+    ismultifile = True if ds_mode == 'multifile' else False
 
-    if dataset_config.anchors.mode == 'compute':
-        anchors = datasets.gen_anchors(
-            annotations_path, num_anchors, ismultifile)
-    elif dataset_config.anchors.mode == 'default':
+    if mode == 'compute':
+        anchors = datasets.gen_anchors(ds_train_path, number, ismultifile)
+    elif mode == 'default':
         anchors = YoloV3.default_anchors
-    elif dataset_config.anchors.mode == 'default_tiny':
+    elif mode == 'default_tiny':
         anchors = YoloV3Tiny.default_anchors
     else:
-        anchors = datasets.load_anchors(dataset_config.anchors.path)
+        anchors = datasets.load_anchors(path)
     return anchors
 
 
@@ -82,7 +83,8 @@ def make_augmentations(max_number_augs=5):
     return augmentation
 
 
-def load_datasets(ds_conf):
+def load_datasets(mode, image_shape, anchors, train_path, val_path,
+     augment, max_objects, batch_size, pad_to_fixed_size):
     """load a dataset from configs
 
     Arguments:
@@ -91,129 +93,134 @@ def load_datasets(ds_conf):
     Returns:
         tuple -- train and test dataset tf.keras.Sequence objects
     """
-    if isinstance(ds_conf.image_shape, str):
-        ds_conf.image_shape = to_tuple(ds_conf.image_shape)
-    else:
-        ds_conf.image_shape = ds_conf.image_shape
-    anchors = load_anchors(ds_conf)
+
+    anchors = load_anchors(ds_mode=mode, ds_train_path=train_path, **anchors)
     masks = datasets.make_masks(len(anchors))
 
     # FIXME make 4 a parameter
-    augmenters = make_augmentations(4) if ds_conf.augment else None
+    augmenters = make_augmentations(4) if augment else None
 
-    if ds_conf.mode == 'multifile':
+    if mode == 'multifile':
         train_dataset = datasets.YoloDatasetMultiFile
         val_dataset = datasets.YoloDatasetMultiFile
-    elif ds_conf.mode == 'singlefile':
+    elif mode == 'singlefile':
         train_dataset = datasets.YoloDatasetSingleFile
         val_dataset = datasets.YoloDatasetSingleFile
+    elif mode == 'coco':
+        train_dataset = datasets.CocoFormatDataset
+        val_dataset = datasets.CocoFormatDataset
 
     train_dataset = train_dataset(
-        ds_conf.annotations.train, ds_conf.image_shape,
-        ds_conf.max_objects, ds_conf.batch_size, anchors, masks, True,
-        augmenters, ds_conf.pad_to_fixed_size
+        train_path, image_shape,
+        max_objects, batch_size, anchors, masks, True,
+        augmenters, pad_to_fixed_size
     )
     val_dataset = val_dataset(
-        ds_conf.annotations.val, ds_conf.image_shape,
-        ds_conf.max_objects, ds_conf.batch_size, anchors, masks, True,
-        None, ds_conf.pad_to_fixed_size
+        val_path, image_shape,
+        max_objects, batch_size, anchors, masks, True,
+        None, pad_to_fixed_size
     )
-    return train_dataset, val_dataset
+    return train_dataset, val_dataset, anchors, masks
 
 
-def to_tuple(value):
-    values = value[1:-1].split(',')
-    values = [int(v.strip()) for v in values]
-    return tuple(values)
-
-
-def main(config):
-    """the main to train the algorithm
-
-    Arguments:
-        config {object} -- the configurations to run the algorithm
-    """
-
-    config.dataset.image_shape = to_tuple(config.dataset.image_shape)
-    train_dataset, val_dataset = load_datasets(config.dataset)
-
-    if len(train_dataset.anchor_masks) == 6:
+def load_model(num_masks, dataset, iou, object_score, backbone, **kwargs):
+    if num_masks == 6:
         logger.info('loading tiny model')
         model = YoloV3Tiny(
-            img_shape=config.dataset.image_shape,
-            max_objects=config.dataset.max_objects,
-            iou_threshold=config.model.thresholds.intersection_over_union,
-            score_threshold=config.model.thresholds.object_score,
-            anchors=train_dataset.anchors,
-            num_classes=train_dataset.num_classes,
+            img_shape=dataset.target_shape,
+            max_objects=dataset.max_objects,
+            iou_threshold=iou,
+            score_threshold=object_score,
+            anchors=dataset.anchors,
+            num_classes=dataset.num_classes,
             training=True
         )
     else:
         logger.info('loading large model')
         model = YoloV3(
-            img_shape=config.dataset.image_shape,
-            max_objects=config.dataset.max_objects,
-            iou_threshold=config.model.thresholds.intersection_over_union,
-            score_threshold=config.model.thresholds.object_score,
-            anchors=train_dataset.anchors,
-            num_classes=train_dataset.num_classes,
+            img_shape=dataset.target_shape,
+            max_objects=dataset.max_objects,
+            iou_threshold=iou,
+            score_threshold=object_score,
+            anchors=dataset.anchors,
+            num_classes=dataset.num_classes,
             training=True,
-            backbone=config.model.backbone
+            backbone=backbone
         )
+    return model
 
-    if len(config.model.reload.path):
-        logger.info('reload weigths at path %s', config.model.reload.path)
-        model.load_weights(config.model.reload.path, config.model.backbone)
 
-    loss = model.get_loss_function()
-    optimizer = model.get_optimizer(config.fit.optimizer.name,
-                                    config.fit.optimizer.lrate.value)
+def main(dataset, model, fit, **kwargs):
+    """the main to train the algorithm
 
-    checkpoints_path = Path(config.model.checkpoints.path)
-    checkpoints_path.mkdir(exist_ok=True)
+    Arguments:
+        config {object} -- the configurations to run the algorithm
+    """
+    train_path = dataset['train_path']
+    if not train_path:
+        raise Exception('missing checkpoints path')
+
+    checkpoints_path = Path(train_path).parent / 'checkpoints'
     logger.info('saving checkpoints %s', str(checkpoints_path.absolute()))
     model_run_path = helpers.create_run_path(checkpoints_path)
+    model_run_path.mkdir(exist_ok=True, parents=True)
+
+    train_dataset, val_dataset, anchors, masks = load_datasets(**dataset)
+
+    # save configurations, anchors
+    with open(model_run_path / 'anchors.txt', 'w') as fp:
+        fp.write(datasets.anchors_to_string(anchors))
+
+    yolo_model = load_model(len(masks), train_dataset, **model)
+
+    if model['reload_weights']:
+        logger.info('reload weigths at path %s', model['reload_weights'])
+        yolo_model.load_weights(model['reload_weights'])
+
+    loss = yolo_model.get_loss_function()
+    fit = DotMap(fit)
+    optimizer = yolo_model.get_optimizer(fit.optimizer.name, fit.optimizer.lrate.value)
 
     callbacks = helpers.default_callbacks(
-        model, model_run_path, config.fit.optimizer.lrate.mode,
-        config.fit.optimizer.lrate.value
+        yolo_model, model_run_path, fit.optimizer.lrate.mode,
+        fit.optimizer.lrate.value
     )
 
-    if config.fit.mode == 'train':
-        logger.info('training the model for %d epochs', config.fit.epochs.train)
-        model.compile(optimizer, loss, config.fit.run_eagerly)
-        model.fit(train_dataset, val_dataset, config.fit.epochs.train,
+    if fit.mode == 'train':
+        logger.info('training the model for %d epochs', fit.epochs.train)
+        yolo_model.compile(optimizer, loss, fit.run_eagerly)
+        yolo_model.fit(train_dataset, val_dataset, fit.epochs.train,
                   0, callbacks, 1)
 
-    elif config.fit.mode == 'transfer':
-        model.set_mode_transfer()
-        model.compile(optimizer, loss, config.fit.run_eagerly)
+    elif fit.mode == 'transfer':
+        yolo_model.set_mode_transfer()
+        yolo_model.compile(optimizer, loss, fit.run_eagerly)
         logger.info(
             'transfer the model for %d epochs',
-            config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset, config.fit.epochs.transfer,
+            fit.epochs.transfer)
+        yolo_model.fit(train_dataset, val_dataset, fit.epochs.transfer,
                   0, callbacks, 1)
 
-    elif config.fit.mode == 'finetuning':
-        model.set_mode_transfer()
-        model.compile(optimizer, loss, config.fit.run_eagerly)
+    elif fit.mode == 'finetuning':
+        yolo_model.set_mode_transfer()
+        yolo_model.compile(optimizer, loss, fit.run_eagerly)
         logger.info(
             'transfer the model for %d epochs',
-            config.fit.epochs.transfer)
-        model.fit(train_dataset, val_dataset, config.fit.epochs.transfer,
+            fit.epochs.transfer)
+        yolo_model.fit(train_dataset, val_dataset, fit.epochs.transfer,
                   0, callbacks, 1)
 
-        finetuning_epochs = config.fit.epochs.transfer + config.fit.epochs.finetuning
-        model.set_mode_fine_tuning(config.fit.freezed_layers)
-        model.compile(optimizer, loss, config.fit.run_eagerly)
+        finetuning_epochs = fit.epochs.transfer + fit.epochs.finetuning
+        yolo_model.set_mode_fine_tuning(fit.freezed_layers)
+        yolo_model.compile(optimizer, loss, fit.run_eagerly)
         logger.info(
             'fine tuning the model for %d epochs',
-            config.fit.epochs.finetuning)
-        model.fit(train_dataset, val_dataset, finetuning_epochs,
-                  config.fit.epochs.transfer, callbacks, 1)
+            fit.epochs.finetuning)
+        yolo_model.fit(train_dataset, val_dataset, finetuning_epochs,
+                  fit.epochs.transfer, callbacks, 1)
 
     logging.info('saving final model')
-    model.save(model_run_path / 'final_model.h5')
+    yolo_model.save(model_run_path / 'final_model.h5')
 
 
 if __name__ == '__main__':
@@ -223,4 +230,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     config = load_config(args.config)
-    main(config)
+    main(**config)

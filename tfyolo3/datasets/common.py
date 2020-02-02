@@ -25,6 +25,21 @@ def load_anchors(path):
     anchors = [[int(x) for x in pair.split(',')] for pair in text.split()]
     return np.array(anchors, dtype=np.int32)
 
+def anchors_to_string(anchors):
+    """transform the anchors into a strting
+    
+    Arguments:
+        anchors {np.ndarrary} -- the anchors
+    
+    Returns:
+        str -- the anchors in yolo format
+    """
+    result = ''
+    for pair in anchors:
+        result += ','.join(pair.astype(int).astype(str))
+        result += ' '
+    return result.strip()
+     
 
 def load_classes(path, as_dict=False):
     """it expect to read a file with one class per line sorted in the same order with respect
@@ -101,17 +116,17 @@ def open_boxes(path):
     """Read the boxes from a file
     """
     boxes_class = pd.read_csv(path, header=None).values
-    boxes = boxes_class[:,:4]
-    classes = boxes_class[:,-1:]
+    boxes = boxes_class[:, :4]
+    classes = boxes_class[:, -1:]
     return boxes, classes
 
 
 def open_boxes_batch(paths):
     """parses bounding boxes and classes from a list of paths
-    
+
     Arguments:
         paths {[list]} -- a list of paths
-    
+
     Returns:
         [tuple] -- a tuple (boxes, class) of shape (M,4) and (M,1)
     """
@@ -148,14 +163,14 @@ def parse_boxes(str_boxes):
         sbox_split = [int(x) for x in sbox.split(',')]
         boxes_class.append(sbox_split[:5])
     boxes_class = np.array(boxes_class)
-    boxes = boxes_class[:,:4]
-    classes = boxes_class[:,-1:]
+    boxes = boxes_class[:, :4]
+    classes = boxes_class[:, -1:]
     return boxes, classes
 
 
 def parse_boxes_batch(list_str_boxes):
     """parse a list of annotations
-    
+
     Arguments:
         list_str_boxes {list} -- the list of the str annotations
     """
@@ -277,7 +292,8 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
     batch_processed = augmenters.augment_batch(batch)
 
     if batch_processed.bounding_boxes_aug:
-        boxes_aug = [b.to_xyxy_array() for b in batch_processed.bounding_boxes_aug]
+        boxes_aug = [b.to_xyxy_array()
+                     for b in batch_processed.bounding_boxes_aug]
     else:
         boxes_aug = []
 
@@ -366,13 +382,14 @@ def pad_boxes(boxes, max_objects):
 
     return boxes_padded
 
+
 def pad_classes(classes, max_objects):
     """[summary]
-    
+
     Arguments:
         classes {[type]} -- [description]
         max_objects {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
@@ -421,14 +438,16 @@ def prepare_batch(batch_images, batch_boxes, batch_classes, target_shape, max_ob
     batch_boxes_pad = np.clip(batch_boxes_pad, 0, target_shape[0] - 1)
 
     if batch_classes:
-        batch_classes_pad = np.array([pad_classes(data, max_objects) for data in batch_classes])
+        batch_classes_pad = np.array(
+            [pad_classes(data, max_objects) for data in batch_classes])
     else:
         batch_classes_pad = np.array([])
 
     # scale images
     batch_images_pad = batch_images_pad / 255.
 
-    return batch_images_pad.astype(np.float32), batch_boxes_pad, batch_classes_pad
+    return batch_images_pad.astype(
+        np.float32), batch_boxes_pad, batch_classes_pad
 
 
 def to_center_width_height(boxes):
@@ -495,12 +514,14 @@ def transform_target(boxes_data, classes_data, anchors, anchor_masks,
                     masks, obj_anchors_idx[i, j, 0]).astype(np.int32)
 
                 if np.any(valid_anchor):
-                    #TODO target shape can be removed if we scale the boxes in advance
-                    box = boxes_data[i, j] / target_shape[0] 
+                    # TODO target shape can be removed if we scale the boxes in
+                    # advance
+                    box = boxes_data[i, j] / target_shape[0]
                     box_center_xy = (box[0:2] + box[2:4]) / 2
 
                     anchor_idx = np.where(valid_anchor)
-                    grid_xy = (box_center_xy // (1 / num_grid_cells)).astype(np.int32)
+                    grid_xy = (box_center_xy // (1 / num_grid_cells)
+                               ).astype(np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
                     one_hot[int(classes_data[i, j, 0])] = 1.

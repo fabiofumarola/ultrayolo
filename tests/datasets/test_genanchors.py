@@ -16,7 +16,8 @@ def test_path():
 
 def test_prepare_single_file(test_path):
     boxes_xywh = genanchors.prepare_single_file(test_path)
-    assert boxes_xywh.shape == (5,4)
+    assert boxes_xywh.shape == (5, 4)
+
 
 def test_gen_anchors_single_file(test_path):
     anchors = genanchors.gen_anchors(
