@@ -1,4 +1,3 @@
-pip
 bump2version
 wheel
 watchdog
