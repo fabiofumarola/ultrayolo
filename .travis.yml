@@ -7,9 +7,9 @@ python:
 
 befoore_install:
   - pip install --upgrade pip
+  - pip --version
 
 install: 
-  - pip --version
   - pip install -U tox-travis
 
 script: tox
