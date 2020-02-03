@@ -1,7 +1,7 @@
-tfyolo3
-=======
+ultrayolo
+=========
 
 .. toctree::
    :maxdepth: 4
 
-   tfyolo3
+   ultrayolo

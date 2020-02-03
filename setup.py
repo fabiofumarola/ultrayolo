@@ -34,15 +34,15 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    name='tfyolo3',
-    keywords=['tfyolo3'],
+    name='ultrayolo',
+    keywords=['ultrayolo'],
     version='1.0.0',
     license="Apache Software License 2.0",
     description="tensorflow 2 implemetation of yolo 3 with backbone extensions",
     long_description=readme + '\n\n' + history,
     entry_points={
         'console_scripts': [
-            'tfyolo3=tfyolo3.cli:main',
+            'ultrayolo=ultrayolo.cli:main',
         ],
     },
     # scripts
@@ -53,10 +53,10 @@ setup(
         # If any package contains *.txt or *.rst files, include them:
         '': ['*.txt', '*.rst', '*.json'],
     },
-    packages=find_packages(include=['tfyolo3', 'tfyolo3.*']),
+    packages=find_packages(include=['ultrayolo', 'ultrayolo.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/fabiofumarola/tfyolo3',
+    url='https://github.com/fabiofumarola/ultrayolo',
     zip_safe=False,
 )

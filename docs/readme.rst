@@ -1,21 +1,21 @@
 =======
-tfyolo3
+ultrayolo
 =======
 
 
-.. image:: https://img.shields.io/pypi/v/tfyolo3.svg
-        :target: https://pypi.python.org/pypi/tfyolo3
+.. image:: https://img.shields.io/pypi/v/ultrayolo.svg
+        :target: https://pypi.python.org/pypi/ultrayolo
 
-.. image:: https://img.shields.io/travis/fabiofumarola/tfyolo3.svg
-        :target: https://travis-ci.org/fabiofumarola/tfyolo3
+.. image:: https://img.shields.io/travis/fabiofumarola/ultrayolo.svg
+        :target: https://travis-ci.org/fabiofumarola/ultrayolo
 
-.. image:: https://readthedocs.org/projects/tfyolo3/badge/?version=latest
-        :target: https://tfyolo3.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/ultrayolo/badge/?version=latest
+        :target: https://ultrayolo.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/fabiofumarola/tfyolo3/shield.svg
-     :target: https://pyup.io/repos/github/fabiofumarola/tfyolo3/
+.. image:: https://pyup.io/repos/github/fabiofumarola/ultrayolo/shield.svg
+     :target: https://pyup.io/repos/github/fabiofumarola/ultrayolo/
      :alt: Updates
 
 
@@ -23,7 +23,7 @@ tfyolo3
 Tensorflow 2 implementation of yolo version 3
 
 * Free software: Apache Software License 2.0
-* Documentation: https://tfyolo3.readthedocs.io.
+* Documentation: https://ultrayolo.readthedocs.io.
 
 
 .. image:: ./images/example_image.png
@@ -32,7 +32,7 @@ Tensorflow 2 implementation of yolo version 3
 Features
 --------
 
-tfyolo3 implements YOLO object detection paper with the following backbones:
+ultrayolo implements YOLO object detection paper with the following backbones:
 
 * `Darknet <https://pjreddie.com/darknet/yolo/>`_: the original architecture
 * `ResNet <https://arxiv.org/abs/1512.03385>`_: `['ResNet50V2', 'ResNet101V2', 'ResNet152V2']`
@@ -40,23 +40,13 @@ tfyolo3 implements YOLO object detection paper with the following backbones:
 * `MobileNetV2 <https://arxiv.org/abs/1608.06993>`_: `['MobileNetV2']`
 
 
-Installation
------
-
-
-Evaluation
------
-
-
-Training
------
 
 TODO
 -----
 
 
-* add support to tf.data to load datasets
-* add mean average precision evaluation script
+* [ ] add support to tf.data to load datasets
+* [ ] add mean average precision evaluation script
 
 
 Credits

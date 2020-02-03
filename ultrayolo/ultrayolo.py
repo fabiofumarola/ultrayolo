@@ -166,7 +166,7 @@ class BaseModel(object):
 
         Arguments:
             optimizer {tf.keras.optimizers} -- a valid tensorflow optimizer
-            loss {tfyolo3.losses.Loss} -- the loss function for yolo
+            loss {ultrayolo.losses.Loss} -- the loss function for yolo
             run_eagerly {bool} -- if True is uses eager mode, that is you can see more explainable stack traces
 
         Keyword Arguments:
@@ -181,8 +181,8 @@ class BaseModel(object):
         """train the model
 
         Arguments:
-            train_dataset {tfyolo3.datasets.Dataset} -- an instance of the dataset
-            val_dataset {tfyolo3.datasets.Dataset} -- an instance of the dataset
+            train_dataset {ultrayolo.datasets.Dataset} -- an instance of the dataset
+            val_dataset {ultrayolo.datasets.Dataset} -- an instance of the dataset
             epochs {int} -- the number of epochs
 
         Keyword Arguments:

@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 import numpy as np
-from tfyolo3.datasets import genanchors
+from ultrayolo.datasets import genanchors
 
 BASE_PATH = Path(__file__).parent.parent / 'data'
 IMAGES_PATH = BASE_PATH / 'images'

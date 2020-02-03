@@ -1,5 +1,5 @@
-from tfyolo3.datasets import YoloDatasetMultiFile, YoloDatasetSingleFile, CocoFormatDataset, load_classes
-from tfyolo3 import YoloV3, YoloV3Tiny
+from ultrayolo.datasets import YoloDatasetMultiFile, YoloDatasetSingleFile, CocoFormatDataset, load_classes
+from ultrayolo import YoloV3, YoloV3Tiny
 from pathlib import Path
 import pytest
 import numpy as np

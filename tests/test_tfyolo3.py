@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `tfyolo3` package."""
+"""Tests for `ultrayolo` package."""
 
 import pytest
-from tfyolo3 import YoloV3, YoloV3Tiny
+from ultrayolo import YoloV3, YoloV3Tiny
 from pathlib import Path
-from tfyolo3.datasets import YoloDatasetMultiFile, common
-from tfyolo3 import losses
+from ultrayolo.datasets import YoloDatasetMultiFile, common
+from ultrayolo import losses
 import numpy as np
 import tensorflow as tf
 

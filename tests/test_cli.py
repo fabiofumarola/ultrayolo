@@ -1,4 +1,4 @@
-from tfyolo3 import cli, YoloV3, YoloV3Tiny
+from ultrayolo import cli, YoloV3, YoloV3Tiny
 import pytest
 from pathlib import Path
 import numpy as np
@@ -31,12 +31,18 @@ def test_load_anchors_default_tiny():
 
 
 def test_load_anchors_compute():
-    anchors = cli.load_anchors('compute', 2, None, 'multifile', './tests/data/manifest.txt')
+    anchors = cli.load_anchors(
+        'compute',
+        2,
+        None,
+        'multifile',
+        './tests/data/manifest.txt')
     assert len(anchors) == 2
 
 
 def test_load_anchors_from_file(test_config):
-    anchors = cli.load_anchors('', 9, './tests/data/yolov3_anchors.txt', None, None)
+    anchors = cli.load_anchors(
+        '', 9, './tests/data/yolov3_anchors.txt', None, None)
     assert len(anchors) == 9
     assert np.all(anchors == YoloV3.default_anchors)
 

@@ -1,8 +1,8 @@
 import pytest
 from pathlib import Path
-from tfyolo3 import losses
-from tfyolo3.datasets import YoloDatasetMultiFile, common
-from tfyolo3 import YoloV3
+from ultrayolo import losses
+from ultrayolo.datasets import YoloDatasetMultiFile, common
+from ultrayolo import YoloV3
 import numpy as np
 from pytest import approx
 

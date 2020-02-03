@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install tfyolo3, run this command in your terminal:
+To install ultrayolo, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install tfyolo3
+    $ pip install ultrayolo
 
-This is the preferred method to install tfyolo3, as it will always install the most recent stable release.
+This is the preferred method to install ultrayolo, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,19 +26,19 @@ you through the process.
 From sources
 ------------
 
-The sources for tfyolo3 can be downloaded from the `Github repo`_.
+The sources for ultrayolo can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/fabiofumarola/tfyolo3
+    $ git clone git://github.com/fabiofumarola/ultrayolo
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/fabiofumarola/tfyolo3/tarball/master
+    $ curl -OJL https://github.com/fabiofumarola/ultrayolo/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/fabiofumarola/tfyolo3
-.. _tarball: https://github.com/fabiofumarola/tfyolo3/tarball/master
+.. _Github repo: https://github.com/fabiofumarola/ultrayolo
+.. _tarball: https://github.com/fabiofumarola/ultrayolo/tarball/master
