@@ -73,6 +73,8 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	cp -rf images docs
 	rm -f docs/ultrayolo.rst
 	rm -f docs/modules.rst
+	mkdir -p docs/tutorials
+	cp -rf notebooks/*.ipynb docs/tutorials
 	sphinx-apidoc -o docs/ ultrayolo
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html

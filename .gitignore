@@ -129,3 +129,4 @@ notebooks/test.jpg
 
 checkpoints
 coco_dataset
+docs/tutorials/*.ipynb
