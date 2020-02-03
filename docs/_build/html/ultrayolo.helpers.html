@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultrayolo.helpers package &mdash; ultrayolo 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ultrayolo.layers package" href="ultrayolo.layers.html" />
+    <link rel="prev" title="ultrayolo.datasets package" href="ultrayolo.datasets.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ultrayolo</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ultrayolo.html">ultrayolo package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ultrayolo.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.datasets.html">ultrayolo.datasets package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ultrayolo.helpers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.layers.html">ultrayolo.layers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.cli">ultrayolo.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.learningrates">ultrayolo.learningrates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.losses">ultrayolo.losses module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.ultrayolo">ultrayolo.ultrayolo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html#Evaluate-model-Loss">Evaluate model Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/5_data_augmentation_howto.html">Data Augmentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ultrayolo</a> &raquo;</li>
+        
+          <li><a href="ultrayolo.html">ultrayolo package</a> &raquo;</li>
+        
+      <li>ultrayolo.helpers package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ultrayolo.helpers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultrayolo-helpers-package">
+<h1>ultrayolo.helpers package<a class="headerlink" href="#ultrayolo-helpers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ultrayolo.helpers.callbacks">
+<span id="ultrayolo-helpers-callbacks-module"></span><h2>ultrayolo.helpers.callbacks module<a class="headerlink" href="#module-ultrayolo.helpers.callbacks" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.helpers.callbacks.default_callbacks">
+<code class="descclassname">ultrayolo.helpers.callbacks.</code><code class="descname">default_callbacks</code><span class="sig-paren">(</span><em>model</em>, <em>run_path</em>, <em>lrate_mode</em>, <em>lrate_value</em>, <em>verbose=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/callbacks.html#default_callbacks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.callbacks.default_callbacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>create the callbacks for the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>{tf.keras.Model} -- a valid tensorflow model</strong> (<em>model</em>) – </li>
+<li><strong>{str} -- the path to save the checkpoints</strong> (<em>run_path</em>) – </li>
+<li><strong>{str} -- the mode for the learning rate scheduler</strong> (<em>lrate_mode</em>) – (values: cyclic, exp_range, reduce_on_plateau)</li>
+<li><strong>{float} -- the initial value for the learning rate</strong> (<em>lrate_value</em>) – </li>
+<li><strong>{int} -- 0 for no verbose</strong><strong>, </strong><strong>1 for verbose</strong><strong> (</strong><strong>default</strong> (<em>verbose</em>) – <ol class="arabic">
+<li></li>
+</ol>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list – a list of tf.keras.callbacks</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.callbacks.lr_scheduler">
+<code class="descclassname">ultrayolo.helpers.callbacks.</code><code class="descname">lr_scheduler</code><span class="sig-paren">(</span><em>lrate_mode</em>, <em>lrate_value</em>, <em>verbose=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/callbacks.html#lr_scheduler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.callbacks.lr_scheduler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.callbacks.save_model">
+<code class="descclassname">ultrayolo.helpers.callbacks.</code><code class="descname">save_model</code><span class="sig-paren">(</span><em>model</em>, <em>checkpoints_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/callbacks.html#save_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.callbacks.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>method to save the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>{tf.keras.Model} -- the model to save</strong> (<em>model</em>) – </li>
+<li><strong>{str} -- the path to save the chckpoints</strong> (<em>checkpoints_path</em>) – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[tf.keras.callbacks.LambdaCallback]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.helpers.darknet">
+<span id="ultrayolo-helpers-darknet-module"></span><h2>ultrayolo.helpers.darknet module<a class="headerlink" href="#module-ultrayolo.helpers.darknet" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.helpers.darknet.freeze">
+<code class="descclassname">ultrayolo.helpers.darknet.</code><code class="descname">freeze</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/darknet.html#freeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.darknet.freeze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.darknet.freeze_backbone">
+<code class="descclassname">ultrayolo.helpers.darknet.</code><code class="descname">freeze_backbone</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/darknet.html#freeze_backbone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.darknet.freeze_backbone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.darknet.freeze_backbone_layers">
+<code class="descclassname">ultrayolo.helpers.darknet.</code><code class="descname">freeze_backbone_layers</code><span class="sig-paren">(</span><em>model</em>, <em>num_layers</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/darknet.html#freeze_backbone_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.darknet.freeze_backbone_layers" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<em>a yolo model</em>) – </li>
+<li><strong>num_layers</strong> (<em>the number of layers starting from the last layer of darknet to freeze</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.darknet.load_darknet_weights">
+<code class="descclassname">ultrayolo.helpers.darknet.</code><code class="descname">load_darknet_weights</code><span class="sig-paren">(</span><em>model</em>, <em>weights_file</em>, <em>tiny=False</em>, <em>for_transfer=False</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/darknet.html#load_darknet_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.darknet.load_darknet_weights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.darknet.set_trainable">
+<code class="descclassname">ultrayolo.helpers.darknet.</code><code class="descname">set_trainable</code><span class="sig-paren">(</span><em>layer</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/darknet.html#set_trainable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.darknet.set_trainable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.darknet.unfreeze">
+<code class="descclassname">ultrayolo.helpers.darknet.</code><code class="descname">unfreeze</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/darknet.html#unfreeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.darknet.unfreeze" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.helpers.draw">
+<span id="ultrayolo-helpers-draw-module"></span><h2>ultrayolo.helpers.draw module<a class="headerlink" href="#module-ultrayolo.helpers.draw" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.boundingbox_height">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">boundingbox_height</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#boundingbox_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.boundingbox_height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.boundingbox_width">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">boundingbox_width</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#boundingbox_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.boundingbox_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.get_cell_responsible_on_grid">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">get_cell_responsible_on_grid</code><span class="sig-paren">(</span><em>box_xywh</em>, <em>img_size</em>, <em>grid_len</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#get_cell_responsible_on_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.get_cell_responsible_on_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the grid cell responsible to detect the box</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.grid">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">grid</code><span class="sig-paren">(</span><em>ax</em>, <em>target_shape</em>, <em>grid_len</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.outline">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">outline</code><span class="sig-paren">(</span><em>o</em>, <em>lw</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#outline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.outline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.point">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">point</code><span class="sig-paren">(</span><em>ax</em>, <em>xy</em>, <em>color='red'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.rect">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">rect</code><span class="sig-paren">(</span><em>ax</em>, <em>b</em>, <em>color='#9cff1d'</em>, <em>lw=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.rect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ax</strong> (<em>the axis to plot</em>) – </li>
+<li><strong>b</strong> (<em>a bounding box of type</em><em> (</em><em>x_min</em><em>, </em><em>y_min</em><em>, </em><em>x_max</em><em>, </em><em>y_max</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.show_img">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">show_img</code><span class="sig-paren">(</span><em>im</em>, <em>figsize=None</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#show_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.show_img" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.helpers.draw.text">
+<code class="descclassname">ultrayolo.helpers.draw.</code><code class="descname">text</code><span class="sig-paren">(</span><em>ax</em>, <em>xy</em>, <em>txt</em>, <em>sz=14</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers/draw.html#text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.draw.text" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.helpers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultrayolo.helpers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.helpers.create_run_path">
+<code class="descclassname">ultrayolo.helpers.</code><code class="descname">create_run_path</code><span class="sig-paren">(</span><em>checkpoints_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/helpers.html#create_run_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.helpers.create_run_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>create the run path to save the checkpoints of the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>{str} -- the path to save the checkpoints</strong> (<em>checkpoints_path</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Path – the path to save the checkpoints</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ultrayolo.layers.html" class="btn btn-neutral float-right" title="ultrayolo.layers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ultrayolo.datasets.html" class="btn btn-neutral float-left" title="ultrayolo.datasets package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
