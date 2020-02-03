@@ -1,1 +1,2 @@
 nbsphinx
+tensorflow==1.15
