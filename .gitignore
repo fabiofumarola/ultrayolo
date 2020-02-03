@@ -124,8 +124,10 @@ notebooks/test.jpg
 
 *.gz
 
-!train.template.yml
 *.yml
+!train.template.yml
+!tests/data/train.yml
+
 
 checkpoints
 coco_dataset
