@@ -3,7 +3,7 @@ wheel
 watchdog
 flake8
 tox
-Sphinx
+Sphinx==1.8.5
 pytest
 pytest-runner
 wget

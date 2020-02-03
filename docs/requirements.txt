@@ -1,5 +1,2 @@
 nbsphinx
 tensorflow
-imageio
-imgaug
-pandas
