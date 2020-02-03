@@ -25,6 +25,21 @@ def load_anchors(path):
     anchors = [[int(x) for x in pair.split(',')] for pair in text.split()]
     return np.array(anchors, dtype=np.int32)
 
+def anchors_to_string(anchors):
+    """transform the anchors into a strting
+    
+    Arguments:
+        anchors {np.ndarrary} -- the anchors
+    
+    Returns:
+        str -- the anchors in yolo format
+    """
+    result = ''
+    for pair in anchors:
+        result += ','.join(pair.astype(int).astype(str))
+        result += ' '
+    return result.strip()
+     
 
 def load_classes(path, as_dict=False):
     """it expect to read a file with one class per line sorted in the same order with respect
@@ -101,12 +116,24 @@ def open_boxes(path):
     """Read the boxes from a file
     """
     boxes_class = pd.read_csv(path, header=None).values
-    return boxes_class
+    boxes = boxes_class[:, :4]
+    classes = boxes_class[:, -1:]
+    return boxes, classes
 
 
 def open_boxes_batch(paths):
-    boxes = [open_boxes(path) for path in paths]
-    return boxes
+    """parses bounding boxes and classes from a list of paths
+
+    Arguments:
+        paths {[list]} -- a list of paths
+
+    Returns:
+        [tuple] -- a tuple (boxes, class) of shape (M,4) and (M,1)
+    """
+    boxes_classes = [open_boxes(path) for path in paths]
+    boxes = [bc[0] for bc in boxes_classes]
+    classes = [bc[1] for bc in boxes_classes]
+    return boxes, classes
 
 
 def save_image(img, path):
@@ -136,8 +163,25 @@ def parse_boxes(str_boxes):
         sbox_split = [int(x) for x in sbox.split(',')]
         boxes_class.append(sbox_split[:5])
     boxes_class = np.array(boxes_class)
+    boxes = boxes_class[:, :4]
+    classes = boxes_class[:, -1:]
+    return boxes, classes
 
-    return boxes_class
+
+def parse_boxes_batch(list_str_boxes):
+    """parse a list of annotations
+
+    Arguments:
+        list_str_boxes {list} -- the list of the str annotations
+    """
+    boxes = []
+    classes = []
+    for str_boxes in list_str_boxes:
+        box, cls = parse_boxes(str_boxes.split(' ')[1:])
+        boxes.append(box)
+        classes.append(cls)
+
+    return boxes, classes
 
 
 def __transform(image, augmenters, boxes=None):
@@ -156,18 +200,12 @@ def __transform(image, augmenters, boxes=None):
     """
     if boxes is not None:
         bbs = BoundingBoxesOnImage(
-            [BoundingBox(*b[:4]) for b in boxes],
+            [BoundingBox(*b) for b in boxes],
             shape=image.shape
         )
 
         image_aug, boxes_aug = augmenters(image=image, bounding_boxes=bbs)
-        # add back the class
-        boxes_aug = np.concatenate([
-            boxes_aug.to_xyxy_array(),
-            boxes[..., -1:]
-        ], axis=-1)
-
-        return image_aug, boxes_aug
+        return image_aug, boxes_aug.to_xyxy_array()
     else:
         return augmenters(image=image)
 
@@ -237,39 +275,49 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
     boxes_aug: a list of a list of boxes transformed with the given augmenters (optional: if boxes is not None)
 
     """
-    if batch_boxes is not None:
+    if batch_boxes is None:
+        batch = Batch(images=batch_images)
+    else:
         batch_bbs = []
         for image, boxes in zip(batch_images, batch_boxes):
             bbs = BoundingBoxesOnImage(
-                [BoundingBox(*b[:4]) for b in boxes],
+                [BoundingBox(*b) for b in boxes],
                 shape=image.shape
             )
             batch_bbs.append(bbs)
-
         # create the batch
         batch = Batch(images=batch_images, bounding_boxes=batch_bbs)
-        # process the data
-        batch_processed = augmenters.augment_batch(batch)
 
-        # transform back the boxes to the right form and add back the class
-        boxes_aug = []
-        for src_boxes, dst_boxes in zip(
-                batch_boxes, batch_processed.bounding_boxes_aug):
-            dst_boxes = dst_boxes.to_xyxy_array().tolist()
-            final_boxes = []
-            for src_row, dst_row in zip(src_boxes, dst_boxes):
-                dst_row.append(src_row[-1])
-                final_boxes.append(dst_row)
+    # process the data
+    batch_processed = augmenters.augment_batch(batch)
 
-            boxes_aug.append(final_boxes)
-
-        images_aug = batch_processed.images_aug
-        return images_aug, boxes_aug
+    if batch_processed.bounding_boxes_aug:
+        boxes_aug = [b.to_xyxy_array()
+                     for b in batch_processed.bounding_boxes_aug]
     else:
-        batch = Batch(images=batch_images)
-        # process the data
-        batch_processed = augmenters.augment_batch(batch)
-        return batch_processed.images_aug
+        boxes_aug = []
+
+    return batch_processed.images_aug, boxes_aug
+
+    #     # transform back the boxes to the right form and add back the class
+    #     boxes_aug = []
+    #     for src_boxes, dst_boxes in zip(
+    #             batch_boxes, batch_processed.bounding_boxes_aug):
+    #         dst_boxes = dst_boxes.to_xyxy_array().tolist()
+    #         final_boxes = []
+    #         for src_row, dst_row in zip(src_boxes, dst_boxes):
+    #             dst_row.append(src_row[-1])
+    #             final_boxes.append(dst_row)
+
+    #         boxes_aug.append(final_boxes)
+
+    #     images_aug = batch_processed.images_aug
+    #     return images_aug, boxes_aug
+    # else:
+    #     batch = Batch(images=batch_images)
+    #     # process the data
+    #     batch_processed = augmenters.augment_batch(batch)
+    #     return batch_processed.images_aug
 
 
 def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
@@ -278,7 +326,7 @@ def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
     --------
     batch_images: an array of images with shape (H,W,C)
     target_shape: a shape of type (H,W,C)
-    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)
+    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax)
 
     Returns
     ------
@@ -317,12 +365,12 @@ def pad_boxes(boxes, max_objects):
     """Pad boxes to desired size
     Arguments
     --------
-    boxes: an array of boxes with shape (N,X Y X Y C)
+    boxes: an array of boxes with shape (N, X1, Y1, X2, Y2)
     max_objects: the maximum number of boxes
 
     Returns
     ------
-    boxes: with shape (max_objects, X Y X Y C)
+    boxes: with shape (max_objects, X1, Y1, X2, Y2)
     """
     if len(boxes) > max_objects:
         paddings = [[0, 0], [0, 0]]
@@ -335,14 +383,32 @@ def pad_boxes(boxes, max_objects):
     return boxes_padded
 
 
-def prepare_batch(batch_images, batch_boxes, target_shape, max_objects,
+def pad_classes(classes, max_objects):
+    """[summary]
+
+    Arguments:
+        classes {[type]} -- [description]
+        max_objects {[type]} -- [description]
+
+    Returns:
+        [type] -- [description]
+    """
+    result = np.zeros((max_objects, 1))
+    num_elems = max_objects if max_objects <= len(classes) else len(classes)
+    result[:num_elems] = classes[:num_elems]
+    return result
+
+
+def prepare_batch(batch_images, batch_boxes, batch_classes, target_shape, max_objects,
                   augmenters=None, pad=True):
-    """prepare a batch of images and boxes
+    """prepare a batch of images and boxes:
+        - resize all the images to the same size
+        - update the size of the boxes basing on the new image size
 
     Arguments:
         batch_images {numpy.ndarry} -- an array of images with shape (H,W,C)
-        batch_boxes {[float, float, float, float, float]} --
-            an array of array with format (xmin, ymin, xmax, ymax, class_name)
+        batch_boxes {np.ndarray} --
+            an array of array with format (xmin, ymin, xmax, ymax)
         target_shape {tuple} -- a shape of type (H,W,C)
         max_objects {int} -- the maximum number of boxes to track
 
@@ -371,10 +437,17 @@ def prepare_batch(batch_images, batch_boxes, target_shape, max_objects,
     # clip the values to the max size of the immage
     batch_boxes_pad = np.clip(batch_boxes_pad, 0, target_shape[0] - 1)
 
+    if batch_classes:
+        batch_classes_pad = np.array(
+            [pad_classes(data, max_objects) for data in batch_classes])
+    else:
+        batch_classes_pad = np.array([])
+
     # scale images
     batch_images_pad = batch_images_pad / 255.
 
-    return batch_images_pad.astype(np.float32), batch_boxes_pad
+    return batch_images_pad.astype(
+        np.float32), batch_boxes_pad, batch_classes_pad
 
 
 def to_center_width_height(boxes):
@@ -413,13 +486,13 @@ def best_anchors_iou(boxes, anchors):
     return best_anchors_idx
 
 
-def transform_target(y_data, anchors, anchor_masks,
-                     grid_len, num_classes, target_shape):
+def transform_target(boxes_data, classes_data, anchors, anchor_masks,
+                     grid_len, num_classes, target_shape, classes=None):
     """Transform y_data in yolo format
 
     """
     # get the anchor id
-    obj_anchors_idx = best_anchors_iou(y_data, anchors)
+    obj_anchors_idx = best_anchors_iou(boxes_data, anchors)
 
     y_data_transformed = []
 
@@ -427,29 +500,36 @@ def transform_target(y_data, anchors, anchor_masks,
     for masks in anchor_masks:
 
         y_out = np.zeros(
-            (len(y_data), num_grid_cells, num_grid_cells,
+            (len(boxes_data), num_grid_cells, num_grid_cells,
                 len(masks), 4 + 1 + num_classes),
             dtype=np.float32
         )
 
-        for i in range(y_data.shape[0]):
-            for j in range(y_data.shape[1]):
-                if np.equal(y_data[i, j, 2], 0):
+        for i in range(boxes_data.shape[0]):
+            for j in range(boxes_data.shape[1]):
+                if np.equal(boxes_data[i, j, 2], 0):
                     continue
 
                 valid_anchor = np.equal(
                     masks, obj_anchors_idx[i, j, 0]).astype(np.int32)
 
                 if np.any(valid_anchor):
-                    box = y_data[i, j, 0:4] / target_shape[0]
-                    box_xy = (box[0:2] + box[2:4]) / 2
+                    # TODO target shape can be removed if we scale the boxes in
+                    # advance
+                    box = boxes_data[i, j] / target_shape[0]
+                    box_center_xy = (box[0:2] + box[2:4]) / 2
 
                     anchor_idx = np.where(valid_anchor)
-                    grid_xy = (box_xy // (1 / num_grid_cells)
+                    grid_xy = (box_center_xy // (1 / num_grid_cells)
                                ).astype(np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
-                    one_hot[int(y_data[i, j, 4])] = 1.
+                    # FIXME
+                    if classes:
+                        pos = np.argwhere(classes == classes_data[i, j, 0])
+                        one_hot[int(pos)] = 1.
+                    else:
+                        one_hot[int(classes_data[i, j, 0])] = 1.
 
                     # grid[i, y, x, anchor] = (tx, ty, bw, bh, obj, class)
                     y_out[i, grid_xy[1], grid_xy[0],

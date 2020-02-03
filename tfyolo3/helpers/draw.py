@@ -36,7 +36,7 @@ def rect(ax, b, color='#9cff1d', lw=4):
 
 
 def text(ax, xy, txt, sz=14):
-    xy = xy - [0,10]
+    xy = xy - [0, 10]
     text = ax.text(*xy, txt, verticalalignment='top',
                    color='white', fontsize=sz, weight='bold')
     outline(text, 1)

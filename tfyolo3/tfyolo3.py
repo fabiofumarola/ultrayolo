@@ -19,6 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 @tf.function
 def non_max_suppression(outputs, anchors, masks, classes,
                         iou_threshold, score_threshold, max_boxes_per_image, img_size):
@@ -62,6 +63,7 @@ def non_max_suppression(outputs, anchors, masks, classes,
     )
 
     return tf.math.ceil(boxes * img_size), scores, classes, valid_detections
+
 
 class BaseModel(object):
 
@@ -179,8 +181,8 @@ class BaseModel(object):
         """train the model
 
         Arguments:
-            train_dataset {tfyolo3.dataloader.Dataset} -- an instance of the dataset
-            val_dataset {tfyolo3.dataloader.Dataset} -- an instance of the dataset
+            train_dataset {tfyolo3.datasets.Dataset} -- an instance of the dataset
+            val_dataset {tfyolo3.datasets.Dataset} -- an instance of the dataset
             epochs {int} -- the number of epochs
 
         Keyword Arguments:
@@ -193,8 +195,8 @@ class BaseModel(object):
             [type] -- [description]
         """
 
-        logger.info('training for %s epochs on the dataset %d',
-                     epochs, train_dataset.base_path)
+        logger.info('training for %s epochs on the dataset %s',
+                    epochs, str(train_dataset.base_path.absolute()))
         if workers == -1:
             workers = multiprocessing.cpu_count()
 

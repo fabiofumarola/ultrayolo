@@ -8,15 +8,11 @@ np.random.seed = 42
 
 
 def prepare_single_file(filepath):
-    if not isinstance(filepath, Path):
-        filepath = Path(filepath)
+    filepath = Path(filepath)
 
     lines = filepath.read_text().strip().split('\n')
-    boxes = [common.parse_boxes(
-        line.split(' ')[1:]) for line in lines]
-
-    boxes = np.array([b[:4] for box in boxes for b in box])
-    boxes_xywh = np.array(
+    boxes, _ = common.parse_boxes_batch(lines)
+    boxes_xywh = np.concatenate(
         [common.to_center_width_height(b) for b in boxes])
 
     return boxes_xywh
@@ -32,9 +28,8 @@ def prepare_multi_file(filepath):
         annotation_name = img_name.split('.')[0] + '.txt'
         annotation_path = filepath.parent / 'annotations' / annotation_name
         annotations.append(annotation_path)
-    boxes = common.open_boxes_batch(annotations)
+    boxes, _ = common.open_boxes_batch(annotations)
     boxes = np.concatenate(boxes, axis=0)
-    boxes = boxes[:, :4]
     boxes_xywh = np.array(
         [common.to_center_width_height(b) for b in boxes])
     return boxes_xywh

@@ -18,46 +18,31 @@ def test_load_config(test_config):
     assert test_config is not None
 
 
-def test_load_anchors_default(test_config):
-    test_config.dataset.anchors.mode = 'default'
-    anchors = cli.load_anchors(test_config.dataset)
+def test_load_anchors_default():
+    anchors = cli.load_anchors('default', 9, None, None, None)
     assert len(anchors) == 9
     assert np.all(anchors == YoloV3.default_anchors)
 
 
-def test_load_anchors_default_tiny(test_config):
-    test_config.dataset.anchors.mode = 'default_tiny'
-    anchors = cli.load_anchors(test_config.dataset)
+def test_load_anchors_default_tiny():
+    anchors = cli.load_anchors('default_tiny', 6, None, None, None)
     assert len(anchors) == 6
     assert np.all(anchors == YoloV3Tiny.default_anchors)
 
 
-def test_load_anchors_compute(test_config):
-    test_config.dataset.anchors.mode = 'compute'
-    test_config.dataset.anchors.number = 2
-    anchors = cli.load_anchors(test_config.dataset)
+def test_load_anchors_compute():
+    anchors = cli.load_anchors('compute', 2, None, 'multifile', './tests/data/manifest.txt')
     assert len(anchors) == 2
 
 
 def test_load_anchors_from_file(test_config):
-    test_config.dataset.anchors.mode = ''
-    anchors = cli.load_anchors(test_config.dataset)
+    anchors = cli.load_anchors('', 9, './tests/data/yolov3_anchors.txt', None, None)
     assert len(anchors) == 9
     assert np.all(anchors == YoloV3.default_anchors)
 
 
 def test_load_datasets(test_config):
-    train_ds, val_ds = cli.load_datasets(test_config.dataset)
+    print(test_config['dataset'])
+    train_ds, val_ds, _, _ = cli.load_datasets(**test_config['dataset'])
     assert train_ds is not None
     assert val_ds is not None
-
-
-def test_to_tuple():
-    value = '(256,256,3)'
-    assert isinstance(cli.to_tuple(value), tuple)
-
-
-def test_no_tuple():
-    value = '(256,256,)'
-    with pytest.raises(ValueError):
-        assert isinstance(cli.to_tuple(value), tuple)
