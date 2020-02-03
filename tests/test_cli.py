@@ -3,9 +3,7 @@ import pytest
 from pathlib import Path
 import numpy as np
 
-
 BASE_PATH = Path(__file__).parent / 'data'
-
 
 @pytest.fixture()
 def test_config():
