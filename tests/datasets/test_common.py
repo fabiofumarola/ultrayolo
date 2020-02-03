@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 import numpy as np
-from tfyolo3.datasets import common
+from ultrayolo.datasets import common
 
 
 BASE_PATH = Path(__file__).parent.parent / 'data'
@@ -303,7 +303,8 @@ def test_masks():
         [0, 1, 2]
     ]))
 
+
 def test_anchors_to_string():
-    a = np.arange(18).reshape((-1,2))
+    a = np.arange(18).reshape((-1, 2))
     res = common.anchors_to_string(a)
     assert res == '0,1 2,3 4,5 6,7 8,9 10,11 12,13 14,15 16,17'

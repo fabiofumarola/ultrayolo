@@ -25,12 +25,13 @@ def load_anchors(path):
     anchors = [[int(x) for x in pair.split(',')] for pair in text.split()]
     return np.array(anchors, dtype=np.int32)
 
+
 def anchors_to_string(anchors):
     """transform the anchors into a strting
-    
+
     Arguments:
         anchors {np.ndarrary} -- the anchors
-    
+
     Returns:
         str -- the anchors in yolo format
     """
@@ -39,7 +40,7 @@ def anchors_to_string(anchors):
         result += ','.join(pair.astype(int).astype(str))
         result += ' '
     return result.strip()
-     
+
 
 def load_classes(path, as_dict=False):
     """it expect to read a file with one class per line sorted in the same order with respect

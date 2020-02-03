@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
-"""Console script for tfyolo3."""
+"""Console script for ultrayolo."""
 import yaml
 from dotmap import DotMap
 from argparse import ArgumentParser
 import imgaug.augmenters as iaa
-from tfyolo3 import datasets, YoloV3, YoloV3Tiny
-from tfyolo3 import helpers
+from ultrayolo import datasets, YoloV3, YoloV3Tiny
+from ultrayolo import helpers
 from pathlib import Path
 
 import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-logger = logging.getLogger('tfyolo3')
+logger = logging.getLogger('ultrayolo')
 
 
 def load_config(path):
@@ -29,7 +29,7 @@ def load_config(path):
 
 def load_anchors(mode, number, path, ds_mode, ds_train_path):
     """load or compute the anchors given a dataset
-    
+
     Arguments:
         mode {str} -- siniglefile, multifile, coco
         number {int} -- the number of anchors
@@ -84,7 +84,7 @@ def make_augmentations(max_number_augs=5):
 
 
 def load_datasets(mode, image_shape, anchors, train_path, val_path,
-     augment, max_objects, batch_size, pad_to_fixed_size):
+                  augment, max_objects, batch_size, pad_to_fixed_size):
     """load a dataset from configs
 
     Arguments:
@@ -179,7 +179,8 @@ def main(dataset, model, fit, **kwargs):
 
     loss = yolo_model.get_loss_function()
     fit = DotMap(fit)
-    optimizer = yolo_model.get_optimizer(fit.optimizer.name, fit.optimizer.lrate.value)
+    optimizer = yolo_model.get_optimizer(
+        fit.optimizer.name, fit.optimizer.lrate.value)
 
     callbacks = helpers.default_callbacks(
         yolo_model, model_run_path, fit.optimizer.lrate.mode,
@@ -190,7 +191,7 @@ def main(dataset, model, fit, **kwargs):
         logger.info('training the model for %d epochs', fit.epochs.train)
         yolo_model.compile(optimizer, loss, fit.run_eagerly)
         yolo_model.fit(train_dataset, val_dataset, fit.epochs.train,
-                  0, callbacks, 1)
+                       0, callbacks, 1)
 
     elif fit.mode == 'transfer':
         yolo_model.set_mode_transfer()
@@ -199,7 +200,7 @@ def main(dataset, model, fit, **kwargs):
             'transfer the model for %d epochs',
             fit.epochs.transfer)
         yolo_model.fit(train_dataset, val_dataset, fit.epochs.transfer,
-                  0, callbacks, 1)
+                       0, callbacks, 1)
 
     elif fit.mode == 'finetuning':
         yolo_model.set_mode_transfer()
@@ -208,7 +209,7 @@ def main(dataset, model, fit, **kwargs):
             'transfer the model for %d epochs',
             fit.epochs.transfer)
         yolo_model.fit(train_dataset, val_dataset, fit.epochs.transfer,
-                  0, callbacks, 1)
+                       0, callbacks, 1)
 
         finetuning_epochs = fit.epochs.transfer + fit.epochs.finetuning
         yolo_model.set_mode_fine_tuning(fit.freezed_layers)
@@ -217,7 +218,7 @@ def main(dataset, model, fit, **kwargs):
             'fine tuning the model for %d epochs',
             fit.epochs.finetuning)
         yolo_model.fit(train_dataset, val_dataset, finetuning_epochs,
-                  fit.epochs.transfer, callbacks, 1)
+                       fit.epochs.transfer, callbacks, 1)
 
     logging.info('saving final model')
     yolo_model.save(model_run_path / 'final_model.h5')

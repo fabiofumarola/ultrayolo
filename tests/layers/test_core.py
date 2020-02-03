@@ -1,5 +1,5 @@
 import pytest
-from tfyolo3.layers import core
+from ultrayolo.layers import core
 from tensorflow.keras import Input
 import tensorflow as tf
 

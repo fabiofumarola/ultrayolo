@@ -1,4 +1,4 @@
-* tfyolo3 version:
+* ultrayolo version:
 * Python version:
 * Operating System:
 

@@ -2,11 +2,11 @@
 Usage
 =====
 
-To use tfyolo3 in a project::
+To use ultrayolo in a project::
 
-    from tfyolo3 import YoloV3
-    from tfyolo3 import datasets
-    from tfyolo3.losses import Loss
+    from ultrayolo import YoloV3
+    from ultrayolo import datasets
+    from ultrayolo.losses import Loss
 
     image_shape = (256,256,3)
     max_objects = 100

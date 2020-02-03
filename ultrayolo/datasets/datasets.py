@@ -202,6 +202,7 @@ class YoloDatasetMultiFile(BaseDataset):
         else:
             return batch_images, batch_boxes, batch_classes
 
+
 class CocoFormatDataset(Sequence):
     """this class handles dataset into the `COCO format <http://cocodataset.org/>`_.
 
@@ -255,7 +256,8 @@ class CocoFormatDataset(Sequence):
 
         with open(self.annotations_path, 'r') as fp:
             self.coco_data = json.load(fp)
-        self.classes = sorted([cat['id'] for cat in self.coco_data['categories']])
+        self.classes = sorted([cat['id']
+                               for cat in self.coco_data['categories']])
         self.num_classes = len(self.classes)
 
         self.idx_image_doc = {

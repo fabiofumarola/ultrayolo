@@ -1,11 +1,12 @@
-Welcome to tfyolo3's documentation!
+Welcome to ultrayolo's documentation!
 ======================================
 
-Tensorflow 2 implementation of yolo version 3
+Tensorflow 2.1 implementation of yolo version 3 with extract backbones and training utils.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
+   :glob:
 
    readme
    installation
@@ -15,6 +16,7 @@ Tensorflow 2 implementation of yolo version 3
    contributing
    authors
    history
+   tutorials/*
 
 Indices and tables
 ==================

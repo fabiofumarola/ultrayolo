@@ -124,8 +124,13 @@ notebooks/test.jpg
 
 *.gz
 
-!train.template.yml
 *.yml
+!.readthedocs.yml
+!train.template.yml
+!tests/data/train.yml
+!.pyup.yml
+
 
 checkpoints
 coco_dataset
+docs/tutorials/*.ipynb

@@ -1,5 +1,5 @@
-from tfyolo3 import YoloV3
-from tfyolo3.helpers import darknet
+from ultrayolo import YoloV3
+from ultrayolo.helpers import darknet
 import pytest
 import wget
 from pathlib import Path

@@ -54,7 +54,7 @@ format: ## format the code
 	autopep8 -ri --max-line-length 80 --aggressive .
 
 lint: ## check style with flake8
-	flake8 tfyolo3 tests
+	flake8 ultrayolo tests
 
 test: ## run tests quickly with the default Python
 	pytest
@@ -63,7 +63,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source tfyolo3 -m pytest
+	coverage run --source ultrayolo -m pytest
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
@@ -71,9 +71,11 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	cp README.rst docs/readme.rst
 	cp -rf images docs
-	rm -f docs/tfyolo3.rst
+	rm -f docs/ultrayolo.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ tfyolo3
+	mkdir -p docs/tutorials
+	cp -rf notebooks/*.ipynb docs/tutorials
+	sphinx-apidoc -o docs/ ultrayolo
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
