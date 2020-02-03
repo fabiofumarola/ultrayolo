@@ -125,6 +125,7 @@ notebooks/test.jpg
 *.gz
 
 *.yml
+!.readthedocs.yml
 !train.template.yml
 !tests/data/train.yml
 
