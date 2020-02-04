@@ -50,7 +50,7 @@ class BaseDataset(Sequence):
         self.target_shape = img_shape
         self.batch_size = batch_size
 
-        self.classes = common.load_classes(self.base_path / 'classes.txt', as_dict=True)
+        self.classes = list(enumerate(common.load_classes(self.base_path / 'classes.txt')))
         self.num_classes = len(self.classes)
 
         # add scaling for the anchors
