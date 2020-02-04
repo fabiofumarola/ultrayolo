@@ -204,8 +204,14 @@ def main(dataset, model, fit, **kwargs):
         logger.info(
             'transfer the model for %d epochs',
             fit.epochs.transfer)
+        
+        #double the batch size
+        train_dataset.batch_size *= 2
+        val_dataset.batch_size *= 2
         yolo_model.fit(train_dataset, val_dataset, fit.epochs.transfer,
                        0, callbacks, 1)
+        train_dataset.batch_size /= 2
+        val_dataset.batch_size /= 2
 
     elif fit.mode == 'finetuning':
         yolo_model.set_mode_transfer()
