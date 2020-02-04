@@ -34,7 +34,7 @@ def test_classes():
 def test_dataset(test_anchors, test_masks, test_classes):
     annotations_filepath = BASE_PATH / 'manifest.txt'
     ds = YoloDatasetMultiFile(annotations_filepath, (256, 256, 3), 10,
-                              2, test_anchors, test_masks, len(test_classes))
+                              2, test_anchors, test_masks)
     return ds
 
 
