@@ -75,6 +75,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/modules.rst
 	mkdir -p docs/tutorials
 	cp -rf notebooks/*.ipynb docs/tutorials
+	jupyter nbconvert docs/tutorials/*.ipynb --to rst
 	sphinx-apidoc -o docs/ ultrayolo
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html

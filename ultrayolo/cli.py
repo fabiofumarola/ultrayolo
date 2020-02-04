@@ -167,13 +167,18 @@ def main(dataset, model, fit, **kwargs):
 
     train_dataset, val_dataset, anchors, masks = load_datasets(**dataset)
 
+    # save classes 
+    with open(model_run_path / 'classes.txt', 'w') as fp:
+        for _, name in train_dataset.classes:
+            fp.write(name + '\n')
+
     # save configurations, anchors
     with open(model_run_path / 'anchors.txt', 'w') as fp:
         fp.write(datasets.anchors_to_string(anchors))
 
     yolo_model = load_model(len(masks), train_dataset, **model)
 
-    if model['reload_weights']:
+    if ('reload_weights' in model) and model['reload_weights']:
         logger.info('reload weigths at path %s', model['reload_weights'])
         yolo_model.load_weights(model['reload_weights'])
 

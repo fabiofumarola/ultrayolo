@@ -50,7 +50,7 @@ class BaseDataset(Sequence):
         self.target_shape = img_shape
         self.batch_size = batch_size
 
-        self.classes = common.load_classes(self.base_path / 'classes.txt')
+        self.classes = common.load_classes(self.base_path / 'classes.txt', as_dict=True)
         self.num_classes = len(self.classes)
 
         # add scaling for the anchors
@@ -122,9 +122,10 @@ class YoloDatasetSingleFile(BaseDataset):
                                                                         self.pad_to_fixed_size)
 
         if self.is_training:
+            classes = [v[0] for v in self.classes]
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape
+                self.num_classes, self.target_shape, classes
             )
             return batch_images, batch_boxes
         else:
@@ -194,9 +195,10 @@ class YoloDatasetMultiFile(BaseDataset):
                                                                         self.target_shape, self.max_objects, self.augmenters,
                                                                         self.pad_to_fixed_size)
         if self.is_training:
+            classes = [v[0] for v in self.classes]
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape
+                self.num_classes, self.target_shape, classes
             )
             return batch_images, batch_boxes
         else:
@@ -256,8 +258,8 @@ class CocoFormatDataset(Sequence):
 
         with open(self.annotations_path, 'r') as fp:
             self.coco_data = json.load(fp)
-        self.classes = sorted([cat['id']
-                               for cat in self.coco_data['categories']])
+        self.classes = sorted([(cat['id'], cat['name'])
+                               for cat in self.coco_data['categories']], key=lambda x: x[0])
         self.num_classes = len(self.classes)
 
         self.idx_image_doc = {
@@ -308,9 +310,10 @@ class CocoFormatDataset(Sequence):
                                                                         self.pad_to_fixed_size)
 
         if self.is_training:
+            classes = [v[0] for v in self.classes]
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape, self.classes
+                self.num_classes, self.target_shape, classes
             )
 
         return batch_images, batch_boxes
