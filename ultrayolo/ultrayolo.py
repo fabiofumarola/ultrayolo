@@ -11,7 +11,7 @@ from .layers.core import (
     YoloOutput, DarknetBodyTiny
 )
 
-from . import losses
+from . import losses, helpers
 from .helpers import darknet
 import multiprocessing
 
@@ -103,6 +103,7 @@ class BaseModel(object):
         if path.name.split('.')[-1] == 'weights':
             darknet.load_darknet_weights(self.model, path, self.tiny)
         elif path.name.split('.')[-1] == 'h5':
+            helpers.unfreeze_checkpoint(path)
             self.model.load_weights(str(path.absolute()))
 
     def get_loss_function(self):
@@ -149,6 +150,8 @@ class BaseModel(object):
     def set_mode_transfer(self):
         """freeze the backbone of the network, check that the head and output layers are unfreezed
         """
+        # be sure the model is totally unfreezed
+        darknet.unfreeze(self.model)
         logger.info('freeze backbone')
         darknet.freeze_backbone(self.model)
 
@@ -203,7 +206,7 @@ class BaseModel(object):
         use_multiprocessing = False
         if workers > 1:
             use_multiprocessing = True
-
+            
         return self.model.fit(train_dataset, epochs=epochs, validation_data=val_dataset,
                               callbacks=callbacks, workers=workers, use_multiprocessing=use_multiprocessing,
                               max_queue_size=64, initial_epoch=initial_epoch)
