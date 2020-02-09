@@ -233,7 +233,7 @@ class CocoFormatDataset(Sequence):
             image_folder {str} -- the subfodler where the images are stored
         """
         self.grid_len = img_shape[0] / 32
-        if self.grid_len % 2 != 0:
+        if img_shape[0] % 32 != 0:
             raise Exception(
                 'the image shape must have same height and width and be divisible per 32 ')
         self.grid_len = int(self.grid_len)
