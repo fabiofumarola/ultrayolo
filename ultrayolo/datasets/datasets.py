@@ -35,9 +35,9 @@ class BaseDataset(Sequence):
         """
 
         self.grid_len = img_shape[0] / 32
-        if self.grid_len % 2 != 0:
+        if img_shape[0] % 32 != 0:
             raise Exception(
-                f'the image {img_shape} shape must have same height and width and be divisible per 32 ')
+                f'the image {img_shape} shape must have same height and width and be divisible per 32')
         self.grid_len = int(self.grid_len)
         self.annotations_path = Path(annotations_path)
         self.base_path = self.annotations_path.parent
