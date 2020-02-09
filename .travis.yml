@@ -3,7 +3,7 @@ dist: bionic
 
 python:
   - 3.7
-# - 3.6
+  - 3.6
 
 befoore_install:
   - pip install --upgrade pip
