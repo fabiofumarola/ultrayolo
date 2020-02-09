@@ -9,5 +9,7 @@ include requirements_dev.txt
 recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
+recursive-exclude coco_dataset
+recursive-exclude notebooks
 
 recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif

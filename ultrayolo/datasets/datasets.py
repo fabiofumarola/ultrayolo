@@ -293,24 +293,26 @@ class CocoFormatDataset(Sequence):
         for doc in batch_images_doc:
             # process the image
             img_id = doc['id']
-            img_path = self.images_path / doc['file_name']
-            img = common.open_image(img_path)
-            batch_images.append(img)
+            if img_id in self.idx_annotations_doc:
+                img_path = self.images_path / doc['file_name']
+                img = common.open_image(img_path)
+                batch_images.append(img)
 
-            boxes = []
-            classes = []
-            for doc in self.idx_annotations_doc[img_id]:
-                boxes.append(self.__to_xymin_xymax(*doc['bbox']))
-                classes.append([doc['category_id']])
-            batch_boxes.append(np.array(boxes))
-            batch_classes.append(np.array(classes))
+                boxes = []
+                classes = []
+                
+                for doc in self.idx_annotations_doc[img_id]:
+                    boxes.append(self.__to_xymin_xymax(*doc['bbox']))
+                    classes.append([doc['category_id']])
+                batch_boxes.append(np.array(boxes))
+                batch_classes.append(np.array(classes))
 
         batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
                                                                         self.target_shape, self.max_objects, self.augmenters,
                                                                         self.pad_to_fixed_size)
 
         if self.is_training:
-            classes = [v[0] for v in self.classes]
+            classes = [np.float32(v[0]) for v in self.classes]
             batch_boxes = common.transform_target(
                 batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
                 self.num_classes, self.target_shape, classes

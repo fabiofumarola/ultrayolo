@@ -89,3 +89,27 @@ def test_coco_dataset():
             print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
             grid_len *= 2
+
+def test_coco_dataset_no_annotations():
+    ds = CocoFormatDataset(
+        annotations_path=BASE_PATH / 'coco_dataset_no_annotations.json',
+        img_shape=(256, 256, 3),
+        max_objects=10,
+        batch_size=2,
+        anchors=YoloV3.default_anchors,
+        anchor_masks=YoloV3.default_masks,
+        is_training=True,
+        augmenters=None,
+        pad_to_fixed_size=True,
+        images_folder='images'
+    )
+    assert len(ds) == 2
+
+    for images, grid_data in ds:
+        assert images.shape == (2, 256, 256, 3)
+        assert len(grid_data) == 3
+        grid_len = ds.grid_len
+        for grid in grid_data:
+            print(grid.shape)
+            assert grid.shape == (2, grid_len, grid_len, 3, 10)
+            grid_len *= 2

@@ -206,7 +206,7 @@ def __transform(image, augmenters, boxes=None):
         )
 
         image_aug, boxes_aug = augmenters(image=image, bounding_boxes=bbs)
-        return image_aug, boxes_aug.to_xyxy_array()
+        return image_aug, boxes_aug.to_xyxy_array().astype(np.float32)
     else:
         return augmenters(image=image)
 
@@ -299,26 +299,6 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
         boxes_aug = []
 
     return batch_processed.images_aug, boxes_aug
-
-    #     # transform back the boxes to the right form and add back the class
-    #     boxes_aug = []
-    #     for src_boxes, dst_boxes in zip(
-    #             batch_boxes, batch_processed.bounding_boxes_aug):
-    #         dst_boxes = dst_boxes.to_xyxy_array().tolist()
-    #         final_boxes = []
-    #         for src_row, dst_row in zip(src_boxes, dst_boxes):
-    #             dst_row.append(src_row[-1])
-    #             final_boxes.append(dst_row)
-
-    #         boxes_aug.append(final_boxes)
-
-    #     images_aug = batch_processed.images_aug
-    #     return images_aug, boxes_aug
-    # else:
-    #     batch = Batch(images=batch_images)
-    #     # process the data
-    #     batch_processed = augmenters.augment_batch(batch)
-    #     return batch_processed.images_aug
 
 
 def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
@@ -445,10 +425,9 @@ def prepare_batch(batch_images, batch_boxes, batch_classes, target_shape, max_ob
         batch_classes_pad = np.array([])
 
     # scale images
-    batch_images_pad = batch_images_pad / 255.
+    batch_images_pad = (batch_images_pad / 255.).astype(np.float32)
 
-    return batch_images_pad.astype(
-        np.float32), batch_boxes_pad, batch_classes_pad
+    return batch_images_pad, batch_boxes_pad, batch_classes_pad
 
 
 def to_center_width_height(boxes):

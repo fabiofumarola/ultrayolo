@@ -1,0 +1,192 @@
+{
+  "info": {
+    "description": "COCO test Dataset",
+    "url": "",
+    "version": "1.0",
+    "year": 2020,
+    "contributor": "Fabio",
+    "date_created": "2020/01/27"
+  },
+  "licenses": {
+    "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/",
+    "id": 1,
+    "name": "Attribution-NonCommercial-ShareAlike License"
+  },
+  "images": [
+    {
+      "license": 1,
+      "file_name": "AK65JZA-FORD-CAR_1.jpg",
+      "coco_url": "",
+      "height": 250,
+      "width": 502,
+      "date_captured": "2020-01-27 19:01:01",
+      "flickr_url": "",
+      "id": 0
+    },
+    {
+      "license": 1,
+      "file_name": "AK65JZA-FORD-CAR_0.jpg",
+      "coco_url": "",
+      "height": 251,
+      "width": 502,
+      "date_captured": "2020-01-27 19:01:01",
+      "flickr_url": "",
+      "id": 1
+    },
+    {
+      "license": 1,
+      "file_name": "car.jpg",
+      "coco_url": "",
+      "height": 1080,
+      "width": 1920,
+      "date_captured": "2020-01-27 19:01:01",
+      "flickr_url": "",
+      "id": 2
+    },
+    {
+      "license": 1,
+      "file_name": "BG55HWH-CITROEN_0.jpg",
+      "coco_url": "",
+      "height": 502,
+      "width": 502,
+      "date_captured": "2020-01-27 19:01:01",
+      "flickr_url": "",
+      "id": 3
+    }
+  ],
+  "annotations": [
+    {
+      "segmentation": [
+        [
+        0.0,
+        0.0,
+        442.0,
+        500.0
+        ]
+      ],
+      "area": 0,
+      "iscrowd": 0,
+      "image_id": 0,
+      "bbox": [
+        0.0,
+        0.0,
+        442.0,
+        500.0
+      ],
+      "category_id": 2,
+      "id": 1
+    },
+    {
+      "segmentation": [
+        [
+          0.0,
+          8.0,
+          517.0,
+          224.0
+        ]
+      ],
+      "area": 0,
+      "iscrowd": 0,
+      "image_id": 1,
+      "bbox": [
+        0.0,
+        8.0,
+        517.0,
+        224.0
+      ],
+      "category_id": 2,
+      "id": 2
+    },
+    {
+      "segmentation": [
+        [
+          87.0,
+          82.0,
+          536.0,
+          247.0
+        ]
+      ],
+      "area": 0,
+      "iscrowd": 0,
+      "image_id": 2,
+      "bbox": [
+        87.0,
+        82.0,
+        536.0,
+        247.0
+      ],
+      "category_id": 2,
+      "id": 3
+    },
+    {
+      "segmentation": [
+        [
+          0.0,
+          0.0,
+          492.0,
+          500.0
+        ]
+      ],
+      "area": 0,
+      "iscrowd": 0,
+      "image_id": 3,
+      "bbox": [
+        0.0,
+        0.0,
+        492.0,
+        500.0
+      ],
+
+      "category_id": 2,
+      "id": 4
+    },
+    {
+      "segmentation": [
+        [
+          0.0,
+          0.0,
+          442.0,
+          500.0
+        ]
+      ],
+      "area": 0,
+      "iscrowd": 0,
+      "image_id": 3,
+      "bbox": [
+        0.0,
+        0.0,
+        442.0,
+        500.0
+      ],
+      "category_id": 2,
+      "id": 5
+    }
+  ],
+  "categories": [
+    {
+      "supercategory": "thing",
+      "id": 0,
+      "name": "book"
+    },
+    {
+      "supercategory": "thing",
+      "id": 1,
+      "name": "bus"
+    },
+    {
+      "supercategory": "thing",
+      "id": 2,
+      "name": "car"
+    },
+    {
+      "supercategory": "thing",
+      "id": 3,
+      "name": "motorcycle"
+    },
+    {
+      "supercategory": "thing",
+      "id": 4,
+      "name": "vehicle registration plate"
+    }
+  ]
+}
