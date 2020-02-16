@@ -5,11 +5,8 @@ import tensorflow as tf
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Lambda
 from tensorflow.keras.optimizers import Adam, RMSprop, SGD
-from .layers.core import (
-    DarknetBody, ResNetBody, DenseNetBody,
-    MobileNetBody, YoloHead,
-    YoloOutput, DarknetBodyTiny
-)
+from .layers.core import (DarknetBody, ResNetBody, DenseNetBody, MobileNetBody,
+                          YoloHead, YoloOutput, DarknetBodyTiny)
 
 from . import losses, helpers
 from .helpers import darknet
@@ -21,8 +18,8 @@ logger.setLevel(logging.INFO)
 
 
 @tf.function
-def non_max_suppression(outputs, anchors, masks, classes,
-                        iou_threshold, score_threshold, max_boxes_per_image, img_size):
+def non_max_suppression(outputs, anchors, masks, classes, iou_threshold,
+                        score_threshold, max_boxes_per_image, img_size):
     """an implementation of non max suppression
 
     Arguments:
@@ -54,22 +51,26 @@ def non_max_suppression(outputs, anchors, masks, classes,
 
     boxes, scores, classes, valid_detections = tf.image.combined_non_max_suppression(
         boxes=tf.reshape(bbox, (tf.shape(bbox)[0], -1, 1, 4)),
-        scores=tf.reshape(
-            scores, (tf.shape(scores)[0], -1, tf.shape(scores)[-1])),
+        scores=tf.reshape(scores,
+                          (tf.shape(scores)[0], -1, tf.shape(scores)[-1])),
         max_output_size_per_class=max_boxes_per_image,
         max_total_size=max_boxes_per_image,
         iou_threshold=iou_threshold,
-        score_threshold=score_threshold
-    )
+        score_threshold=score_threshold)
 
     return tf.math.ceil(boxes * img_size), scores, classes, valid_detections
 
 
 class BaseModel(object):
 
-    def __init__(self, img_shape=(None, None, 3), max_objects=100,
-                 iou_threshold=0.7, score_threshold=0.7,
-                 anchors=None, num_classes=80, training=False):
+    def __init__(self,
+                 img_shape=(None, None, 3),
+                 max_objects=100,
+                 iou_threshold=0.7,
+                 score_threshold=0.7,
+                 anchors=None,
+                 num_classes=80,
+                 training=False):
         self.img_shape = img_shape
         self.max_objects = max_objects
         self.iou_threshold = iou_threshold
@@ -113,8 +114,9 @@ class BaseModel(object):
             list -- a list of the loss function for each mask
         """
         if self.loss_function is None:
-            self.loss_function = losses.make_loss(self.num_classes, self.anchors,
-                                                  self.masks, self.img_shape[0])
+            self.loss_function = losses.make_loss(self.num_classes,
+                                                  self.anchors, self.masks,
+                                                  self.img_shape[0])
 
         return self.loss_function
 
@@ -137,8 +139,10 @@ class BaseModel(object):
         elif optimizer_name == 'rmsprop':
             return RMSprop(learning_rate=lrate, clipvalue=1)
         elif optimizer_name == 'sgd':
-            return SGD(learning_rate=lrate, momentum=0.95,
-                       nesterov=True, clipvalue=1)
+            return SGD(learning_rate=lrate,
+                       momentum=0.95,
+                       nesterov=True,
+                       clipvalue=1)
         else:
             raise Exception(f'not valid optimizer {optimizer_name}')
 
@@ -179,8 +183,14 @@ class BaseModel(object):
         if summary:
             self.model.summary()
 
-    def fit(self, train_dataset, val_dataset, epochs, initial_epoch=0,
-            callbacks=None, workers=1, max_queue_size=64):
+    def fit(self,
+            train_dataset,
+            val_dataset,
+            epochs,
+            initial_epoch=0,
+            callbacks=None,
+            workers=1,
+            max_queue_size=64):
         """train the model
 
         Arguments:
@@ -198,18 +208,23 @@ class BaseModel(object):
             [type] -- [description]
         """
 
-        logger.info('training for %s epochs on the dataset %s',
-                    epochs, str(train_dataset.base_path.absolute()))
+        logger.info('training for %s epochs on the dataset %s', epochs,
+                    str(train_dataset.base_path.absolute()))
         if workers == -1:
             workers = multiprocessing.cpu_count()
 
         use_multiprocessing = False
         if workers > 1:
             use_multiprocessing = True
-            
-        return self.model.fit(train_dataset, epochs=epochs, validation_data=val_dataset,
-                              callbacks=callbacks, workers=workers, use_multiprocessing=use_multiprocessing,
-                              max_queue_size=64, initial_epoch=initial_epoch)
+
+        return self.model.fit(train_dataset,
+                              epochs=epochs,
+                              validation_data=val_dataset,
+                              callbacks=callbacks,
+                              workers=workers,
+                              use_multiprocessing=use_multiprocessing,
+                              max_queue_size=64,
+                              initial_epoch=initial_epoch)
 
     def save(self, path, save_format='h5'):
         """save the model to the given path
@@ -231,13 +246,19 @@ class YoloV3(BaseModel):
 
     default_masks = np.array([[6, 7, 8], [3, 4, 5], [0, 1, 2]])
 
-    default_anchors = np.array([(10, 13), (16, 30), (33, 23), (30, 61), (62, 45),
-                                (59, 119), (116, 90), (156, 198), (373, 326)],
-                               np.float32)
+    default_anchors = np.array([(10, 13), (16, 30), (33, 23), (30, 61),
+                                (62, 45), (59, 119), (116, 90), (156, 198),
+                                (373, 326)], np.float32)
 
-    def __init__(self, img_shape=(None, None, 3), max_objects=100,
-                 iou_threshold=0.5, score_threshold=0.7,
-                 anchors=None, num_classes=80, training=False, backbone='DarkNet'):
+    def __init__(self,
+                 img_shape=(None, None, 3),
+                 max_objects=100,
+                 iou_threshold=0.5,
+                 score_threshold=0.7,
+                 anchors=None,
+                 num_classes=80,
+                 training=False,
+                 backbone='DarkNet'):
         """The class that implement yolo v3
 
         Keyword Arguments:
@@ -285,61 +306,66 @@ class YoloV3(BaseModel):
         anchors_scaled = self.anchors_scaled.copy()
 
         x = YoloHead(x, 512, name='yolo_head_0')
-        output0 = YoloOutput(
-            x, 512, len(
-                masks[0]), num_classes, name='yolo_output_0')
+        output0 = YoloOutput(x,
+                             512,
+                             len(masks[0]),
+                             num_classes,
+                             name='yolo_output_0')
 
         x = YoloHead((x, x61), 256, name='yolo_head_1')
-        output1 = YoloOutput(
-            x, 256, len(
-                masks[1]), num_classes, name='yolo_output_1')
+        output1 = YoloOutput(x,
+                             256,
+                             len(masks[1]),
+                             num_classes,
+                             name='yolo_output_1')
 
         x = YoloHead((x, x36), 128, name='yolo_head_2')
-        output2 = YoloOutput(
-            x, 128, len(
-                masks[2]), num_classes, name='yolo_output_2')
+        output2 = YoloOutput(x,
+                             128,
+                             len(masks[2]),
+                             num_classes,
+                             name='yolo_output_2')
 
         if training:
-            self.model = Model(
-                inputs, [output0, output1, output2], name='yolov3')
+            self.model = Model(inputs, [output0, output1, output2],
+                               name='yolov3')
         else:
-            boxes0 = Lambda(
-                lambda x: losses.process_predictions(
-                    x, num_classes, tf.gather(anchors_scaled, masks[0])),
-                name='yolo_boxes_0'
-            )(output0)
+            boxes0 = Lambda(lambda x: losses.process_predictions(
+                x, num_classes, tf.gather(anchors_scaled, masks[0])),
+                            name='yolo_boxes_0')(output0)
 
-            boxes1 = Lambda(
-                lambda x: losses.process_predictions(
-                    x, num_classes, tf.gather(anchors_scaled, masks[1])),
-                name='yolo_boxes_1'
-            )(output1)
+            boxes1 = Lambda(lambda x: losses.process_predictions(
+                x, num_classes, tf.gather(anchors_scaled, masks[1])),
+                            name='yolo_boxes_1')(output1)
 
-            boxes2 = Lambda(
-                lambda x: losses.process_predictions(
-                    x, num_classes, tf.gather(anchors_scaled, masks[2])),
-                name='yolo_boxes_2'
-            )(output2)
+            boxes2 = Lambda(lambda x: losses.process_predictions(
+                x, num_classes, tf.gather(anchors_scaled, masks[2])),
+                            name='yolo_boxes_2')(output2)
 
             outputs = Lambda(lambda x: non_max_suppression(
-                x, anchors_scaled, masks, num_classes, iou_threshold, score_threshold, max_objects, img_shape[
-                    0]
-            ), name='yolo_nms')((boxes0[:3], boxes1[:3], boxes2[:3]))
+                x, anchors_scaled, masks, num_classes, iou_threshold,
+                score_threshold, max_objects, img_shape[0]),
+                             name='yolo_nms')(
+                                 (boxes0[:3], boxes1[:3], boxes2[:3]))
 
             self.model = Model(inputs, outputs, name='yolov3')
 
 
 class YoloV3Tiny(BaseModel):
 
-    default_anchors = np.array([(10, 14), (23, 27), (37, 58),
-                                (81, 82), (135, 169), (344, 319)],
-                               np.float32)
+    default_anchors = np.array([(10, 14), (23, 27), (37, 58), (81, 82),
+                                (135, 169), (344, 319)], np.float32)
 
     default_masks = np.array([[3, 4, 5], [0, 1, 2]])
 
-    def __init__(self, img_shape=(None, None, 3), max_objects=100,
-                 iou_threshold=0.7, score_threshold=0.7,
-                 anchors=None, num_classes=80, training=False):
+    def __init__(self,
+                 img_shape=(None, None, 3),
+                 max_objects=100,
+                 iou_threshold=0.7,
+                 score_threshold=0.7,
+                 anchors=None,
+                 num_classes=80,
+                 training=False):
         """The class that implement yolo v3 tiny
 
         Keyword Arguments:
@@ -366,31 +392,34 @@ class YoloV3Tiny(BaseModel):
         x8, x = DarknetBodyTiny(name='DarkNet')(x)
 
         x = YoloHead(x, 256, name='yolo_head_0', is_tiny=True)
-        output0 = YoloOutput(x, 256, len(
-            self.masks[0]), self.num_classes, name='yolo_output_0')
+        output0 = YoloOutput(x,
+                             256,
+                             len(self.masks[0]),
+                             self.num_classes,
+                             name='yolo_output_0')
 
         x = YoloHead((x, x8), 128, name='yolo_head_1', is_tiny=True)
-        output1 = YoloOutput(x, 128, len(
-            self.masks[1]), self.num_classes, name='yolo_output_1')
+        output1 = YoloOutput(x,
+                             128,
+                             len(self.masks[1]),
+                             self.num_classes,
+                             name='yolo_output_1')
 
         if training:
             self.model = Model(inputs, [output0, output1], name='yolov3')
         else:
-            boxes0 = Lambda(
-                lambda x: losses.process_predictions(
-                    x, self.num_classes, self.anchors_scaled[self.masks[0]]),
-                name='yolo_boxes_0'
-            )(output0)
+            boxes0 = Lambda(lambda x: losses.process_predictions(
+                x, self.num_classes, self.anchors_scaled[self.masks[0]]),
+                            name='yolo_boxes_0')(output0)
 
-            boxes1 = Lambda(
-                lambda x: losses.process_predictions(
-                    x, self.num_classes, self.anchors_scaled[self.masks[1]]),
-                name='yolo_boxes_1'
-            )(output1)
+            boxes1 = Lambda(lambda x: losses.process_predictions(
+                x, self.num_classes, self.anchors_scaled[self.masks[1]]),
+                            name='yolo_boxes_1')(output1)
 
             outputs = Lambda(lambda x: non_max_suppression(
-                x, self.anchors_scaled, self.masks, self.num_classes, self.iou_threshold, self.score_threshold, self.max_objects, self.img_shape[
-                    0]
-            ), name='yolo_nms')((boxes0[:3], boxes1[:3]))
+                x, self.anchors_scaled, self.masks, self.num_classes, self.
+                iou_threshold, self.score_threshold, self.max_objects, self.
+                img_shape[0]),
+                             name='yolo_nms')((boxes0[:3], boxes1[:3]))
 
             self.model = Model(inputs, outputs, name='yolov3_tiny')

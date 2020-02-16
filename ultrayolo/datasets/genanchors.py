@@ -3,36 +3,36 @@ import random
 from pathlib import Path
 from argparse import ArgumentParser
 from . import common
-
+from .datasetmode import DatasetMode
+from .datasets import YoloDatasetMultiFile, YoloDatasetSingleFile, CocoFormatDataset
+from tqdm.autonotebook import tqdm
 np.random.seed = 42
 
+# def prepare_single_file(filepath):
+#     filepath = Path(filepath)
 
-def prepare_single_file(filepath):
-    filepath = Path(filepath)
+#     lines = filepath.read_text().strip().split('\n')
+#     boxes, _ = common.parse_boxes_batch(lines)
+#     boxes_xywh = np.concatenate(
+#         [common.to_center_width_height(b) for b in boxes])
 
-    lines = filepath.read_text().strip().split('\n')
-    boxes, _ = common.parse_boxes_batch(lines)
-    boxes_xywh = np.concatenate(
-        [common.to_center_width_height(b) for b in boxes])
+#     return boxes_xywh
 
-    return boxes_xywh
+# def prepare_multi_file(filepath):
+#     if not isinstance(filepath, Path):
+#         filepath = Path(filepath)
 
-
-def prepare_multi_file(filepath):
-    if not isinstance(filepath, Path):
-        filepath = Path(filepath)
-
-    images_name = filepath.read_text().strip().split('\n')
-    annotations = []
-    for img_name in images_name:
-        annotation_name = img_name.split('.')[0] + '.txt'
-        annotation_path = filepath.parent / 'annotations' / annotation_name
-        annotations.append(annotation_path)
-    boxes, _ = common.open_boxes_batch(annotations)
-    boxes = np.concatenate(boxes, axis=0)
-    boxes_xywh = np.array(
-        [common.to_center_width_height(b) for b in boxes])
-    return boxes_xywh
+#     images_name = filepath.read_text().strip().split('\n')
+#     annotations = []
+#     for img_name in images_name:
+#         annotation_name = img_name.split('.')[0] + '.txt'
+#         annotation_path = filepath.parent / 'annotations' / annotation_name
+#         annotations.append(annotation_path)
+#     boxes, _ = common.open_boxes_batch(annotations)
+#     boxes = np.concatenate(boxes, axis=0)
+#     boxes_xywh = np.array(
+#         [common.to_center_width_height(b) for b in boxes])
+#     return boxes_xywh
 
 
 def save_anchors(outfilename, anchors):
@@ -53,7 +53,7 @@ class AnchorsGenerator(object):
         self.scaling_factor = scaling_factor
         self.dist_fn = dist_fn
 
-    def iou(self, boxes, clusters):  # 1 box -> k clusters
+    def iou(self, boxes, clusters):    # 1 box -> k clusters
         n = boxes.shape[0]
         k = self.num_clusters
 
@@ -95,8 +95,8 @@ class AnchorsGenerator(object):
                 break
 
             for cl_id in range(self.num_clusters):
-                clusters[cl_id] = self.dist_fn(
-                    boxes[current_nearest == cl_id], axis=0)
+                clusters[cl_id] = self.dist_fn(boxes[current_nearest == cl_id],
+                                               axis=0)
 
             last_nearest = current_nearest
 
@@ -106,31 +106,84 @@ class AnchorsGenerator(object):
         return anchors
 
 
-def gen_anchors(annotations_path, num_clusters, multifile, scaling_factor=1.0):
-    if multifile:
-        data = prepare_multi_file(annotations_path)
-    else:
-        data = prepare_single_file(annotations_path)
+def prepare_data(annotations_path, image_shape, datasetmode):
+    """read a dataset and transform it into a list of boxes
+    
+    Arguments:
+        annotations_path {str} -- the path
+        image_shape {[type]} -- [description]
+        datasetmode {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if datasetmode == 'singlefile':
+        dataset = YoloDatasetSingleFile(annotations_path, image_shape, 20, 1,
+                                        None, None, False)
+    elif datasetmode == 'multifile':
+        dataset = YoloDatasetMultiFile(annotations_path, image_shape, 20, 1,
+                                       None, None, False)
+    elif datasetmode == 'coco':
+        dataset = CocoFormatDataset(annotations_path, image_shape, 20, 1, None,
+                                    None, False)
+
+    boxes = []
+    for _, batch_boxes, _ in tqdm(dataset):
+        for box in common.to_center_width_height(batch_boxes[0]):
+            if np.sum(box) > 0:
+                boxes.append(box)
+    boxes = np.array(boxes)
+    return boxes
+
+
+def gen_anchors(boxes_xywh, num_clusters, scaling_factor=1.1):
+    """generate anchors
+    
+    Arguments:
+        boxes_xywh {np.ndarray} -- the boxes used to crreate the anchors
+        num_clusters {int} -- the number of clusters to generate
+    
+    Keyword Arguments:
+        scaling_factor {float} -- a multiplicator factor to increase thebox size (default: {1.0})
+    
+    Returns:
+        [type] -- [description]
+    """
+    print(boxes_xywh)
     model = AnchorsGenerator(num_clusters, scaling_factor)
-    anchors = model.fit(data)
+    anchors = model.fit(boxes_xywh)
     return anchors
 
 
 if __name__ == '__main__':
     parser = ArgumentParser("generate the anchors from the dataset boxes")
     parser.add_argument('--dataset', type=str, help='the path to the dataset')
-    parser.add_argument('--num_clusters', type=int,
-                        default=9, help='the number of centroids')
+    parser.add_argument('--num_clusters',
+                        type=int,
+                        default=9,
+                        help='the number of centroids')
+    parser.add_argument('--outfilename',
+                        help='the filename where the anchors are saved')
     parser.add_argument(
-        '--outfilename', help='the filename where the anchors are saved')
-    parser.add_argument('--scaling_factor', type=int, default=1,
-                        help='change this value to a value lower than 1 when you need scale the boxe sizes')
-    parser.add_argument('--multifile', action='store_true',
-                        help='select to use the multifile style dataset as input')
+        '--scaling_factor',
+        type=int,
+        default=1.1,
+        help=
+        'change this value to a value lower than 1 when you need scale the boxe sizes'
+    )
+    parser.add_argument('--datasetmode',
+                        type=DatasetMode,
+                        choices=list(DatasetMode),
+                        required=True,
+                        help='Select the mode of the dataset')
+    parser.add_argument('--image_shape',
+                        nargs='+',
+                        type=int,
+                        default=[608, 608, 3],
+                        help='The shape of the images as (Width, Heigth, 3)')
 
     args = parser.parse_args()
-    multifile = args.multifile
-    anchors = gen_anchors(
-        args.dataset, args.num_clusters,
-        multifile, args.scaling_factor)
+    print(type(args), args)
+    boxes_xywh = prepare_data(args.dataset, args.image_shape, args.datasetmode)
+    anchors = gen_anchors(boxes_xywh, args.num_clusters, args.scaling_factor)
     save_anchors(args.outfilename, anchors)

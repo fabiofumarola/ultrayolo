@@ -13,13 +13,15 @@ def show_img(im, figsize=None, ax=None):
 
 
 def outline(o, lw):
-    o.set_path_effects([patheffects.Stroke(
-        linewidth=lw, foreground='black'), patheffects.Normal()])
+    o.set_path_effects([
+        patheffects.Stroke(linewidth=lw, foreground='black'),
+        patheffects.Normal()
+    ])
 
 
 def point(ax, xy, color='red'):
-    ax.add_patch(patches.Circle(
-        xy, fill=True, edgecolor=color, color=color, lw=0))
+    ax.add_patch(
+        patches.Circle(xy, fill=True, edgecolor=color, color=color, lw=0))
 
 
 def rect(ax, b, color='#9cff1d', lw=4):
@@ -30,15 +32,24 @@ def rect(ax, b, color='#9cff1d', lw=4):
     b: a bounding box of type (x_min, y_min, x_max, y_max)
 
     """
-    patch = ax.add_patch(patches.Rectangle(
-        b[:2], boundingbox_width(b), boundingbox_height(b), fill=False, edgecolor=color, lw=2))
+    patch = ax.add_patch(
+        patches.Rectangle(b[:2],
+                          boundingbox_width(b),
+                          boundingbox_height(b),
+                          fill=False,
+                          edgecolor=color,
+                          lw=2))
     outline(patch, lw)
 
 
 def text(ax, xy, txt, sz=14):
     xy = xy - [0, 10]
-    text = ax.text(*xy, txt, verticalalignment='top',
-                   color='white', fontsize=sz, weight='bold')
+    text = ax.text(*xy,
+                   txt,
+                   verticalalignment='top',
+                   color='white',
+                   fontsize=sz,
+                   weight='bold')
     outline(text, 1)
 
 

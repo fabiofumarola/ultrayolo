@@ -1,6 +1,4 @@
-from .callbacks import (
-    save_model, lr_scheduler, default_callbacks
-)
+from .callbacks import (save_model, lr_scheduler, default_callbacks)
 from datetime import datetime
 from pathlib import Path
 import tensorflow as tf
@@ -33,4 +31,3 @@ def unfreeze_checkpoint(path):
     m = tf.keras.models.load_model(path, compile=False)
     m.trainable = True
     m.save(path)
-    
