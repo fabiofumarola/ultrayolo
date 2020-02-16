@@ -34,12 +34,12 @@ def test_gen_anchors_coco():
     assert len(anchors) > 0
 
 
-def test_gen_anchors_singlefile():
-    path = BASE_PATH / 'annotations.txt'
-    boxes_xywh = genanchors.prepare_data(path, (512, 512, 3), 'singlefile')
-    anchors = genanchors.gen_anchors(boxes_xywh, 3, True)
-    print(anchors)
-    assert len(anchors) > 0
+# def test_gen_anchors_singlefile():
+#     path = BASE_PATH / 'annotations.txt'
+#     boxes_xywh = genanchors.prepare_data(path, (512, 512, 3), 'singlefile')
+#     anchors = genanchors.gen_anchors(boxes_xywh, 3, True)
+#     print(anchors)
+#     assert len(anchors) > 0
 
 
 def test_gen_anchors_multifile():
