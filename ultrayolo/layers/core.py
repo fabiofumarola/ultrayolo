@@ -1,16 +1,12 @@
 import tensorflow as tf
-from tensorflow.keras.layers import (
-    ZeroPadding2D, Conv2D, LeakyReLU,
-    Add, MaxPool2D, BatchNormalization,
-    UpSampling2D, Concatenate, Lambda
-)
+from tensorflow.keras.layers import (ZeroPadding2D, Conv2D, LeakyReLU, Add,
+                                     MaxPool2D, BatchNormalization,
+                                     UpSampling2D, Concatenate, Lambda)
 from tensorflow.keras.regularizers import l1_l2
 from tensorflow.keras import Input, Model
-from tensorflow.keras.applications import (
-    ResNet50V2, ResNet101V2, ResNet152V2,
-    DenseNet121, DenseNet169, DenseNet201,
-    MobileNetV2
-)
+from tensorflow.keras.applications import (ResNet50V2, ResNet101V2, ResNet152V2,
+                                           DenseNet121, DenseNet169,
+                                           DenseNet201, MobileNetV2)
 
 
 def DarknetConv(x, filters, kernel, batch_norm, downsample):
@@ -35,11 +31,13 @@ def DarknetConv(x, filters, kernel, batch_norm, downsample):
         padding = 'same'
         strides = 1
 
-    x = Conv2D(filters=filters, kernel_size=kernel,
-               strides=strides, padding=padding,
-               use_bias=not batch_norm, kernel_regularizer=l1_l2(0.0005, 0.0005),
-               kernel_initializer=tf.random_normal_initializer(stddev=0.01)
-               )(x)
+    x = Conv2D(filters=filters,
+               kernel_size=kernel,
+               strides=strides,
+               padding=padding,
+               use_bias=not batch_norm,
+               kernel_regularizer=l1_l2(0.0005, 0.0005),
+               kernel_initializer=tf.random_normal_initializer(stddev=0.01))(x)
     if batch_norm:
         x = BatchNormalization()(x)
         x = LeakyReLU(alpha=.1)(x)
@@ -58,10 +56,16 @@ def DarknetResidual(x, filters):
         tf.tensor -- the output tensor
     """
     input_ = x
-    x = DarknetConv(x, filters=filters, kernel=1,
-                    batch_norm=True, downsample=False)
-    x = DarknetConv(x, filters=filters * 2, kernel=3,
-                    batch_norm=True, downsample=False)
+    x = DarknetConv(x,
+                    filters=filters,
+                    kernel=1,
+                    batch_norm=True,
+                    downsample=False)
+    x = DarknetConv(x,
+                    filters=filters * 2,
+                    kernel=3,
+                    batch_norm=True,
+                    downsample=False)
     x = Add()([input_, x])
     return x
 
@@ -96,8 +100,7 @@ def DarknetBody(name=None):
         x = DarknetResidual(x, filters=256)
     x = x61 = x
 
-    x = DarknetConv(x, filters=1024, kernel=3,
-                    batch_norm=True, downsample=True)
+    x = DarknetConv(x, filters=1024, kernel=3, batch_norm=True, downsample=True)
     for _ in range(4):
         x = DarknetResidual(x, filters=512)
 
@@ -123,14 +126,11 @@ def ResNetBody(input_shape, version='ResNet50V2', num_branches=3):
         tensorflow.keras.Model  --
     """
     if version == 'ResNet50V2':
-        model = ResNet50V2(
-            input_shape=input_shape, include_top=False)
+        model = ResNet50V2(input_shape=input_shape, include_top=False)
     elif version == 'ResNet101V2':
-        model = ResNet101V2(
-            input_shape=input_shape, include_top=False)
+        model = ResNet101V2(input_shape=input_shape, include_top=False)
     elif version == 'ResNet152V2':
-        model = ResNet152V2(
-            input_shape=input_shape, include_top=False)
+        model = ResNet152V2(input_shape=input_shape, include_top=False)
     else:
         msg = f'invalid value {version} for the class name'
         raise Exception(msg)
@@ -167,14 +167,11 @@ def DenseNetBody(input_shape, version='DenseNet121', num_branches=3):
         tensorflow.keras.Model  --
     """
     if version == 'DenseNet121':
-        model = DenseNet121(
-            input_shape=input_shape, include_top=False)
+        model = DenseNet121(input_shape=input_shape, include_top=False)
     elif version == 'DenseNet169':
-        model = DenseNet169(
-            input_shape=input_shape, include_top=False)
+        model = DenseNet169(input_shape=input_shape, include_top=False)
     elif version == 'DenseNet201':
-        model = DenseNet201(
-            input_shape=input_shape, include_top=False)
+        model = DenseNet201(input_shape=input_shape, include_top=False)
     else:
         msg = f'invalid value {version} for the class name'
         raise Exception(msg)
@@ -210,8 +207,7 @@ def MobileNetBody(input_shape, version='MobileNetV2', num_branches=3):
         tensorflow.keras.Model  --
     """
     if version == 'MobileNetV2':
-        model = MobileNetV2(
-            input_shape=input_shape, include_top=False)
+        model = MobileNetV2(input_shape=input_shape, include_top=False)
 
         inputs = model.input
         x36 = model.get_layer('block_5_add').output
@@ -244,17 +240,21 @@ def DarknetBodyTiny(name=None):
     x = MaxPool2D(2, 2, 'same')(x)
     x = DarknetConv(x, filters=64, kernel=3, batch_norm=True, downsample=False)
     x = MaxPool2D(2, 2, 'same')(x)
-    x = DarknetConv(x, filters=128, kernel=3,
-                    batch_norm=True, downsample=False)
+    x = DarknetConv(x, filters=128, kernel=3, batch_norm=True, downsample=False)
     x = MaxPool2D(2, 2, 'same')(x)
-    x = x_8 = DarknetConv(x, filters=256, kernel=3,
-                          batch_norm=True, downsample=False)  # skip connection
+    x = x_8 = DarknetConv(x,
+                          filters=256,
+                          kernel=3,
+                          batch_norm=True,
+                          downsample=False)    # skip connection
     x = MaxPool2D(2, 2, 'same')(x)
-    x = DarknetConv(x, filters=512, kernel=3,
-                    batch_norm=True, downsample=False)
+    x = DarknetConv(x, filters=512, kernel=3, batch_norm=True, downsample=False)
     x = MaxPool2D(2, 1, 'same')(x)
-    x = DarknetConv(x, filters=1024, kernel=3,
-                    batch_norm=True, downsample=False)
+    x = DarknetConv(x,
+                    filters=1024,
+                    kernel=3,
+                    batch_norm=True,
+                    downsample=False)
     return Model(inputs, [x_8, x], name=name)
 
 
@@ -265,8 +265,11 @@ def YoloHead(x_inputs, filters, name=None, is_tiny=False):
         inputs = x, x_skip
 
         # concat with skip connection
-        x = DarknetConv(x, filters=filters, kernel=1,
-                        batch_norm=True, downsample=False)
+        x = DarknetConv(x,
+                        filters=filters,
+                        kernel=1,
+                        batch_norm=True,
+                        downsample=False)
         x = UpSampling2D(2)(x)
         x = Concatenate()([x, x_skip])
     else:
@@ -274,24 +277,35 @@ def YoloHead(x_inputs, filters, name=None, is_tiny=False):
 
     i = 3 if not is_tiny else 1
     for j in range(i):
-        x = DarknetConv(x, filters=filters, kernel=1,
-                        batch_norm=True, downsample=False)
+        x = DarknetConv(x,
+                        filters=filters,
+                        kernel=1,
+                        batch_norm=True,
+                        downsample=False)
         if j < i - 1:
-            x = DarknetConv(x, filters=filters * 2, kernel=3,
-                            batch_norm=True, downsample=False)
+            x = DarknetConv(x,
+                            filters=filters * 2,
+                            kernel=3,
+                            batch_norm=True,
+                            downsample=False)
 
     return Model(inputs, x, name=name)(x_inputs)
 
 
 def YoloOutput(x_in, filters, num_mask, num_classes, name=None):
     x = input_ = Input(x_in.shape[1:])
-    x = DarknetConv(x, filters=filters * 2, kernel=3,
-                    batch_norm=True, downsample=False)
-    x = DarknetConv(x, filters=num_mask * (5 + num_classes),
-                    kernel=1, batch_norm=False, downsample=False)
-    x = Lambda(lambda x: tf.reshape(x,
-                                    (-1, tf.shape(x)[1], tf.shape(x)[2],
-                                     num_mask, 5 + num_classes)))(x)
+    x = DarknetConv(x,
+                    filters=filters * 2,
+                    kernel=3,
+                    batch_norm=True,
+                    downsample=False)
+    x = DarknetConv(x,
+                    filters=num_mask * (5 + num_classes),
+                    kernel=1,
+                    batch_norm=False,
+                    downsample=False)
+    x = Lambda(lambda x: tf.reshape(x, (-1, tf.shape(x)[1], tf.shape(x)[2],
+                                        num_mask, 5 + num_classes)))(x)
     # add this layers to replace all the nan with 0
     x = Lambda(lambda w: tf.where(tf.math.is_nan(w), tf.zeros_like(w), w))(x)
 

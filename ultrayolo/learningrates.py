@@ -51,6 +51,7 @@ def cyclic_learning_rate(learning_rate=0.01,
             factor of: gamma^global_step.
 
     """
+
     def cyclic_lr(step):
         # computing: cycle = floor( 1 + global_step / ( 2 * step_size ) )
         cycle = math.floor(1 + step / (2 * step_size))

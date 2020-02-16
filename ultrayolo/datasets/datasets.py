@@ -1,4 +1,3 @@
-from tensorflow.keras.utils import Sequence
 from pathlib import Path
 import numpy as np
 import math
@@ -6,12 +5,21 @@ import json
 from . import common
 import logging
 from tqdm import tqdm
+import tensorflow as tf
 
 
-class BaseDataset(Sequence):
+class BaseDataset(tf.keras.utils.Sequence):
 
-    def __init__(self, annotations_path, img_shape, max_objects, batch_size, anchors, anchor_masks,
-                 is_training=True, augmenters=None, pad_to_fixed_size=True):
+    def __init__(self,
+                 annotations_path,
+                 img_shape,
+                 max_objects,
+                 batch_size,
+                 anchors,
+                 anchor_masks,
+                 is_training=True,
+                 augmenters=None,
+                 pad_to_fixed_size=True):
         """Create a dataset that expects
         An Annotation file with image_name, boxes
 
@@ -37,7 +45,8 @@ class BaseDataset(Sequence):
         self.grid_len = img_shape[0] / 32
         if img_shape[0] % 32 != 0:
             raise Exception(
-                f'the image {img_shape} shape must have same height and width and be divisible per 32')
+                f'the image {img_shape} shape must have same height and width and be divisible per 32'
+            )
         self.grid_len = int(self.grid_len)
         self.annotations_path = Path(annotations_path)
         self.base_path = self.annotations_path.parent
@@ -50,12 +59,14 @@ class BaseDataset(Sequence):
         self.target_shape = img_shape
         self.batch_size = batch_size
 
-        self.classes = list(enumerate(common.load_classes(self.base_path / 'classes.txt')))
+        self.classes = list(
+            enumerate(common.load_classes(self.base_path / 'classes.txt')))
         self.num_classes = len(self.classes)
 
         # add scaling for the anchors
         self.anchors = anchors
-        self.anchors_scaled = anchors.astype(np.float32) / img_shape[0]
+        if anchors is not None:
+            self.anchors_scaled = anchors.astype(np.float32) / img_shape[0]
         self.anchor_masks = anchor_masks
         self.is_training = is_training
         self.max_objects = max_objects
@@ -65,8 +76,16 @@ class BaseDataset(Sequence):
 
 class YoloDatasetSingleFile(BaseDataset):
 
-    def __init__(self, annotations_path, img_shape, max_objects, batch_size, anchors, anchor_masks,
-                 is_training=True, augmenters=None, pad_to_fixed_size=True):
+    def __init__(self,
+                 annotations_path,
+                 img_shape,
+                 max_objects,
+                 batch_size,
+                 anchors,
+                 anchor_masks,
+                 is_training=True,
+                 augmenters=None,
+                 pad_to_fixed_size=True):
         """Create a dataset that expects
         An Annotation file with image_name, boxes
 
@@ -88,8 +107,9 @@ class YoloDatasetSingleFile(BaseDataset):
         Returns:
             tensorflow.keras.utils.Sequence -- a dataset sequence
         """
-        super().__init__(annotations_path, img_shape, max_objects, batch_size, anchors,
-                         anchor_masks, is_training, augmenters, pad_to_fixed_size)
+        super().__init__(annotations_path, img_shape, max_objects, batch_size,
+                         anchors, anchor_masks, is_training, augmenters,
+                         pad_to_fixed_size)
         self.lines = annotations_path.read_text().strip().split('\n')
         np.random.shuffle(self.lines)
 
@@ -117,16 +137,18 @@ class YoloDatasetSingleFile(BaseDataset):
             batch_boxes.append(boxes)
             batch_classes.append(classes)
 
-        batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
-                                                                        self.target_shape, self.max_objects, self.augmenters,
-                                                                        self.pad_to_fixed_size)
+        batch_images, batch_boxes, batch_classes = common.prepare_batch(
+            batch_images, batch_boxes, batch_classes, self.target_shape,
+            self.max_objects, self.augmenters, self.pad_to_fixed_size)
 
         if self.is_training:
             classes = [v[0] for v in self.classes]
-            batch_boxes = common.transform_target(
-                batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape, classes
-            )
+            batch_boxes = common.transform_target(batch_boxes, batch_classes,
+                                                  self.anchors_scaled,
+                                                  self.anchor_masks,
+                                                  self.grid_len,
+                                                  self.num_classes,
+                                                  self.target_shape, classes)
             return batch_images, batch_boxes
         else:
             return batch_images, batch_boxes, batch_classes
@@ -134,8 +156,16 @@ class YoloDatasetSingleFile(BaseDataset):
 
 class YoloDatasetMultiFile(BaseDataset):
 
-    def __init__(self, annotations_path, img_shape, max_objects, batch_size, anchors, anchor_masks,
-                 is_training=True, augmenters=None, pad_to_fixed_size=True):
+    def __init__(self,
+                 annotations_path,
+                 img_shape,
+                 max_objects,
+                 batch_size,
+                 anchors,
+                 anchor_masks,
+                 is_training=True,
+                 augmenters=None,
+                 pad_to_fixed_size=True):
         """Create a dataset that expectes
         An Annotation file with image_name, boxes
 
@@ -157,8 +187,9 @@ class YoloDatasetMultiFile(BaseDataset):
         Returns:
             tensorflow.keras.utils.Sequence -- a dataset sequence
         """
-        super().__init__(annotations_path, img_shape, max_objects, batch_size, anchors,
-                         anchor_masks, is_training, augmenters, pad_to_fixed_size)
+        super().__init__(annotations_path, img_shape, max_objects, batch_size,
+                         anchors, anchor_masks, is_training, augmenters,
+                         pad_to_fixed_size)
 
         # contains all the images name in the dataset
         image_names = self.annotations_path.read_text().strip().split('\n')
@@ -186,34 +217,44 @@ class YoloDatasetMultiFile(BaseDataset):
     def __getitem__(self, idx):
         start = idx * self.batch_size
         stop = (idx + 1) * self.batch_size
-        batch_images = common.batch_open_image(
-            self.images_path[start:stop])
+        batch_images = common.batch_open_image(self.images_path[start:stop])
         batch_boxes, batch_classes = common.open_boxes_batch(
             self.annotations_path[start:stop])
 
-        batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
-                                                                        self.target_shape, self.max_objects, self.augmenters,
-                                                                        self.pad_to_fixed_size)
+        batch_images, batch_boxes, batch_classes = common.prepare_batch(
+            batch_images, batch_boxes, batch_classes, self.target_shape,
+            self.max_objects, self.augmenters, self.pad_to_fixed_size)
         if self.is_training:
             classes = [v[0] for v in self.classes]
-            batch_boxes = common.transform_target(
-                batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape, classes
-            )
+            batch_boxes = common.transform_target(batch_boxes, batch_classes,
+                                                  self.anchors_scaled,
+                                                  self.anchor_masks,
+                                                  self.grid_len,
+                                                  self.num_classes,
+                                                  self.target_shape, classes)
             return batch_images, batch_boxes
         else:
             return batch_images, batch_boxes, batch_classes
 
 
-class CocoFormatDataset(Sequence):
+class CocoFormatDataset(tf.keras.utils.Sequence):
     """this class handles dataset into the `COCO format <http://cocodataset.org/>`_.
 
     Arguments:
         Sequence {tf.kera.utils.Sequence} -- [description]
     """
 
-    def __init__(self, annotations_path, img_shape, max_objects, batch_size, anchors, anchor_masks,
-                 is_training=True, augmenters=None, pad_to_fixed_size=True, images_folder='images'):
+    def __init__(self,
+                 annotations_path,
+                 img_shape,
+                 max_objects,
+                 batch_size,
+                 anchors,
+                 anchor_masks,
+                 is_training=True,
+                 augmenters=None,
+                 pad_to_fixed_size=True,
+                 images_folder='images'):
         """Create a dataset from taking a file in coco format
 
 
@@ -235,7 +276,8 @@ class CocoFormatDataset(Sequence):
         self.grid_len = img_shape[0] / 32
         if img_shape[0] % 32 != 0:
             raise Exception(
-                'the image shape must have same height and width and be divisible per 32 ')
+                'the image shape must have same height and width and be divisible per 32 '
+            )
         self.grid_len = int(self.grid_len)
         self.annotations_path = Path(annotations_path)
         self.base_path = self.annotations_path.parent
@@ -249,7 +291,8 @@ class CocoFormatDataset(Sequence):
 
         # add scaling for the anchors
         self.anchors = anchors
-        self.anchors_scaled = anchors.astype(np.float32) / img_shape[0]
+        if anchors is not None:
+            self.anchors_scaled = anchors.astype(np.float32) / img_shape[0]
         self.anchor_masks = anchor_masks
         self.is_training = is_training
         self.max_objects = max_objects
@@ -258,12 +301,14 @@ class CocoFormatDataset(Sequence):
 
         with open(self.annotations_path, 'r') as fp:
             self.coco_data = json.load(fp)
-        self.classes = sorted([(cat['id'], cat['name'])
-                               for cat in self.coco_data['categories']], key=lambda x: x[0])
+        self.classes = sorted(
+            [(cat['id'], cat['name']) for cat in self.coco_data['categories']],
+            key=lambda x: x[0])
         self.num_classes = len(self.classes)
 
         self.idx_image_doc = {
-            doc['id']: doc for doc in self.coco_data['images']}
+            doc['id']: doc for doc in self.coco_data['images']
+        }
         self.idx_annotations_doc = dict()
         for ann in tqdm(self.coco_data['annotations'], 'load coco annotations'):
             if ann['image_id'] not in self.idx_annotations_doc:
@@ -300,22 +345,26 @@ class CocoFormatDataset(Sequence):
 
                 boxes = []
                 classes = []
-                
+
                 for doc in self.idx_annotations_doc[img_id]:
                     boxes.append(self.__to_xymin_xymax(*doc['bbox']))
                     classes.append([doc['category_id']])
                 batch_boxes.append(np.array(boxes))
                 batch_classes.append(np.array(classes))
 
-        batch_images, batch_boxes, batch_classes = common.prepare_batch(batch_images, batch_boxes, batch_classes,
-                                                                        self.target_shape, self.max_objects, self.augmenters,
-                                                                        self.pad_to_fixed_size)
+        batch_images, batch_boxes, batch_classes = common.prepare_batch(
+            batch_images, batch_boxes, batch_classes, self.target_shape,
+            self.max_objects, self.augmenters, self.pad_to_fixed_size)
 
         if self.is_training:
             classes = [np.float32(v[0]) for v in self.classes]
-            batch_boxes = common.transform_target(
-                batch_boxes, batch_classes, self.anchors_scaled, self.anchor_masks, self.grid_len,
-                self.num_classes, self.target_shape, classes
-            )
+            batch_boxes = common.transform_target(batch_boxes, batch_classes,
+                                                  self.anchors_scaled,
+                                                  self.anchor_masks,
+                                                  self.grid_len,
+                                                  self.num_classes,
+                                                  self.target_shape, classes)
 
-        return batch_images, batch_boxes
+            return batch_images, batch_boxes
+
+        return batch_images, batch_boxes, batch_classes

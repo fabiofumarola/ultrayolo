@@ -61,17 +61,19 @@ def freeze_backbone_layers(model, num_layers):
         layer.trainable = False
 
 
-def load_darknet_weights(model, weights_file, tiny=False,
-                         for_transfer=False, debug=False):
+def load_darknet_weights(model,
+                         weights_file,
+                         tiny=False,
+                         for_transfer=False,
+                         debug=False):
 
     if debug:
         logger.setLevel(logging.DEBUG)
 
     wf = open(weights_file, 'rb')
     major, minor, revision, seen, _ = np.fromfile(wf, dtype=np.int32, count=5)
-    logger.info('version major %s, minor %s, revision %s, seen %s',
-                major, minor, revision, seen
-                )
+    logger.info('version major %s, minor %s, revision %s, seen %s', major,
+                minor, revision, seen)
 
     if tiny:
         layers = YOLOV3_TINY_LAYER_LIST
@@ -97,22 +99,24 @@ def load_darknet_weights(model, weights_file, tiny=False,
                 conv_bias = np.fromfile(wf, dtype=np.float32, count=filters)
             else:
                 # darknet [beta, gamma, mean, variance]
-                bn_weights = np.fromfile(
-                    wf, dtype=np.float32, count=4 * filters)
+                bn_weights = np.fromfile(wf,
+                                         dtype=np.float32,
+                                         count=4 * filters)
                 # tf [gamma, beta, mean, variance]
                 bn_weights = bn_weights.reshape((4, filters))[[1, 0, 2, 3]]
 
             # darknet shape (out_dim, in_dim, height, width)
             conv_shape = (filters, in_dim, size, size)
-            conv_weights = np.fromfile(
-                wf, dtype=np.float32, count=np.product(conv_shape))
+            conv_weights = np.fromfile(wf,
+                                       dtype=np.float32,
+                                       count=np.product(conv_shape))
 
-            logger.debug("%s/%s %s %s",
-                         sub_model.name, layer.name, 'bn' if batch_norm else 'bias', conv_shape)
+            logger.debug("%s/%s %s %s", sub_model.name, layer.name,
+                         'bn' if batch_norm else 'bias', conv_shape)
 
             # tf shape (height, width, in_dim, out_dim)
-            conv_weights = conv_weights.reshape(
-                conv_shape).transpose([2, 3, 1, 0])
+            conv_weights = conv_weights.reshape(conv_shape).transpose(
+                [2, 3, 1, 0])
 
             if batch_norm is None:
                 layer.set_weights([conv_weights, conv_bias])

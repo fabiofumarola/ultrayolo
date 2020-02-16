@@ -15,14 +15,13 @@ def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
     """
     # !!! grid[x][y] == (y, x)
     grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
-    grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)  # [gx, gy, 1, 2]
+    grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)    # [gx, gy, 1, 2]
     grid = tf.cast(grid, tf.float32)
 
     box_xy = (box_xy + grid) / tf.cast(grid_size, tf.float32)
     box_wh = tf.exp(box_wh) * anchors_masks
 
-    box_wh = tf.where(tf.math.is_inf(box_wh),
-                      tf.zeros_like(box_wh), box_wh)
+    box_wh = tf.where(tf.math.is_inf(box_wh), tf.zeros_like(box_wh), box_wh)
 
     box_x1y1 = box_xy - box_wh / 2
     box_x2y2 = box_xy + box_wh / 2
@@ -45,9 +44,9 @@ def process_predictions(y_pred, num_classes, anchors_masks):
     """
     # anchors_masks = tf.gather(anchors, masks)
 
-    pred_xy, pred_wh, pred_obj, pred_class = tf.split(
-        y_pred, (2, 2, 1, num_classes), axis=-1
-    )
+    pred_xy, pred_wh, pred_obj, pred_class = tf.split(y_pred,
+                                                      (2, 2, 1, num_classes),
+                                                      axis=-1)
 
     pred_xy = tf.sigmoid(pred_xy)
     pred_obj = tf.sigmoid(pred_obj)
@@ -62,8 +61,8 @@ def process_predictions(y_pred, num_classes, anchors_masks):
 
 class Loss():
 
-    def __init__(self, anchor_masks, ignore_iou_threshold,
-                 img_size, num_classes, name):
+    def __init__(self, anchor_masks, ignore_iou_threshold, img_size,
+                 num_classes, name):
         self.anchor_masks = anchor_masks.astype(np.float32)
         self.ignore_iou_threshold = ignore_iou_threshold
         self.img_size = img_size
@@ -91,10 +90,12 @@ class Loss():
         box_1 = tf.broadcast_to(box_1, new_shape)
         box_2 = tf.broadcast_to(box_2, new_shape)
 
-        int_w = tf.maximum(tf.minimum(box_1[..., 2], box_2[..., 2]) -
-                           tf.maximum(box_1[..., 0], box_2[..., 0]), 0)
-        int_h = tf.maximum(tf.minimum(box_1[..., 3], box_2[..., 3]) -
-                           tf.maximum(box_1[..., 1], box_2[..., 1]), 0)
+        int_w = tf.maximum(
+            tf.minimum(box_1[..., 2], box_2[..., 2]) -
+            tf.maximum(box_1[..., 0], box_2[..., 0]), 0)
+        int_h = tf.maximum(
+            tf.minimum(box_1[..., 3], box_2[..., 3]) -
+            tf.maximum(box_1[..., 1], box_2[..., 1]), 0)
         int_area = int_w * int_h
         box_1_area = (box_1[..., 2] - box_1[..., 0]) * \
             (box_1[..., 3] - box_1[..., 1])
@@ -107,15 +108,16 @@ class Loss():
         # 1. transform all pred outputs
         # y_pred: (batch_size, grid, grid, anchors, (x, y, w, h, obj, ...cls))
         pred_xyxy, pred_obj, pred_class, pred_xywh = process_predictions(
-            tf.cast(y_pred, tf.float32), self.num_classes, self.anchors_masks_scaled
-        )
+            tf.cast(y_pred, tf.float32), self.num_classes,
+            self.anchors_masks_scaled)
         pred_xy = pred_xywh[..., 0:2]
         pred_wh = pred_xywh[..., 2:4]
 
         # 2. transform all true outputs
         # y_true: (batch_size, grid, grid, anchors, (x, y, w, h, obj, ...cls))
-        true_box_xyxy, true_obj, true_class = tf.split(
-            y_true, (4, 1, self.num_classes), axis=-1)
+        true_box_xyxy, true_obj, true_class = tf.split(y_true,
+                                                       (4, 1, self.num_classes),
+                                                       axis=-1)
         true_xy = (true_box_xyxy[..., 0:2] + true_box_xyxy[..., 2:4]) / 2
         true_wh = true_box_xyxy[..., 2:4] - true_box_xyxy[..., 0:2]
 
@@ -130,16 +132,16 @@ class Loss():
         true_xy = true_xy * tf.cast(grid_size, tf.float32) - \
             tf.cast(grid, tf.float32)
         true_wh = tf.math.log(true_wh / self.anchors_masks_scaled)
-        true_wh = tf.where(tf.math.is_inf(true_wh),
-                           tf.zeros_like(true_wh), true_wh)
+        true_wh = tf.where(tf.math.is_inf(true_wh), tf.zeros_like(true_wh),
+                           true_wh)
 
         # 4. calculate all masks
         obj_mask = tf.squeeze(true_obj, -1)
         # ignore false positive when iou is over threshold
-        true_box_mask = tf.boolean_mask(
-            true_box_xyxy, tf.cast(obj_mask, tf.bool))
-        best_iou = tf.reduce_max(Loss.broadcast_iou(
-            pred_xyxy, true_box_mask), axis=-1)
+        true_box_mask = tf.boolean_mask(true_box_xyxy,
+                                        tf.cast(obj_mask, tf.bool))
+        best_iou = tf.reduce_max(Loss.broadcast_iou(pred_xyxy, true_box_mask),
+                                 axis=-1)
         ignore_mask = tf.cast(best_iou < self.ignore_iou_threshold, tf.float32)
 
         # 5. compute all the losses
@@ -194,6 +196,7 @@ def make_loss(num_classes, anchors, masks, img_size, ignore_iou_threshold=0.7):
         function  -- a function that compute the loss
     """
     loss_fns = [
-        Loss(anchors[m], ignore_iou_threshold, img_size, num_classes, f'yolo_loss{i}') for i, m in enumerate(masks)
+        Loss(anchors[m], ignore_iou_threshold, img_size, num_classes,
+             f'yolo_loss{i}') for i, m in enumerate(masks)
     ]
     return loss_fns
