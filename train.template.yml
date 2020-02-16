@@ -7,13 +7,13 @@ dataset:
   max_objects: 100
   # the size of the batch
   batch_size: 16
-  anchors: 
+  anchors:
     # anchors values: default, default_tiny, compute, path
-    mode: default
-   #the number of anchors can be 6 or 9, 12
+    mode: compute
+    #the number of anchors can be 6 or 9, 12
     number: 9
-    path: 
-    
+    path:
+
   pad_to_fixed_size: true
 
   # path of the annotations
@@ -23,15 +23,15 @@ dataset:
 
   # if use data augmentation true or false
   augment: true
-  
+
 model:
   # The backbone for the model, default DarkNet, accepted values (ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNet, MobileNetV2)
   backbone: ResNet50V2
   # the training mode: transfer, fine_tune, train
   iou: 0.7
   object_score: 0.7
-  reload_weights: 
-  
+  reload_weights:
+
 fit:
   #mode train, transfer, finetuning
   mode: finetuning
@@ -49,8 +49,3 @@ fit:
       # cyclic | exp_range | reduce_on_plateau
       mode: reduce_on_plateau
       value: 0.0001
-
-
-
-
-  

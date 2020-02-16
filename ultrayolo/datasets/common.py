@@ -200,10 +200,8 @@ def __transform(image, augmenters, boxes=None):
 
     """
     if boxes is not None:
-        bbs = BoundingBoxesOnImage(
-            [BoundingBox(*b) for b in boxes],
-            shape=image.shape
-        )
+        bbs = BoundingBoxesOnImage([BoundingBox(*b) for b in boxes],
+                                   shape=image.shape)
 
         image_aug, boxes_aug = augmenters(image=image, bounding_boxes=bbs)
         return image_aug, boxes_aug.to_xyxy_array().astype(np.float32)
@@ -226,10 +224,13 @@ def pad_to_fixed_size(image, target_shape, boxes=None):
 
     """
     augmenters = iaa.Sequential([
-        iaa.Resize(
-            {"longer-side": target_shape[0], "shorter-side": "keep-aspect-ratio"}),
-        iaa.PadToFixedSize(
-            height=target_shape[0], width=target_shape[1], position=(1, 1))
+        iaa.Resize({
+            "longer-side": target_shape[0],
+            "shorter-side": "keep-aspect-ratio"
+        }),
+        iaa.PadToFixedSize(height=target_shape[0],
+                           width=target_shape[1],
+                           position=(1, 1))
     ])
     return __transform(image, augmenters, boxes)
 
@@ -251,12 +252,17 @@ def resize(image, target_shape, boxes=None, keep_aspect_ratio=True):
 
     if keep_aspect_ratio:
         aug = iaa.Sequential([
-            iaa.Resize(
-                {"longer-side": target_shape[0], "shorter-side": "keep-aspect-ratio"}),
+            iaa.Resize({
+                "longer-side": target_shape[0],
+                "shorter-side": "keep-aspect-ratio"
+            }),
         ])
     else:
         aug = iaa.Sequential([
-            iaa.Resize({"height": target_shape[0], "width": target_shape[1]}),
+            iaa.Resize({
+                "height": target_shape[0],
+                "width": target_shape[1]
+            }),
         ])
 
     return __transform(image, aug, boxes=boxes)
@@ -281,10 +287,8 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
     else:
         batch_bbs = []
         for image, boxes in zip(batch_images, batch_boxes):
-            bbs = BoundingBoxesOnImage(
-                [BoundingBox(*b) for b in boxes],
-                shape=image.shape
-            )
+            bbs = BoundingBoxesOnImage([BoundingBox(*b) for b in boxes],
+                                       shape=image.shape)
             batch_bbs.append(bbs)
         # create the batch
         batch = Batch(images=batch_images, bounding_boxes=batch_bbs)
@@ -293,8 +297,9 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
     batch_processed = augmenters.augment_batch(batch)
 
     if batch_processed.bounding_boxes_aug:
-        boxes_aug = [b.to_xyxy_array()
-                     for b in batch_processed.bounding_boxes_aug]
+        boxes_aug = [
+            b.to_xyxy_array() for b in batch_processed.bounding_boxes_aug
+        ]
     else:
         boxes_aug = []
 
@@ -315,10 +320,13 @@ def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
     boxes_aug: a list of augmented boxes (optional: if boxes is not None)
     """
     aug = iaa.Sequential([
-        iaa.Resize(
-            {"longer-side": target_shape[0], "shorter-side": "keep-aspect-ratio"}),
-        iaa.PadToFixedSize(
-            height=target_shape[0], width=target_shape[1], position=(1, 1))
+        iaa.Resize({
+            "longer-side": target_shape[0],
+            "shorter-side": "keep-aspect-ratio"
+        }),
+        iaa.PadToFixedSize(height=target_shape[0],
+                           width=target_shape[1],
+                           position=(1, 1))
     ])
     return __transform_batch(batch_images, aug, batch_boxes)
 
@@ -337,7 +345,10 @@ def resize_batch(batch_images, target_shape, batch_boxes=None):
     boxes_aug: a list of augmented boxes (optional: if boxes is not None)
     """
     aug = iaa.Sequential([
-        iaa.Resize({"height": target_shape[0], "width": target_shape[1]}),
+        iaa.Resize({
+            "height": target_shape[0],
+            "width": target_shape[1]
+        }),
     ])
     return __transform_batch(batch_images, aug, batch_boxes)
 
@@ -355,8 +366,7 @@ def pad_boxes(boxes, max_objects):
     """
     if len(boxes) > max_objects:
         paddings = [[0, 0], [0, 0]]
-        boxes_padded = np.pad(
-            boxes[:max_objects], paddings, mode='constant')
+        boxes_padded = np.pad(boxes[:max_objects], paddings, mode='constant')
     else:
         paddings = [[0, max_objects - len(boxes)], [0, 0]]
         boxes_padded = np.pad(boxes, paddings, mode='constant')
@@ -380,8 +390,13 @@ def pad_classes(classes, max_objects):
     return result
 
 
-def prepare_batch(batch_images, batch_boxes, batch_classes, target_shape, max_objects,
-                  augmenters=None, pad=True):
+def prepare_batch(batch_images,
+                  batch_boxes,
+                  batch_classes,
+                  target_shape,
+                  max_objects,
+                  augmenters=None,
+                  pad=True):
     """prepare a batch of images and boxes:
         - resize all the images to the same size
         - update the size of the boxes basing on the new image size
@@ -398,20 +413,19 @@ def prepare_batch(batch_images, batch_boxes, batch_classes, target_shape, max_ob
         pad {bool} -- if the images should be padded (default: {True})
 
     Returns:
-        [type] -- [description]
+        Tuple -- a Tuple with batch_images, batch_boxes and batch_classes
     """
     resizing_func = pad_batch_to_fixed_size if pad else resize_batch
-    batch_images_pad, batch_boxes_pad = resizing_func(
-        batch_images, target_shape, batch_boxes
-    )
+    batch_images_pad, batch_boxes_pad = resizing_func(batch_images,
+                                                      target_shape, batch_boxes)
     # apply augmentation if defined
     if augmenters:
         batch_images_pad, batch_boxes_pad = __transform_batch(
-            batch_images_pad, augmenters, batch_boxes_pad
-        )
+            batch_images_pad, augmenters, batch_boxes_pad)
 
-    batch_boxes_pad = [pad_boxes(boxes, max_objects)
-                       for boxes in batch_boxes_pad]
+    batch_boxes_pad = [
+        pad_boxes(boxes, max_objects) for boxes in batch_boxes_pad
+    ]
 
     batch_images_pad = np.array(batch_images_pad)
     batch_boxes_pad = np.array(batch_boxes_pad)
@@ -466,8 +480,14 @@ def best_anchors_iou(boxes, anchors):
     return best_anchors_idx
 
 
-def transform_target(boxes_data, classes_data, anchors, anchor_masks,
-                     grid_len, num_classes, target_shape, classes=None):
+def transform_target(boxes_data,
+                     classes_data,
+                     anchors,
+                     anchor_masks,
+                     grid_len,
+                     num_classes,
+                     target_shape,
+                     classes=None):
     """Transform y_data in yolo format
 
     """
@@ -479,19 +499,18 @@ def transform_target(boxes_data, classes_data, anchors, anchor_masks,
     num_grid_cells = grid_len
     for masks in anchor_masks:
 
-        y_out = np.zeros(
-            (len(boxes_data), num_grid_cells, num_grid_cells,
-                len(masks), 4 + 1 + num_classes),
-            dtype=np.float32
-        )
+        y_out = np.zeros((len(boxes_data), num_grid_cells, num_grid_cells,
+                          len(masks), 4 + 1 + num_classes),
+                         dtype=np.float32)
 
         for i in range(boxes_data.shape[0]):
             for j in range(boxes_data.shape[1]):
                 if np.equal(boxes_data[i, j, 2], 0):
                     continue
 
-                valid_anchor = np.equal(
-                    masks, obj_anchors_idx[i, j, 0]).astype(np.int32)
+                valid_anchor = np.equal(masks,
+                                        obj_anchors_idx[i, j,
+                                                        0]).astype(np.int32)
 
                 if np.any(valid_anchor):
                     # TODO target shape can be removed if we scale the boxes in
@@ -500,8 +519,8 @@ def transform_target(boxes_data, classes_data, anchors, anchor_masks,
                     box_center_xy = (box[0:2] + box[2:4]) / 2
 
                     anchor_idx = np.where(valid_anchor)
-                    grid_xy = (box_center_xy // (1 / num_grid_cells)
-                               ).astype(np.int32)
+                    grid_xy = (box_center_xy // (1 / num_grid_cells)).astype(
+                        np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
                     # FIXME

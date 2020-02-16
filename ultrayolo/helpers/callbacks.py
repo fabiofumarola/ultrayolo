@@ -29,19 +29,18 @@ def lr_scheduler(lrate_mode, lrate_value, verbose=1):
     if (lrate_mode == 'cyclic') or (lrate_mode == 'exp_range'):
         lrate_fn = cyclic_learning_rate(
             learning_rate=lrate_value,
-            # one order greather that the selected
+        # one order greather that the selected
             max_lr=lrate_value * 1e+1,
             step_size=20,
             mode=lrate_mode)
         return LearningRateScheduler(lrate_fn, verbose=verbose)
 
     elif lrate_mode == 'reduce_on_plateau':
-        return ReduceLROnPlateau(
-            monitor='val_loss',
-            factor=0.5,
-            patience=10,
-            min_lr=lrate_value / 1e+2,
-            verbose=verbose)
+        return ReduceLROnPlateau(monitor='val_loss',
+                                 factor=0.5,
+                                 patience=10,
+                                 min_lr=lrate_value / 1e+2,
+                                 verbose=verbose)
 
 
 def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
@@ -62,10 +61,14 @@ def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
 
     callbacks = [
         ModelCheckpoint(run_path_str + '/weights.{epoch:03d}-{loss:.3f}.h5',
-                        verbose=verbose, save_best_only=True, monitor='val_loss'),
+                        verbose=verbose,
+                        save_best_only=True,
+                        monitor='val_loss'),
         TensorBoard(run_path_str),
         ModelCheckpoint(run_path_str + '/weights_train_best.h5',
-                        verbose=verbose, save_best_only=True, monitor='loss'),
+                        verbose=verbose,
+                        save_best_only=True,
+                        monitor='loss'),
         lr_scheduler(lrate_mode, lrate_value, verbose)
     ]
     return callbacks
