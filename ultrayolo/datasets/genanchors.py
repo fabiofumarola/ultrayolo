@@ -129,9 +129,10 @@ def prepare_data(annotations_path, image_shape, datasetmode):
 
     boxes = []
     for _, batch_boxes, _ in tqdm(dataset):
-        for box in common.to_center_width_height(batch_boxes[0]):
-            if np.sum(box) > 0:
-                boxes.append(box)
+        if len(batch_boxes) > 0:
+            for box in common.to_center_width_height(batch_boxes[0]):
+                if np.sum(box) > 0:
+                    boxes.append(box)
     boxes = np.array(boxes)
     return boxes
 
