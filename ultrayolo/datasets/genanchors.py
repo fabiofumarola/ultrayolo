@@ -150,7 +150,6 @@ def gen_anchors(boxes_xywh, num_clusters, scaling_factor=1.1):
     Returns:
         [type] -- [description]
     """
-    print(boxes_xywh)
     model = AnchorsGenerator(num_clusters, scaling_factor)
     anchors = model.fit(boxes_xywh)
     return anchors
@@ -184,7 +183,6 @@ if __name__ == '__main__':
                         help='The shape of the images as (Width, Heigth, 3)')
 
     args = parser.parse_args()
-    print(type(args), args)
     boxes_xywh = prepare_data(args.dataset, args.image_shape, args.datasetmode)
     anchors = gen_anchors(boxes_xywh, args.num_clusters, args.scaling_factor)
     save_anchors(args.outfilename, anchors)

@@ -341,16 +341,19 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
             if img_id in self.idx_annotations_doc:
                 img_path = self.images_path / doc['file_name']
                 img = common.open_image(img_path)
+                assert np.all(img >= 0)
                 batch_images.append(img)
 
                 boxes = []
                 classes = []
 
                 for doc in self.idx_annotations_doc[img_id]:
-                    boxes.append(self.__to_xymin_xymax(*doc['bbox']))
+                    img_boxes = self.__to_xymin_xymax(*doc['bbox'])
+                    assert np.all(np.array(img_boxes) >= 0)
+                    boxes.append(img_boxes)
                     classes.append([doc['category_id']])
-                batch_boxes.append(np.array(boxes))
-                batch_classes.append(np.array(classes))
+                batch_boxes.append(np.array(boxes, np.float32))
+                batch_classes.append(np.array(classes, np.int32))
 
         batch_images, batch_boxes, batch_classes = common.prepare_batch(
             batch_images, batch_boxes, batch_classes, self.target_shape,
@@ -365,6 +368,6 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
                                                   self.num_classes,
                                                   self.target_shape, classes)
 
-            return batch_images, batch_boxes
+            return batch_images.astype(np.float32), batch_boxes
 
         return batch_images, batch_boxes, batch_classes

@@ -298,7 +298,8 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
 
     if batch_processed.bounding_boxes_aug:
         boxes_aug = [
-            b.to_xyxy_array() for b in batch_processed.bounding_boxes_aug
+            b.to_xyxy_array().tolist()
+            for b in batch_processed.bounding_boxes_aug
         ]
     else:
         boxes_aug = []
@@ -415,20 +416,22 @@ def prepare_batch(batch_images,
     Returns:
         Tuple -- a Tuple with batch_images, batch_boxes and batch_classes
     """
-    resizing_func = pad_batch_to_fixed_size if pad else resize_batch
-    batch_images_pad, batch_boxes_pad = resizing_func(batch_images,
-                                                      target_shape, batch_boxes)
+    resize_batch_func = pad_batch_to_fixed_size if pad else resize_batch
+    batch_images_pad, batch_boxes_pad = resize_batch_func(
+        batch_images, target_shape, batch_boxes)
+
     # apply augmentation if defined
     if augmenters:
         batch_images_pad, batch_boxes_pad = __transform_batch(
             batch_images_pad, augmenters, batch_boxes_pad)
 
+    # pad boxes to the max_objects
     batch_boxes_pad = [
         pad_boxes(boxes, max_objects) for boxes in batch_boxes_pad
     ]
 
-    batch_images_pad = np.array(batch_images_pad)
-    batch_boxes_pad = np.array(batch_boxes_pad)
+    batch_images_pad = np.array(batch_images_pad, dtype=np.float32)
+    batch_boxes_pad = np.array(batch_boxes_pad, dtype=np.float32)
     # clip the values to the max size of the immage
     batch_boxes_pad = np.clip(batch_boxes_pad, 0, target_shape[0] - 1)
 
