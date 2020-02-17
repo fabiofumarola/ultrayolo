@@ -290,7 +290,8 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
         for image, boxes in zip(batch_images, batch_boxes):
             # assert np.all(image >= 0), image[image < 0]
             # assert np.all(np.array(boxes) >= 0)
-            batch_images_clipped.append(np.clip(image, 0, None))
+            img = np.clip(image, 0, None).astype(np.uint8)
+            batch_images_clipped.append()
             bbs = BoundingBoxesOnImage([BoundingBox(*b) for b in boxes],
                                        shape=image.shape)
             batch_bbs.append(bbs)

@@ -342,7 +342,7 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
                 img_path = self.images_path / doc['file_name']
                 img = common.open_image(img_path)
                 assert np.all(img >= 0)
-                batch_images.append(img)
+                batch_images.append(img.astype(np.uint8))
 
                 boxes = []
                 classes = []
