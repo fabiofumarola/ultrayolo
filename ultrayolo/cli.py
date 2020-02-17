@@ -82,7 +82,7 @@ def make_augmentations():
                        shear=(-12, 12)),
         ],
         random_order=True)
-    return augmentation
+    return pipeline
 
 
 def load_datasets(mode, image_shape, anchors, train_path, val_path, augment,
