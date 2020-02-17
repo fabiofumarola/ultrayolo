@@ -99,12 +99,10 @@ def open_image(path):
         numpy.ndarray -- format (H,W,C)
     """
     img = imageio.imread(path)
-
     if len(img.shape) == 2:
         img3d = np.zeros((*img.shape, 3))
         img3d[:, :, 0] = img
         img = img3d
-
     return img.astype(np.uint8)
 
 
@@ -288,8 +286,6 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
         batch_bbs = []
         batch_images_clipped = []
         for image, boxes in zip(batch_images, batch_boxes):
-            # assert np.all(image >= 0), image[image < 0]
-            # assert np.all(np.array(boxes) >= 0)
             img = np.clip(image, 0, None).astype(np.uint8)
             batch_images_clipped.append(img)
             bbs = BoundingBoxesOnImage([BoundingBox(*b) for b in boxes],
@@ -308,7 +304,6 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
         ]
     else:
         boxes_aug = []
-
     return batch_processed.images_aug, boxes_aug
 
 
@@ -335,7 +330,6 @@ def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
                            position=(1, 1))
     ])
     images_aug, boxes_aug = __transform_batch(batch_images, aug, batch_boxes)
-    # images_aug = np.clip(images_aug, 0, None)
     return images_aug, boxes_aug
 
 
@@ -360,7 +354,6 @@ def resize_batch(batch_images, target_shape, batch_boxes=None):
     ])
 
     images_aug, boxes_aug = __transform_batch(batch_images, aug, batch_boxes)
-    # images_aug = np.clip(images_aug, 0, None)
     return images_aug, boxes_aug
 
 
@@ -381,7 +374,6 @@ def pad_boxes(boxes, max_objects):
     else:
         paddings = [[0, max_objects - len(boxes)], [0, 0]]
         boxes_padded = np.pad(boxes, paddings, mode='constant')
-
     return boxes_padded
 
 
@@ -466,7 +458,6 @@ def to_center_width_height(boxes):
     boxes_wh = result[..., 2:4] - result[..., 0:2]
     result[..., 0:2] = boxes_xy
     result[..., 2:4] = boxes_wh
-
     return result
 
 
