@@ -105,7 +105,7 @@ def open_image(path):
         img3d[:, :, 0] = img
         img = img3d
 
-    return img
+    return img.astype(np.uint8)
 
 
 def batch_open_image(paths):
@@ -204,7 +204,7 @@ def __transform(image, augmenters, boxes=None):
                                    shape=image.shape)
 
         image_aug, boxes_aug = augmenters(image=image, bounding_boxes=bbs)
-        return image_aug, boxes_aug.to_xyxy_array().astype(np.float32)
+        return image_aug, boxes_aug.to_xyxy_array()
     else:
         return augmenters(image=image)
 
@@ -291,7 +291,7 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
             # assert np.all(image >= 0), image[image < 0]
             # assert np.all(np.array(boxes) >= 0)
             img = np.clip(image, 0, None).astype(np.uint8)
-            batch_images_clipped.append()
+            batch_images_clipped.append(img)
             bbs = BoundingBoxesOnImage([BoundingBox(*b) for b in boxes],
                                        shape=image.shape)
             batch_bbs.append(bbs)
