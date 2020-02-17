@@ -286,12 +286,16 @@ def __transform_batch(batch_images, augmenters, batch_boxes=None):
         batch = Batch(images=batch_images)
     else:
         batch_bbs = []
+        batch_images_clipped = []
         for image, boxes in zip(batch_images, batch_boxes):
+            # assert np.all(image >= 0), image[image < 0]
+            # assert np.all(np.array(boxes) >= 0)
+            batch_images_clipped.append(np.clip(image, 0, None))
             bbs = BoundingBoxesOnImage([BoundingBox(*b) for b in boxes],
                                        shape=image.shape)
             batch_bbs.append(bbs)
         # create the batch
-        batch = Batch(images=batch_images, bounding_boxes=batch_bbs)
+        batch = Batch(images=batch_images_clipped, bounding_boxes=batch_bbs)
 
     # process the data
     batch_processed = augmenters.augment_batch(batch)
@@ -329,7 +333,9 @@ def pad_batch_to_fixed_size(batch_images, target_shape, batch_boxes=None):
                            width=target_shape[1],
                            position=(1, 1))
     ])
-    return __transform_batch(batch_images, aug, batch_boxes)
+    images_aug, boxes_aug = __transform_batch(batch_images, aug, batch_boxes)
+    # images_aug = np.clip(images_aug, 0, None)
+    return images_aug, boxes_aug
 
 
 def resize_batch(batch_images, target_shape, batch_boxes=None):
@@ -351,7 +357,10 @@ def resize_batch(batch_images, target_shape, batch_boxes=None):
             "width": target_shape[1]
         }),
     ])
-    return __transform_batch(batch_images, aug, batch_boxes)
+
+    images_aug, boxes_aug = __transform_batch(batch_images, aug, batch_boxes)
+    # images_aug = np.clip(images_aug, 0, None)
+    return images_aug, boxes_aug
 
 
 def pad_boxes(boxes, max_objects):

@@ -368,6 +368,6 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
                                                   self.num_classes,
                                                   self.target_shape, classes)
 
-            return batch_images.astype(np.float32), batch_boxes
+            return batch_images, batch_boxes
 
         return batch_images, batch_boxes, batch_classes
