@@ -39,7 +39,7 @@ def load_anchors(mode, number, path, ds_mode, ds_train_path, image_shape):
     return anchors
 
 
-def make_augmentations(max_number_augs=5):
+def make_augmentations():
     """apply data augmentations to the dataset
 
     Keyword Arguments:
@@ -48,28 +48,41 @@ def make_augmentations(max_number_augs=5):
     Returns:
         [type] -- [description]
     """
-    augmentation = iaa.SomeOf((0, max_number_augs), [
-        iaa.GaussianBlur(sigma=(0.0, 3.0)),
-        iaa.Affine(scale=(1., 2.5),
-                   rotate=(-90, 90),
-                   shear=(-16, 16),
-                   translate_percent={
-                       "x": (-0.2, 0.2),
-                       "y": (-0.2, 0.2)
-                   }),
-        iaa.LinearContrast((0.5, 1.5)),
-        iaa.AdditiveGaussianNoise(scale=(0, 0.05 * 255)),
-        iaa.Alpha((0.0, 1.0), iaa.Grayscale(1.0)),
-        iaa.LogContrast(gain=(0.6, 1.4)),
-        iaa.PerspectiveTransform(scale=(0.01, 0.15)),
-        iaa.Clouds(),
-        iaa.Alpha((0.0, 1.0), first=iaa.Add(100), second=iaa.Multiply(0.2)),
-        iaa.MotionBlur(k=5),
-        iaa.MultiplyHueAndSaturation((0.5, 1.0), per_channel=True),
-        iaa.AddToSaturation((-50, 50)),
-        iaa.Noop()
-    ])
-    return augmentation
+    pipeline = iaa.Sequential(
+        [
+            iaa.Crop(percent=(0, 0.2)),    # random crops
+    # Small gaussian blur with random sigma between 0 and 0.5.
+    # But we only blur about 50% of all images.
+            iaa.Sometimes(0.5, iaa.GaussianBlur(sigma=(0, 0.5))),
+            iaa.Sometimes(0.2, iaa.Grayscale(alpha=(0.0, 1.0))),
+    # Strengthen or weaken the contrast in each image.
+            iaa.LinearContrast((0.75, 1.5)),
+    # Add gaussian noise.
+    # For 50% of all images, we sample the noise once per pixel.
+    # For the other 50% of all images, we sample the noise per pixel AND
+    # channel. This can change the color (not only brightness) of the
+    # pixels.
+            iaa.AdditiveGaussianNoise(
+                loc=0, scale=(0.0, 0.05 * 255), per_channel=0.5),
+    # Make some images brighter and some darker.
+    # In 20% of all cases, we sample the multiplier once per channel,
+    # which can end up changing the color of the images.
+            iaa.Multiply((0.8, 1.2), per_channel=0.2),
+    # Apply affine transformations to each image.
+    # Scale/zoom them, translate/move them, rotate them and shear them.
+            iaa.Affine(scale={
+                "x": (0.8, 1.5),
+                "y": (0.8, 1.5)
+            },
+                       translate_percent={
+                           "x": (-0.3, 0.3),
+                           "y": (-0.3, 0.3)
+                       },
+                       rotate=(-30, 30),
+                       shear=(-12, 12)),
+        ],
+        random_order=True)
+    return pipeline
 
 
 def load_datasets(mode, image_shape, anchors, train_path, val_path, augment,
@@ -89,8 +102,7 @@ def load_datasets(mode, image_shape, anchors, train_path, val_path, augment,
                            **anchors)
     masks = datasets.make_masks(len(anchors))
 
-    # FIXME make 4 a parameter
-    augmenters = make_augmentations(4) if augment else None
+    augmenters = make_augmentations() if augment else None
 
     if mode == 'multifile':
         train_dataset = datasets.YoloDatasetMultiFile
