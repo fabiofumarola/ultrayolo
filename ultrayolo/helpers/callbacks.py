@@ -60,7 +60,7 @@ def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
     run_path_str = str(run_path.absolute())
 
     callbacks = [
-        ModelCheckpoint(run_path_str + '/weights.{epoch:03d}-{loss:.3f}.h5',
+        ModelCheckpoint(run_path_str + '/weights_val.{epoch:03d}-{loss:.3f}.h5',
                         verbose=verbose,
                         save_best_only=True,
                         monitor='val_loss'),
