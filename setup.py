@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """The setup script."""
 
 from setuptools import setup, find_packages
@@ -17,7 +16,9 @@ with open('requirements.txt', 'r') as fh:
 with open('requirements_dev.txt', 'r') as fh:
     test_requirements = fh.read().split('\n')
 
-setup_requirements = ['pytest-runner', ]
+setup_requirements = [
+    'pytest-runner',
+]
 
 setup(
     author="Fabio Fumarola",
@@ -36,21 +37,19 @@ setup(
     ],
     name='ultrayolo',
     keywords=['ultrayolo'],
-    version='1.0.0',
+    version='0.7.0',
     license="Apache Software License 2.0",
     description="tensorflow 2 implemetation of yolo 3 with backbone extensions",
     long_description=readme + '\n\n' + history,
     entry_points={
-        'console_scripts': [
-            'ultrayolo=ultrayolo.cli:main',
-        ],
+        'console_scripts': ['ultrayolo=ultrayolo.cli:main',],
     },
     # scripts
     scripts=[],
     install_requires=requirements,
     include_package_data=True,
     package_data={
-        # If any package contains *.txt or *.rst files, include them:
+    # If any package contains *.txt or *.rst files, include them:
         '': ['*.txt', '*.rst', '*.json'],
     },
     packages=find_packages(include=['ultrayolo', 'ultrayolo.*']),

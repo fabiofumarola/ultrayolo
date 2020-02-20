@@ -135,4 +135,3 @@ checkpoints
 coco_dataset
 docs/tutorials/*.ipynb
 *Copy*.ipynb
-docs/tutorials
