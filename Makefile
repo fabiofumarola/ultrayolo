@@ -74,6 +74,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	cp -rf images docs
 	rm -f docs/ultrayolo.rst
 	rm -f docs/modules.rst
+	rm -rf docs/tutorials
 	mkdir -p docs/tutorials
 	cp -rf notebooks/*.ipynb docs/tutorials
 	jupyter nbconvert docs/tutorials/*.ipynb --to rst

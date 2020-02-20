@@ -4,7 +4,7 @@ Welcome to ultrayolo's documentation!
 Tensorflow 2.1 implementation of yolo version 3 with extract backbones and training utils.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents:
    :glob:
 
