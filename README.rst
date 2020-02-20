@@ -26,9 +26,6 @@ Tensorflow 2 implementation of yolo version 3
 * Documentation: https://ultrayolo.readthedocs.io.
 
 
-.. image:: ./images/example_image.png
-
-
 Features
 --------
 
