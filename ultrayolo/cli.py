@@ -145,7 +145,7 @@ def load_model(num_masks, dataset, iou, object_score, backbone, **kwargs):
     return model
 
 
-def main(dataset, model, fit, **kwargs):
+def run(dataset, model, fit, **kwargs):
     """the main to train the algorithm
 
     Arguments:
@@ -229,7 +229,7 @@ def main(dataset, model, fit, **kwargs):
     yolo_model.save(model_run_path / 'final_model.h5')
 
 
-if __name__ == '__main__':
+def main():
     parser = ArgumentParser('train extra yolo')
     parser.add_argument('--config',
                         required=True,
@@ -237,4 +237,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     config = OmegaConf.load(args.config)
-    main(**config)
+    run(**config)
+
+
+if __name__ == '__main__':
+    main()

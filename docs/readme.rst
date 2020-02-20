@@ -2,7 +2,6 @@
 Ultrayolo
 =======
 
-
 .. image:: https://img.shields.io/pypi/v/ultrayolo.svg
         :target: https://pypi.python.org/pypi/ultrayolo
 
@@ -13,21 +12,16 @@ Ultrayolo
         :target: https://ultrayolo.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-
 .. image:: https://pyup.io/repos/github/fabiofumarola/ultrayolo/shield.svg
      :target: https://pyup.io/repos/github/fabiofumarola/ultrayolo/
      :alt: Updates
-
-
 
 Tensorflow 2 implementation of yolo version 3
 
 * Free software: Apache Software License 2.0
 * Documentation: https://ultrayolo.readthedocs.io.
 
-
 .. image:: ./images/example_image.png
-
 
 Features
 --------
