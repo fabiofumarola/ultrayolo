@@ -25,7 +25,7 @@ setup(
     author_email='fabiofumarola@gmail.com',
     python_requires='>=3',
     classifiers=[
-        'Development Status :: 3 - Beta',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
