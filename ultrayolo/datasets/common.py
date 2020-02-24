@@ -537,7 +537,7 @@ def transform_target(boxes_data,
                     # grid[i, y, x, anchor] = (tx, ty, bw, bh, obj, class)
                     y_out[i, grid_xy[1], grid_xy[0],
                           anchor_idx[0][0]] = [*box, 1, *one_hot]
-                    print([*box, 1, *one_hot])
+                    # print([*box, 1, *one_hot])
 
         y_data_transformed.append(y_out)
         num_grid_cells *= 2
