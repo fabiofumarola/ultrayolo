@@ -33,22 +33,22 @@ def test_classes():
 @pytest.fixture()
 def test_dataset(test_anchors, test_masks, test_classes):
     annotations_filepath = BASE_PATH / 'manifest.txt'
-    ds = YoloDatasetMultiFile(annotations_filepath, (256, 256, 3), 10,
-                              2, test_anchors, test_masks)
+    ds = YoloDatasetMultiFile(annotations_filepath, (256, 256, 3), 10, 2,
+                              test_anchors, test_masks)
     return ds
 
 
-def test_loss_initialized_yolo(
-        test_dataset, test_anchors, test_masks, test_classes):
+def test_loss_initialized_yolo(test_dataset, test_anchors, test_masks,
+                               test_classes):
     img_shape = test_dataset.target_shape
-    model = YoloV3(img_shape, test_dataset.max_objects,
-                   anchors=test_anchors, num_classes=len(test_classes), training=True)
+    model = YoloV3(img_shape,
+                   test_dataset.max_objects,
+                   anchors=test_anchors,
+                   num_classes=len(test_classes),
+                   training=True)
 
-    loss_fn = losses.make_loss(
-        len(test_classes),
-        test_anchors,
-        test_masks,
-        img_shape[0])
+    loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
+                               img_shape[0])
     x_true, y_true_grids = test_dataset[0]
     y_pred_grids = model(x_true)
 
@@ -58,13 +58,26 @@ def test_loss_initialized_yolo(
         print('loss', i, loss_value)
 
 
-def test_loss_yolo(test_dataset, test_anchors, test_masks, test_classes):
+def test_yolo_loss(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
-    loss_fn = losses.make_loss(
-        len(test_classes),
-        test_anchors,
-        test_masks,
-        img_shape[0])
+    loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
+                               img_shape[0])
+    _, y_true_grids = test_dataset[0]
+    y_pred_grids = y_true_grids
+
+    for i, loss in enumerate(loss_fn):
+        loss_value = loss(y_true_grids[i], y_pred_grids[i])
+        assert np.all(loss_value >= 0)
+        print('loss', i, loss_value)
+
+
+def test_focal_loss(test_dataset, test_anchors, test_masks, test_classes):
+    img_shape = test_dataset.target_shape
+    loss_fn = losses.make_loss(len(test_classes),
+                               test_anchors,
+                               test_masks,
+                               img_shape[0],
+                               loss_cls=losses.FocalLoss)
     _, y_true_grids = test_dataset[0]
     y_pred_grids = y_true_grids
 
@@ -76,14 +89,14 @@ def test_loss_yolo(test_dataset, test_anchors, test_masks, test_classes):
 
 def test_compare_losses(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
-    model = YoloV3(img_shape, test_dataset.max_objects,
-                   anchors=test_anchors, num_classes=len(test_classes), training=True)
+    model = YoloV3(img_shape,
+                   test_dataset.max_objects,
+                   anchors=test_anchors,
+                   num_classes=len(test_classes),
+                   training=True)
 
-    loss_fn = losses.make_loss(
-        len(test_classes),
-        test_anchors,
-        test_masks,
-        img_shape[0])
+    loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
+                               img_shape[0])
     x_true, y_true_grids = test_dataset[0]
     y_pred_grids = model(x_true)
     y_pred_grids_true = y_true_grids

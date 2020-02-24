@@ -135,3 +135,5 @@ checkpoints
 coco_dataset
 docs/tutorials/*.ipynb
 *Copy*.ipynb
+notebooks/anchors.txt
+notebooks/classes.txt
