@@ -240,6 +240,21 @@ class YoloDatasetMultiFile(BaseDataset):
 class CocoFormatDataset(tf.keras.utils.Sequence):
     """this class handles dataset into the `COCO format <http://cocodataset.org/>`_.
 
+    Data Format
+    ---------
+        annotation{
+            "id": int, 
+            "image_id": int, 
+            "category_id": int, 
+            "segmentation": RLE or [polygon], 
+            "area": float, 
+            "bbox": [x,y,width,height],
+            "iscrowd": 0 or 1,
+        }
+        categories[{
+        "id": int, "name": str, "supercategory": str,
+        }]
+
     Arguments:
         Sequence {tf.kera.utils.Sequence} -- [description]
     """
