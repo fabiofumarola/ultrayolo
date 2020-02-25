@@ -38,6 +38,7 @@ def test_dataset(test_anchors, test_masks, test_classes):
     return ds
 
 
+@pytest.mark.travis
 def test_loss_initialized_yolo(test_dataset, test_anchors, test_masks,
                                test_classes):
     img_shape = test_dataset.target_shape
@@ -58,6 +59,7 @@ def test_loss_initialized_yolo(test_dataset, test_anchors, test_masks,
         print('loss', i, loss_value)
 
 
+@pytest.mark.travis
 def test_yolo_loss(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
     loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
@@ -71,6 +73,7 @@ def test_yolo_loss(test_dataset, test_anchors, test_masks, test_classes):
         print('loss', i, loss_value)
 
 
+@pytest.mark.travis
 def test_focal_loss(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
     loss_fn = losses.make_loss(len(test_classes),
@@ -87,6 +90,7 @@ def test_focal_loss(test_dataset, test_anchors, test_masks, test_classes):
         print('loss', i, loss_value)
 
 
+@pytest.mark.travis
 def test_compare_losses(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
     model = YoloV3(img_shape,

@@ -16,6 +16,7 @@ def test_classes():
     yield classes
 
 
+@pytest.mark.travis
 def test_dataset_multi_file(test_classes):
 
     ds = YoloDatasetMultiFile(annotations_path=BASE_PATH / 'manifest.txt',
@@ -39,6 +40,7 @@ def test_dataset_multi_file(test_classes):
             grid_len *= 2
 
 
+@pytest.mark.travis
 def test_dataset_single_file(test_classes):
 
     ds = YoloDatasetSingleFile(annotations_path=BASE_PATH / 'annotations.txt',
@@ -62,6 +64,7 @@ def test_dataset_single_file(test_classes):
             grid_len *= 2
 
 
+@pytest.mark.travis
 def test_coco_dataset():
     ds = CocoFormatDataset(annotations_path=BASE_PATH / 'coco_dataset.json',
                            img_shape=(256, 256, 3),
@@ -85,6 +88,7 @@ def test_coco_dataset():
             grid_len *= 2
 
 
+@pytest.mark.travis
 def test_coco_dataset_no_annotations():
     ds = CocoFormatDataset(annotations_path=BASE_PATH /
                            'coco_dataset_no_annotations.json',
@@ -109,6 +113,7 @@ def test_coco_dataset_no_annotations():
             grid_len *= 2
 
 
+@pytest.mark.travis
 def test_coco_dataset_notraining():
     ds = CocoFormatDataset(annotations_path=BASE_PATH / 'coco_dataset.json',
                            img_shape=(256, 256, 3),
@@ -125,6 +130,7 @@ def test_coco_dataset_notraining():
         assert np.any(batch_classes > 0)
 
 
+@pytest.mark.travis
 def test_coco_dataset_notraining_aug():
     ds = CocoFormatDataset(annotations_path=BASE_PATH / 'coco_dataset.json',
                            img_shape=(256, 256, 3),
@@ -141,6 +147,7 @@ def test_coco_dataset_notraining_aug():
         assert np.any(batch_classes > 0)
 
 
+@pytest.mark.travis
 def test_coco_dataset_training_aug():
     ds = CocoFormatDataset(annotations_path=BASE_PATH / 'coco_dataset.json',
                            img_shape=(256, 256, 3),

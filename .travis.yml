@@ -12,7 +12,7 @@ befoore_install:
 install:
   - pip install -U tox-travis
 
-script: tox
+script: tox "-m travis"
 
 deploy:
   skip_cleanup: true

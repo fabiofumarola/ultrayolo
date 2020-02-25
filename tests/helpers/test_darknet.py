@@ -7,23 +7,23 @@ from pathlib import Path
 
 @pytest.fixture
 def test_model():
-    model = YoloV3(
-        img_shape=(256, 256, 3),
-        training=True
-    )
+    model = YoloV3(img_shape=(256, 256, 3), training=True)
     yield model.model
 
 
+@pytest.mark.travis
 def test_freeze(test_model):
     darknet.freeze(test_model)
     assert len(test_model.trainable_weights) == 0
 
 
+@pytest.mark.travis
 def test_freeze_backbone(test_model):
     darknet.freeze_backbone(test_model)
     assert len(test_model.trainable_weights) == 66
 
 
+@pytest.mark.travis
 def test_unfreeze(test_model):
     darknet.freeze(test_model)
     assert len(test_model.trainable_weights) == 0
@@ -31,6 +31,7 @@ def test_unfreeze(test_model):
     assert len(test_model.trainable_weights) == 222
 
 
+@pytest.mark.travis
 def test_freeze_backbone_layers(test_model):
     num_layers = -10
     darknet.freeze_backbone_layers(test_model, num_layers)
