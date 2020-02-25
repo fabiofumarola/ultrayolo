@@ -132,6 +132,8 @@ notebooks/test.jpg
 
 
 checkpoints
-coco_dataset
+*coco_dataset
 docs/tutorials/*.ipynb
 *Copy*.ipynb
+notebooks/anchors.txt
+notebooks/classes.txt

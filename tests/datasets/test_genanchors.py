@@ -8,6 +8,7 @@ IMAGES_PATH = BASE_PATH / 'images'
 ANNOTATIONS_PATH = BASE_PATH / 'annotations'
 
 
+@pytest.mark.travis
 def test_prepare_data_coco():
     path = BASE_PATH / 'coco_dataset.json'
     boxes_xywh = genanchors.prepare_data(path, (512, 512, 3), 'coco')
@@ -20,12 +21,14 @@ def test_prepare_data_coco():
 #     assert boxes_xywh.shape == (5, 4)
 
 
+@pytest.mark.travis
 def test_prepare_data_multifile():
     path = BASE_PATH / 'annotations.txt'
     boxes_xywh = genanchors.prepare_data(path, (512, 512, 3), 'singlefile')
     assert boxes_xywh.shape == (5, 4)
 
 
+@pytest.mark.travis
 def test_gen_anchors_coco():
     path = BASE_PATH / 'coco_dataset.json'
     boxes_xywh = genanchors.prepare_data(path, (512, 512, 3), 'coco')
@@ -42,6 +45,7 @@ def test_gen_anchors_coco():
 #     assert len(anchors) > 0
 
 
+@pytest.mark.travis
 def test_gen_anchors_multifile():
     path = BASE_PATH / 'manifest.txt'
     boxes_xywh = genanchors.prepare_data(path, (512, 512, 3), 'multifile')

@@ -25,8 +25,6 @@ def load_anchors(mode, number, path, ds_mode, ds_train_path, image_shape):
     Returns:
         np.ndarray -- the anchors for the algorithm
     """
-    ismultifile = True if ds_mode == 'multifile' else False
-
     if mode == 'compute':
         boxes_xywh = datasets.prepare_data(ds_train_path, image_shape, ds_mode)
         anchors = datasets.gen_anchors(boxes_xywh, number)
@@ -39,47 +37,53 @@ def load_anchors(mode, number, path, ds_mode, ds_train_path, image_shape):
     return anchors
 
 
-def make_augmentations():
+def make_augmentations(percentage: float = 0.2) -> iaa.Sequential:
     """apply data augmentations to the dataset
 
     Keyword Arguments:
-        max_number_augs {int} -- the max number of augmentation to apply to each image (default: {5})
+        percentage {float} -- the percentage of the dataset to augment for each epoch (default: 0.2)
 
     Returns:
-        [type] -- [description]
+        [iaa.Sequential] -- a pipeline of transformations
     """
+
     pipeline = iaa.Sequential(
         [
-            iaa.Crop(percent=(0, 0.2)),    # random crops
+            iaa.Crop(percent=(0, percentage)),    # random crops
     # Small gaussian blur with random sigma between 0 and 0.5.
     # But we only blur about 50% of all images.
-            iaa.Sometimes(0.5, iaa.GaussianBlur(sigma=(0, 0.5))),
-            iaa.Sometimes(0.2, iaa.Grayscale(alpha=(0.0, 1.0))),
+            iaa.Sometimes(percentage, iaa.GaussianBlur(sigma=(0, 0.5))),
+            iaa.Sometimes(percentage, iaa.Grayscale(alpha=(0.0, 1.0))),
     # Strengthen or weaken the contrast in each image.
-            iaa.LinearContrast((0.75, 1.5)),
+            iaa.Sometimes(percentage, iaa.LinearContrast((0.75, 1.5))),
     # Add gaussian noise.
     # For 50% of all images, we sample the noise once per pixel.
     # For the other 50% of all images, we sample the noise per pixel AND
     # channel. This can change the color (not only brightness) of the
     # pixels.
-            iaa.AdditiveGaussianNoise(
-                loc=0, scale=(0.0, 0.05 * 255), per_channel=0.5),
+            iaa.Sometimes(
+                percentage,
+                iaa.AdditiveGaussianNoise(
+                    loc=0, scale=(0.0, 0.05 * 255), per_channel=0.5)),
     # Make some images brighter and some darker.
     # In 20% of all cases, we sample the multiplier once per channel,
     # which can end up changing the color of the images.
-            iaa.Multiply((0.8, 1.2), per_channel=0.2),
+            iaa.Sometimes(percentage, iaa.Multiply(
+                (0.8, 1.2), per_channel=0.2)),
     # Apply affine transformations to each image.
     # Scale/zoom them, translate/move them, rotate them and shear them.
-            iaa.Affine(scale={
-                "x": (0.8, 1.5),
-                "y": (0.8, 1.5)
-            },
-                       translate_percent={
-                           "x": (-0.3, 0.3),
-                           "y": (-0.3, 0.3)
-                       },
-                       rotate=(-30, 30),
-                       shear=(-12, 12)),
+            iaa.Sometimes(
+                percentage,
+                iaa.Affine(scale={
+                    "x": (0.8, 1.5),
+                    "y": (0.8, 1.5)
+                },
+                           translate_percent={
+                               "x": (-0.3, 0.3),
+                               "y": (-0.3, 0.3)
+                           },
+                           rotate=(-30, 30),
+                           shear=(-10, 10))),
         ],
         random_order=True)
     return pipeline
@@ -183,7 +187,9 @@ def run(dataset, model, fit, **kwargs):
         logger.info('reload weigths at path %s', model['reload_weights'])
         yolo_model.load_weights(model['reload_weights'])
 
-    loss = yolo_model.get_loss_function()
+    logger.debug('using loss {}', model.loss)
+    loss = yolo_model.get_loss_function(model.loss)
+
     optimizer = yolo_model.get_optimizer(fit.optimizer.name,
                                          fit.optimizer.lrate.value)
 

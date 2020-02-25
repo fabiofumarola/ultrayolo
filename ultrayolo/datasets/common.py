@@ -462,12 +462,16 @@ def to_center_width_height(boxes):
 
 
 def best_anchors_iou(boxes, anchors):
+    """[summary]
+    
+    Arguments:
+        boxes {np.ndarray} -- a numpy array of shape (num_examples, num_bboxes) of type (x_min, y_min, x_max, y_max)
+        anchors {np.ndarray} -- a numpy array with the anchors to be used for the object detection (num_anchors, (W, H))
+    
+    Returns:
+        [np.ndarray] -- a numpy array that returns the best anchors fot the given object
     """
-    Parameters
-    --------
-    boxes: a numpy array of shape (num_examples, num_bboxes) of type (x_min, y_min, x_max, y_max)
-    anchors: a numpy array with the anchors to be used for the object detection (num_anchors, (W, H))
-    """
+
     boxes_xywh = to_center_width_height(boxes)
     boxes_wh = np.expand_dims(boxes_xywh[..., 2:4], -2)
     boxes_wh = np.tile(boxes_wh, [1, 1, len(anchors), 1])
@@ -492,8 +496,24 @@ def transform_target(boxes_data,
                      num_classes,
                      target_shape,
                      classes=None):
-    """Transform y_data in yolo format
-
+    """transform the target data into yolo format
+    
+    Arguments:
+        boxes_data {np.ndarray} -- an array of shape (NBATCH, x_min, y_min, x_max, y_max) 
+        classes_data {np.ndarray} -- an array of shape (NBATCH, 1)
+        anchors {np.ndarray} -- an array of shape (6 or 9, 2)
+        anchor_masks {np.ndarray} -- an array of mask to select the anchors
+        grid_len {int} -- the number of elements 
+        num_classes {int} -- the number of classes
+        target_shape {tuple} -- thet target shape of the images
+    
+    Keyword Arguments:
+        classes {list} -- a positional list that associate id_num to pos (default: {None})
+            This is used in the case where a dataset of created by filtering some classes 
+            with respect to another dataset and the classes are not 0 indexed
+    
+    Returns:
+        [tuple] -- a tuple with the dataset transformed for coco training
     """
     # get the anchor id
     obj_anchors_idx = best_anchors_iou(boxes_data, anchors)
@@ -518,13 +538,13 @@ def transform_target(boxes_data,
 
                 if np.any(valid_anchor):
                     # TODO target shape can be removed if we scale the boxes in
-                    # advance
+
                     box = boxes_data[i, j] / target_shape[0]
-                    box_center_xy = (box[0:2] + box[2:4]) / 2
+                    bot_center_width_heigth = to_center_width_height(box)
 
                     anchor_idx = np.where(valid_anchor)
-                    grid_xy = (box_center_xy // (1 / num_grid_cells)).astype(
-                        np.int32)
+                    grid_xy = (bot_center_width_heigth[:2] //
+                               (1 / num_grid_cells)).astype(np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
                     # FIXME
@@ -537,6 +557,7 @@ def transform_target(boxes_data,
                     # grid[i, y, x, anchor] = (tx, ty, bw, bh, obj, class)
                     y_out[i, grid_xy[1], grid_xy[0],
                           anchor_idx[0][0]] = [*box, 1, *one_hot]
+                    # print([*box, 1, *one_hot])
 
         y_data_transformed.append(y_out)
         num_grid_cells *= 2

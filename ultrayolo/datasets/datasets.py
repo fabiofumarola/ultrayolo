@@ -167,7 +167,7 @@ class YoloDatasetMultiFile(BaseDataset):
                  augmenters=None,
                  pad_to_fixed_size=True):
         """Create a dataset that expectes
-        An Annotation file with image_name, boxes
+        An Annotation file with image_name, boxes. Boxes are in the form [x_min, y_min, x_max, y_max]
 
 
         Arguments:
@@ -363,6 +363,7 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
                 classes = []
 
                 for doc in self.idx_annotations_doc[img_id]:
+                    # the model expects that boxes are in the format x_min, y_min, x_max, y_max
                     img_boxes = self.__to_xymin_xymax(*doc['bbox'])
                     assert np.all(np.array(img_boxes) >= 0)
                     boxes.append(img_boxes)
