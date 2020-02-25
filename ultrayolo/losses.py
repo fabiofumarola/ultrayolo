@@ -232,6 +232,15 @@ class YoloLoss():
         return int_area / (box_1_area + box_2_area - int_area)
 
     def __call__(self, y_true, y_pred, **kvargs):
+        """[summary]
+        
+        Arguments:
+            y_true {tf.Tensor} -- a tensor of shape (batch_size, grid, grid, anchors, (x, y, x, y, obj, ...cls))
+            y_pred {tf.Tensor} -- a tensor of shape (batch_size, grid, grid, anchors, (x, y, w, h, obj, ...cls))
+        
+        Returns:
+            [type] -- [description]
+        """
 
         # 1. transform all pred outputs
         # y_pred: (batch_size, grid, grid, anchors, (x, y, w, h, obj, ...cls))
