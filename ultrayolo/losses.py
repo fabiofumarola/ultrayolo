@@ -339,6 +339,7 @@ def make_loss(num_classes,
     Returns:
         [type] -- [description]
     """
+    loss_cls = YoloLoss
     if loss_name == 'yolo':
         loss_cls = YoloLoss
     elif loss_name == 'focal':
