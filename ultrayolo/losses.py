@@ -292,11 +292,11 @@ class YoloLoss():
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
         loss = xy_loss + wh_loss + obj_loss + no_obj_loss + class_loss
-        # tf.print('xy_loss', xy_loss)
-        # tf.print('wh_loss', wh_loss)
-        # tf.print('obj_loss', obj_loss)
-        # tf.print('no_obj_loss', 0.5 * no_obj_loss)
-        # tf.print('class_loss', class_loss)
+        # tf.print('xy_loss', tf.reduce_mean(xy_loss))
+        # tf.print('wh_loss', tf.reduce_mean(wh_loss))
+        # tf.print('obj_loss', tf.reduce_mean(obj_loss))
+        # tf.print('no_obj_loss', tf.reduce_mean(no_obj_loss))
+        # tf.print('class_loss', tf.reduce_mean(class_loss))
 
         return tf.reduce_mean(loss)
 

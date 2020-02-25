@@ -80,39 +80,42 @@ def test_model_resnet50(test_dataset, test_anchors, test_masks, test_classes):
     assert res is not None
 
 
-# def test_model_resnet101(test_dataset, test_anchors, test_masks, test_classes):
-#     img_shape = test_dataset.target_shape
-#     model = YoloV3(img_shape, test_dataset.max_objects, backbone='ResNet101V2',
-#                    anchors=test_anchors, num_classes=len(test_classes), training=True)
+def test_model_resnet101(test_dataset, test_anchors, test_masks, test_classes):
+    img_shape = test_dataset.target_shape
+    model = YoloV3(img_shape,
+                   test_dataset.max_objects,
+                   backbone='ResNet101V2',
+                   anchors=test_anchors,
+                   num_classes=len(test_classes),
+                   training=True)
 
-#     loss_fn = losses.make_loss(
-#         model.num_classes,
-#         test_anchors,
-#         test_masks,
-#         img_shape[0])
-#     optimizer = model.get_optimizer('sgd', 1e-4)
-#     model.compile(optimizer, loss_fn, run_eagerly=True)
-#     res = model(test_dataset[0][0])
-#     # history = model.fit(test_dataset, test_dataset, 1)
-#     # assert history is not None
-#     assert res is not None
+    loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
+                               img_shape[0])
+    optimizer = model.get_optimizer('sgd', 1e-4)
+    model.compile(optimizer, loss_fn, run_eagerly=True)
+    res = model(test_dataset[0][0])
+    # history = model.fit(test_dataset, test_dataset, 1)
+    # assert history is not None
+    assert res is not None
 
-# def test_model_resnet152(test_dataset, test_anchors, test_masks, test_classes):
-#     img_shape = test_dataset.target_shape
-#     model = YoloV3(img_shape, test_dataset.max_objects, backbone='ResNet152V2',
-#                    anchors=test_anchors, num_classes=len(test_classes), training=True)
 
-#     loss_fn = losses.make_loss(
-#         model.num_classes,
-#         test_anchors,
-#         test_masks,
-#         img_shape[0])
-#     optimizer = model.get_optimizer('sgd', 1e-4)
-#     model.compile(optimizer, loss_fn, run_eagerly=True)
-#     res = model(test_dataset[0][0])
-#     # history = model.fit(test_dataset, test_dataset, 1)
-#     # assert history is not None
-#     assert res is not None
+def test_model_resnet152(test_dataset, test_anchors, test_masks, test_classes):
+    img_shape = test_dataset.target_shape
+    model = YoloV3(img_shape,
+                   test_dataset.max_objects,
+                   backbone='ResNet152V2',
+                   anchors=test_anchors,
+                   num_classes=len(test_classes),
+                   training=True)
+
+    loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
+                               img_shape[0])
+    optimizer = model.get_optimizer('sgd', 1e-4)
+    model.compile(optimizer, loss_fn, run_eagerly=True)
+    res = model(test_dataset[0][0])
+    # history = model.fit(test_dataset, test_dataset, 1)
+    # assert history is not None
+    assert res is not None
 
 
 def test_model_DenseNet121(test_dataset, test_anchors, test_masks,
@@ -134,43 +137,45 @@ def test_model_DenseNet121(test_dataset, test_anchors, test_masks,
     # assert history is not None
     assert res is not None
 
-    # def test_model_DenseNet169(test_dataset, test_anchors, test_masks,
-    #                            test_classes):
-    #     img_shape = test_dataset.target_shape
-    #     model = YoloV3(img_shape,
-    #                    test_dataset.max_objects,
-    #                    backbone='DenseNet169',
-    #                    anchors=test_anchors,
-    #                    num_classes=len(test_classes),
-    #                    training=True)
 
-    #     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-    #                                img_shape[0])
-    #     optimizer = model.get_optimizer('sgd', 1e-4)
-    #     model.compile(optimizer, loss_fn, run_eagerly=True)
-    #     res = model(test_dataset[0][0])
-    #     # history = model.fit(test_dataset, test_dataset, 1)
-    #     # assert history is not None
-    #     assert res is not None
+def test_model_DenseNet169(test_dataset, test_anchors, test_masks,
+                           test_classes):
+    img_shape = test_dataset.target_shape
+    model = YoloV3(img_shape,
+                   test_dataset.max_objects,
+                   backbone='DenseNet169',
+                   anchors=test_anchors,
+                   num_classes=len(test_classes),
+                   training=True)
 
-    # def test_model_DenseNet201(test_dataset, test_anchors, test_masks,
-    #                            test_classes):
-    #     img_shape = test_dataset.target_shape
-    #     model = YoloV3(img_shape,
-    #                    test_dataset.max_objects,
-    #                    backbone='DenseNet201',
-    #                    anchors=test_anchors,
-    #                    num_classes=len(test_classes),
-    #                    training=True)
+    loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
+                               img_shape[0])
+    optimizer = model.get_optimizer('sgd', 1e-4)
+    model.compile(optimizer, loss_fn, run_eagerly=True)
+    res = model(test_dataset[0][0])
+    # history = model.fit(test_dataset, test_dataset, 1)
+    # assert history is not None
+    assert res is not None
 
-    # loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-    #                            img_shape[0])
-    # optimizer = model.get_optimizer('sgd', 1e-4)
-    # model.compile(optimizer, loss_fn, run_eagerly=True)
-    # res = model(test_dataset[0][0])
-    # # history = model.fit(test_dataset, test_dataset, 1)
-    # # assert history is not None
-    # assert res is not None
+
+def test_model_DenseNet201(test_dataset, test_anchors, test_masks,
+                           test_classes):
+    img_shape = test_dataset.target_shape
+    model = YoloV3(img_shape,
+                   test_dataset.max_objects,
+                   backbone='DenseNet201',
+                   anchors=test_anchors,
+                   num_classes=len(test_classes),
+                   training=True)
+
+    loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
+                               img_shape[0])
+    optimizer = model.get_optimizer('sgd', 1e-4)
+    model.compile(optimizer, loss_fn, run_eagerly=True)
+    res = model(test_dataset[0][0])
+    # history = model.fit(test_dataset, test_dataset, 1)
+    # assert history is not None
+    assert res is not None
 
 
 def test_model_MobileNetV2(test_dataset, test_anchors, test_masks,

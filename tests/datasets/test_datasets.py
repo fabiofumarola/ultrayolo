@@ -34,7 +34,7 @@ def test_dataset_multi_file(test_classes):
         assert len(grid_data) == 3
         grid_len = ds.grid_len
         for grid in grid_data:
-            print(grid.shape)
+            # print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
             grid_len *= 2
 
@@ -57,7 +57,7 @@ def test_dataset_single_file(test_classes):
         assert len(grid_data) == 3
         grid_len = ds.grid_len
         for grid in grid_data:
-            print(grid.shape)
+            # print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
             grid_len *= 2
 
@@ -80,7 +80,7 @@ def test_coco_dataset():
         assert len(grid_data) == 3
         grid_len = ds.grid_len
         for grid in grid_data:
-            print(grid.shape)
+            # print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
             grid_len *= 2
 
@@ -104,7 +104,7 @@ def test_coco_dataset_no_annotations():
         assert len(grid_data) == 3
         grid_len = ds.grid_len
         for grid in grid_data:
-            print(grid.shape)
+            # print(grid.shape)
             assert grid.shape == (2, grid_len, grid_len, 3, 10)
             grid_len *= 2
 
