@@ -191,6 +191,14 @@ def test_to_center_width_height():
 
 
 @pytest.mark.travis
+def test_to_center_width_height_single():
+    array_box = np.array([2, 1, 5, 3])
+    result = common.to_center_width_height(array_box)
+
+    assert np.all(result == np.array([3.5, 2., 3., 2.]))
+
+
+@pytest.mark.travis
 def test_best_anchors_iou():
     y_train = np.array(
         [[[474., 40.5, 498., 57.5, 0.], [80.5, 66., 607.5, 384., 0.],

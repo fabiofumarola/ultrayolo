@@ -187,7 +187,9 @@ def run(dataset, model, fit, **kwargs):
         logger.info('reload weigths at path %s', model['reload_weights'])
         yolo_model.load_weights(model['reload_weights'])
 
-    loss = yolo_model.get_loss_function()
+    logger.debug('using loss {}', model.loss)
+    loss = yolo_model.get_loss_function(model.loss)
+
     optimizer = yolo_model.get_optimizer(fit.optimizer.name,
                                          fit.optimizer.lrate.value)
 

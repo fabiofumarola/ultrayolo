@@ -11,6 +11,7 @@ from .layers.core import (DarknetBody, ResNetBody, DenseNetBody, MobileNetBody,
 from . import losses, helpers
 from .helpers import darknet
 import multiprocessing
+from typing import List
 
 import logging
 logger = logging.getLogger(__name__)
@@ -107,16 +108,22 @@ class BaseModel(object):
             helpers.unfreeze_checkpoint(path)
             self.model.load_weights(str(path.absolute()))
 
-    def get_loss_function(self):
-        """singleton for the yolo loss function
-
+    def get_loss_function(self, loss_name: str = 'yolo') -> List:
+        """utility to create the loss function
+        
+        Keyword Arguments:
+            loss_fn {str} -- a literal value for Yolo and Focal loss (default: {'yolo'})
+                (values: {'yolo', 'focal'})
+        
         Returns:
-            list -- a list of the loss function for each mask
+            List -- [description]
         """
         if self.loss_function is None:
             self.loss_function = losses.make_loss(self.num_classes,
-                                                  self.anchors, self.masks,
-                                                  self.img_shape[0])
+                                                  self.anchors,
+                                                  self.masks,
+                                                  self.img_shape[0],
+                                                  loss_name=loss_name)
 
         return self.loss_function
 

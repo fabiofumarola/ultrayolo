@@ -39,7 +39,8 @@ def process_predictions(y_pred, num_classes, anchors_masks):
     - box_xyxy, pred_obj, pred_class, pred_xywh
 
     Arguments:
-        y_pred {tf.tensor} -- the predictions
+        y_pred {tf.tensor} -- the predictions in the format 
+            (NBATCH, x_center, y_center, width, heigth, obj, one_hot_classes)
         num_classes {int} -- the number of classes
         anchors_masks {tf.tensor} -- the anchors masks
 
@@ -140,6 +141,7 @@ class FocalLoss():
                            true_wh)
 
         # 4. calculate all masks
+        # remove the last dimension
         obj_mask = tf.squeeze(true_obj, -1)
         # ignore false positive when iou is over threshold
         true_box_mask = tf.boolean_mask(true_box_xyxy,
@@ -156,7 +158,7 @@ class FocalLoss():
             tf.reduce_sum(tf.abs(true_wh - pred_wh), axis=-1)
 
         obj_cross_entropy = tfa.losses.sigmoid_focal_crossentropy(
-            true_obj, pred_obj, from_logits=True)
+            true_obj, pred_obj, from_logits=False)
         obj_loss = obj_mask * obj_cross_entropy
         no_obj_loss = (1 - obj_mask) * ignore_mask * obj_cross_entropy
 
@@ -169,7 +171,7 @@ class FocalLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + obj_loss + no_obj_loss + class_loss
+        loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
         # tf.print('xy_loss', xy_loss)
         # tf.print('wh_loss', wh_loss)
         # tf.print('obj_loss', obj_loss)
@@ -273,17 +275,17 @@ class YoloLoss():
 
         # 5. compute all the losses
         xy_loss = obj_mask * box_loss_scale * \
-            tf.reduce_sum(tf.square(true_xy - pred_xy), axis=-1)
+            tf.reduce_sum(tf.abs(true_xy - pred_xy), axis=-1)
         wh_loss = obj_mask * box_loss_scale * \
-            tf.reduce_sum(tf.square(true_wh - pred_wh), axis=-1)
+            tf.reduce_sum(tf.abs(true_wh - pred_wh), axis=-1)
 
         obj_cross_entropy = tf.keras.losses.binary_crossentropy(
-            true_obj, pred_obj, from_logits=True)
+            true_obj, pred_obj, from_logits=False)
         obj_loss = obj_mask * obj_cross_entropy
         no_obj_loss = (1 - obj_mask) * ignore_mask * obj_cross_entropy
 
         class_loss = obj_mask * tf.keras.losses.binary_crossentropy(
-            true_class, pred_class, from_logits=True)
+            true_class, pred_class, from_logits=False)
 
         xy_loss = tf.reduce_sum(xy_loss, axis=(1, 2, 3))
         wh_loss = tf.reduce_sum(wh_loss, axis=(1, 2, 3))
@@ -291,7 +293,7 @@ class YoloLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + obj_loss + no_obj_loss + class_loss
+        loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
         # tf.print('xy_loss', tf.reduce_mean(xy_loss))
         # tf.print('wh_loss', tf.reduce_mean(wh_loss))
         # tf.print('obj_loss', tf.reduce_mean(obj_loss))
@@ -312,7 +314,7 @@ def make_loss(num_classes,
               masks,
               img_size,
               ignore_iou_threshold=0.7,
-              loss_cls=YoloLoss):
+              loss_name='yolo'):
     """helper to create the losses
     
     Arguments:
@@ -323,11 +325,16 @@ def make_loss(num_classes,
     
     Keyword Arguments:
         ignore_iou_threshold {float} -- the value used to ignore predictions (default: {0.7})
-        loss_cls {[type]} -- the loss function used (default: {YoloLoss}) (values: {YoloLoss, FocalLoss})
+        loss_name {str} -- the loss function used (default: {yolo}) (values: {yolo, focal})
     
     Returns:
         [type] -- [description]
     """
+    if loss_name == 'yolo':
+        loss_cls = YoloLoss
+    elif loss_name == 'focal':
+        loss_cls = FocalLoss
+
     loss_fns = [
         loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
                  f'yolo_loss{i}') for i, m in enumerate(masks)

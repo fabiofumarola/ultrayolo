@@ -499,7 +499,7 @@ def transform_target(boxes_data,
     """transform the target data into yolo format
     
     Arguments:
-        boxes_data {np.ndarray} -- an array of shape (NBATCH, 4)
+        boxes_data {np.ndarray} -- an array of shape (NBATCH, x_min, y_min, x_max, y_max) 
         classes_data {np.ndarray} -- an array of shape (NBATCH, 1)
         anchors {np.ndarray} -- an array of shape (6 or 9, 2)
         anchor_masks {np.ndarray} -- an array of mask to select the anchors
@@ -538,13 +538,13 @@ def transform_target(boxes_data,
 
                 if np.any(valid_anchor):
                     # TODO target shape can be removed if we scale the boxes in
-                    # advance
+
                     box = boxes_data[i, j] / target_shape[0]
-                    box_center_xy = (box[0:2] + box[2:4]) / 2
+                    bot_center_width_heigth = to_center_width_height(box)
 
                     anchor_idx = np.where(valid_anchor)
-                    grid_xy = (box_center_xy // (1 / num_grid_cells)).astype(
-                        np.int32)
+                    grid_xy = (bot_center_width_heigth[:2] //
+                               (1 / num_grid_cells)).astype(np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
                     # FIXME

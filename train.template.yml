@@ -31,6 +31,8 @@ model:
   iou: 0.7
   object_score: 0.7
   reload_weights:
+  # accepts values
+  loss: focal
 
 fit:
   #mode train, transfer, finetuning

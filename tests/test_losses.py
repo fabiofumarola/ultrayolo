@@ -80,7 +80,7 @@ def test_focal_loss(test_dataset, test_anchors, test_masks, test_classes):
                                test_anchors,
                                test_masks,
                                img_shape[0],
-                               loss_cls=losses.FocalLoss)
+                               loss_name='focal')
     _, y_true_grids = test_dataset[0]
     y_pred_grids = y_true_grids
 
