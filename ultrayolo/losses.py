@@ -284,9 +284,9 @@ class YoloLoss():
 
         # 5. compute all the losses
         xy_loss = obj_mask * box_loss_scale * \
-            tf.reduce_sum(tf.abs(true_xy - pred_xy), axis=-1)
+            tf.reduce_sum(tf.square(true_xy - pred_xy), axis=-1)
         wh_loss = obj_mask * box_loss_scale * \
-            tf.reduce_sum(tf.abs(true_wh - pred_wh), axis=-1)
+            tf.reduce_sum(tf.square(true_wh - pred_wh), axis=-1)
 
         obj_cross_entropy = tf.keras.losses.binary_crossentropy(
             true_obj, pred_obj, from_logits=False)
