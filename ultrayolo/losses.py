@@ -318,8 +318,8 @@ class YoloLoss():
         self.obj_losses.append(obj_loss)
         self.no_obj_losses.append(no_obj_loss)
         self.class_losses.append(class_loss)
-        self.count_batches += 1
-        tf.print(self.count_batches)
+        self.count_batches = self.count_batches + 1
+        tf.print(self.count_batches, self.num_batches)
         if self.count_batches == self.num_batches - 1:
             tf.print('in')
             self.save_metrics()
