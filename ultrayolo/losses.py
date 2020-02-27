@@ -204,8 +204,8 @@ class YoloLoss():
         self.obj_losses = []
         self.no_obj_losses = []
         self.class_losses = []
-        self.epoch = 0
-        self.count_batches = 0
+        self.epoch = tf.Variable(initial_value=0, trainable=False)
+        self.count_batches = tf.Variable(initial_value=0, trainable=False)
 
     @staticmethod
     def broadcast_iou(box_1, box_2):
@@ -318,9 +318,9 @@ class YoloLoss():
         self.obj_losses.append(obj_loss)
         self.no_obj_losses.append(no_obj_loss)
         self.class_losses.append(class_loss)
-        self.count_batches = self.count_batches + 1
+        self.count_batches.assign_add(1)
         tf.print(self.count_batches, self.num_batches)
-        if self.count_batches == self.num_batches - 1:
+        if self.count_batches == self.num_batches:
             tf.print('in')
             self.save_metrics()
 
@@ -352,8 +352,8 @@ class YoloLoss():
         self.obj_losses = []
         self.no_obj_losses = []
         self.class_losses = []
-        self.count_batches = 0
-        self.epoch += 1
+        self.count_batches.assign(0)
+        self.epoch.assign_add(1)
 
     def __str__(self):
         return self.__name__
