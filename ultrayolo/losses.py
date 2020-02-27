@@ -206,7 +206,7 @@ class YoloLoss():
         self.class_losses = []
         self.epoch = tf.Variable(initial_value=0,
                                  trainable=False,
-                                 dtype=tf.int32)
+                                 dtype=tf.int64)
         self.count_batches = tf.Variable(initial_value=0,
                                          trainable=False,
                                          dtype=tf.int32)
