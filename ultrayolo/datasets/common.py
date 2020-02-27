@@ -521,11 +521,14 @@ def transform_target(boxes_data,
     y_data_transformed = []
 
     num_grid_cells = grid_len
-    for masks in anchor_masks:
+    for i, masks in enumerate(anchor_masks):
+        masks = anchor_masks[-1]
 
         y_out = np.zeros((len(boxes_data), num_grid_cells, num_grid_cells,
                           len(masks), 4 + 1 + num_classes),
                          dtype=np.float32)
+
+        obj_anchors_idx = best_anchors_iou(boxes_data, anchors[i:i + 1])
 
         for i in range(boxes_data.shape[0]):
             for j in range(boxes_data.shape[1]):
