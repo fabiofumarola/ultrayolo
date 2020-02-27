@@ -304,8 +304,8 @@ def YoloOutput(x_in, filters, num_mask, num_classes, name=None):
                     kernel=1,
                     batch_norm=False,
                     downsample=False)
-    x = Lambda(lambda x: tf.reshape(x, (-1, tf.shape(x)[1] / 2, tf.shape(x)[2] /
-                                        2, num_mask, 5 + num_classes)))(x)
+    x = Lambda(lambda x: tf.reshape(x, (-1, tf.shape(x)[1], tf.shape(x)[2],
+                                        num_mask, 5 + num_classes)))(x)
     # add this layers to replace all the nan with 0
     x = Lambda(lambda w: tf.where(tf.math.is_nan(w), tf.zeros_like(w), w))(x)
 
