@@ -231,7 +231,8 @@ class BaseModel(object):
                               workers=workers,
                               use_multiprocessing=use_multiprocessing,
                               max_queue_size=64,
-                              initial_epoch=initial_epoch)
+                              initial_epoch=initial_epoch,
+                              verbose=1)
 
     def save(self, path, save_format='h5'):
         """save the model to the given path
