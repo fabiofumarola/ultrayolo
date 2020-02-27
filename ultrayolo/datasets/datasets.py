@@ -330,6 +330,7 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
                 self.idx_annotations_doc[ann['image_id']] = []
             self.idx_annotations_doc[ann['image_id']].append(ann)
         self.idxs = np.array(list(self.idx_image_doc.keys()))
+        np.random.shuffle(self.idxs)
 
     def on_epoch_end(self):
         np.random.shuffle(self.idxs)
