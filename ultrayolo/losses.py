@@ -178,7 +178,7 @@ class FocalLoss():
         # tf.print('no_obj_loss', 0.5 * no_obj_loss)
         # tf.print('class_loss', class_loss)
 
-        return tf.reduce_mean(loss)
+        return loss
 
     def __str__(self):
         return self.__name__
@@ -309,7 +309,7 @@ class YoloLoss():
         # tf.print('no_obj_loss', tf.reduce_mean(no_obj_loss))
         # tf.print('class_loss', tf.reduce_mean(class_loss))
 
-        return tf.reduce_mean(loss)
+        return loss
 
     def __str__(self):
         return self.__name__
