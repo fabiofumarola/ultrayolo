@@ -204,8 +204,12 @@ class YoloLoss():
         self.obj_losses = []
         self.no_obj_losses = []
         self.class_losses = []
-        self.epoch = tf.Variable(initial_value=0, trainable=False)
-        self.count_batches = tf.Variable(initial_value=0, trainable=False)
+        self.epoch = tf.Variable(initial_value=0,
+                                 trainable=False,
+                                 dtype=tf.int32)
+        self.count_batches = tf.Variable(initial_value=0,
+                                         trainable=False,
+                                         dtype=tf.int32)
 
     @staticmethod
     def broadcast_iou(box_1, box_2):
