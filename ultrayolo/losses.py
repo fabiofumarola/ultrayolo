@@ -331,6 +331,7 @@ class YoloLoss():
     @tf.function
     def save_metrics(self):
         if tf.equal(self.count_batches, self.num_batches):
+            tf.print('in')
             tf.summary.scalar('{}_xy_loss'.format(self.__name__),
                               step=self.epoch,
                               data=self.xy_losses.result())
