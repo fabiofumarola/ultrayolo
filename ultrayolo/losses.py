@@ -329,18 +329,22 @@ class YoloLoss():
                           step=self.epoch,
                           data=tf.reduce_mean(tf.concat(self.wh_losses,
                                                         axis=-1)))
-        # tf.summary.scalar('{}_wh_loss'.format(self.__name__),
-        #                   step=self.epoch,
-        #                   data=tf.reduce_mean(self.xy_losses))
-        # tf.summary.scalar('{}_obj_loss'.format(self.__name__),
-        #                   step=self.epoch,
-        #                   data=tf.reduce_mean(self.obj_losses))
-        # tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
-        #                   step=self.epoch,
-        #                   data=tf.reduce_mean(self.no_obj_losses))
-        # tf.summary.scalar('{}_class_loss'.format(self.__name__),
-        #                   step=self.epoch,
-        #                   data=tf.reduce_mean(self.class_losses))
+        tf.summary.scalar('{}_wh_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(tf.concat(self.xy_losses,
+                                                        axis=-1)))
+        tf.summary.scalar('{}_obj_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(
+                              tf.concat(self.obj_losses, axis=-1)))
+        tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(
+                              tf.concat(self.no_obj_losses, axis=-1)))
+        tf.summary.scalar('{}_class_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(
+                              tf.concat(self.class_losses, axis=-1)))
         self.xy_losses = []
         self.wh_losses = []
         self.obj_losses = []
