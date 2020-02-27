@@ -323,7 +323,6 @@ class YoloLoss():
         # self.no_obj_losses.append(no_obj_loss)
         # self.class_losses.append(class_loss)
         self.count_batches.assign_add(1)
-        tf.print(self.count_batches, self.num_batches)
         self.save_metrics()
 
         return loss
