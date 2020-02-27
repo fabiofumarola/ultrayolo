@@ -317,7 +317,7 @@ class YoloLoss():
 
         loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
 
-        self.xy_losses.update_sate(xy_loss)
+        self.xy_losses.update_state(xy_loss)
         # self.wh_losses.append(wh_loss)
         # self.obj_losses.append(obj_loss)
         # self.no_obj_losses.append(no_obj_loss)
