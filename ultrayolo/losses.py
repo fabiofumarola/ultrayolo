@@ -316,7 +316,7 @@ class YoloLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + 2 * obj_loss + no_obj_loss + class_loss
+        loss = xy_loss + wh_loss + 5 * obj_loss + no_obj_loss + class_loss
 
         self.xy_losses.update_state(xy_loss)
         self.wh_losses.update_state(wh_loss)
