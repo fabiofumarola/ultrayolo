@@ -320,7 +320,7 @@ class YoloLoss():
         self.class_losses.append(class_loss)
         self.count_batches.assign_add(1)
         tf.print(self.count_batches, self.num_batches)
-        if tf.equal(self.count_batches, self.num_batches):
+        if tf.equal(self.count_batches, self.num_batches).numpy():
             tf.print('in')
             self.save_metrics()
 
