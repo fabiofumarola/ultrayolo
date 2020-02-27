@@ -320,6 +320,7 @@ class YoloLoss():
         self.class_losses.append(class_loss)
         self.count_batches += 1
         if self.count_batches == self.num_batches - 1:
+            print('saving metrics')
             self.save_metrics()
 
         return loss
