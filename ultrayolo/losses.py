@@ -333,7 +333,7 @@ class YoloLoss():
         if tf.equal(self.count_batches, self.num_batches):
             tf.summary.scalar('{}_xy_loss'.format(self.__name__),
                               step=self.epoch,
-                              data=self.wh_losses.result())
+                              data=self.xy_losses.result())
             # tf.summary.scalar('{}_wh_loss'.format(self.__name__),
             #                   step=self.epoch,
             #                   data=tf.reduce_mean(self.xy_losses))
