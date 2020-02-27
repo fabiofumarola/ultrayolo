@@ -240,7 +240,7 @@ class YoloLoss():
             (box_2[..., 3] - box_2[..., 1])
         return int_area / (box_1_area + box_2_area - int_area)
 
-    @tf.funtion
+    @tf.function
     def __call__(self, y_true, y_pred, **kvargs):
         """[summary]
         
