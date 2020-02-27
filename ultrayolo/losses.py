@@ -190,13 +190,22 @@ class FocalLoss():
 class YoloLoss():
 
     def __init__(self, anchor_masks, ignore_iou_threshold, img_size,
-                 num_classes, name):
+                 num_classes, name, num_batches):
         self.anchor_masks = anchor_masks.astype(np.float32)
         self.ignore_iou_threshold = ignore_iou_threshold
         self.img_size = img_size
         self.num_classes = num_classes
         self.anchors_masks_scaled = self.anchor_masks / img_size
         self.__name__ = name
+        self.num_batches = num_batches
+
+        self.xy_losses = []
+        self.wh_losses = []
+        self.obj_losses = []
+        self.no_obj_losses = []
+        self.class_losses = []
+        self.epoch = 0
+        self.count_batches = 0
 
     @staticmethod
     def broadcast_iou(box_1, box_2):
@@ -303,13 +312,41 @@ class YoloLoss():
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
         loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
-        # tf.print('xy_loss', tf.reduce_mean(xy_loss))
-        # tf.print('wh_loss', tf.reduce_mean(wh_loss))
-        # tf.print('obj_loss', tf.reduce_mean(obj_loss))
-        # tf.print('no_obj_loss', tf.reduce_mean(no_obj_loss))
-        # tf.print('class_loss', tf.reduce_mean(class_loss))
+
+        self.xy_losses.extend(xy_loss)
+        self.wh_losses.extend(wh_loss)
+        self.obj_losses.extend(obj_loss)
+        self.no_obj_losses.extend(no_obj_loss)
+        self.class_losses.extend(class_loss)
+        self.count_batches += 1
+        if self.count_batches == self.num_batches:
+            self.save_metrics()
 
         return loss
+
+    def save_metrics(self):
+        tf.summary.scalar('{}_xy_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(self.wh_losses))
+        tf.summary.scalar('{}_wh_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(self.xy_losses))
+        tf.summary.scalar('{}_obj_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(self.obj_losses))
+        tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(self.no_obj_losses))
+        tf.summary.scalar('{}_class_loss'.format(self.__name__),
+                          step=self.epoch,
+                          data=tf.reduce_mean(self.class_losses))
+        self.xy_losses = []
+        self.wh_losses = []
+        self.obj_losses = []
+        self.no_obj_losses = []
+        self.class_losses = []
+        self.count_batches = 0
+        self.epoch += 1
 
     def __str__(self):
         return self.__name__
@@ -322,6 +359,7 @@ def make_loss(num_classes,
               anchors,
               masks,
               img_size,
+              num_batches,
               ignore_iou_threshold=0.7,
               loss_name='yolo'):
     """helper to create the losses
@@ -347,6 +385,6 @@ def make_loss(num_classes,
 
     loss_fns = [
         loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
-                 f'yolo_loss{i}') for i, m in enumerate(masks)
+                 f'yolo_loss{i}', num_batches) for i, m in enumerate(masks)
     ]
     return loss_fns

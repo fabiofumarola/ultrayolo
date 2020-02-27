@@ -1,6 +1,7 @@
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard, LambdaCallback, ReduceLROnPlateau, LearningRateScheduler
 from pathlib import Path
 from ..learningrates import cyclic_learning_rate
+import tensorflow as tf
 
 
 def save_model(model, checkpoints_path):
@@ -59,8 +60,12 @@ def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
     run_path = Path(run_path)
     run_path_str = str(run_path.absolute())
 
+    metrics = tf.summary.create_file_writer(run_path_str + '/metrics')
+    metrics.set_as_default()
+
     callbacks = [
-        ModelCheckpoint(run_path_str + '/weights_val.{epoch:03d}-{val_loss:.3f}.h5',
+        ModelCheckpoint(run_path_str +
+                        '/weights_val.{epoch:03d}-{val_loss:.3f}.h5',
                         verbose=verbose,
                         save_best_only=True,
                         monitor='val_loss'),

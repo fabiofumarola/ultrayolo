@@ -82,7 +82,6 @@ class BaseModel(object):
         self.masks = None
         self.model = None
         self.tiny = None
-        self.loss_function = None
 
     def summary(self):
         """return the tensorflow model summary
@@ -108,7 +107,7 @@ class BaseModel(object):
             helpers.unfreeze_checkpoint(path)
             self.model.load_weights(str(path.absolute()))
 
-    def get_loss_function(self, loss_name: str = 'yolo') -> List:
+    def get_loss_function(self, num_batches, loss_name: str = 'yolo') -> List:
         """utility to create the loss function
         
         Keyword Arguments:
@@ -118,14 +117,15 @@ class BaseModel(object):
         Returns:
             List -- [description]
         """
-        if self.loss_function is None:
-            self.loss_function = losses.make_loss(self.num_classes,
-                                                  self.anchors,
-                                                  self.masks,
-                                                  self.img_shape[0],
-                                                  loss_name=loss_name)
+        loss_function = losses.make_loss(self.num_classes,
+                                         self.anchors,
+                                         self.masks,
+                                         self.img_shape[0],
+                                         num_batches,
+                                         self.iou_threshold,
+                                         loss_name=loss_name)
 
-        return self.loss_function
+        return loss_function
 
     def get_optimizer(self, optimizer_name, lrate):
         """helper to create the optimizer using the class defined members
