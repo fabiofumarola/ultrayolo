@@ -200,10 +200,10 @@ class YoloLoss():
         self.num_batches = tf.identity(num_batches)
 
         self.xy_losses = tf.keras.metrics.Mean()
-        self.wh_losses = []
-        self.obj_losses = []
-        self.no_obj_losses = []
-        self.class_losses = []
+        self.wh_losses = tf.keras.metrics.Mean()
+        self.obj_losses = tf.keras.metrics.Mean()
+        self.no_obj_losses = tf.keras.metrics.Mean()
+        self.class_losses = tf.keras.metrics.Mean()
         self.epoch = tf.Variable(initial_value=0,
                                  trainable=False,
                                  dtype=tf.int64)
@@ -318,10 +318,10 @@ class YoloLoss():
         loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
 
         self.xy_losses.update_state(xy_loss)
-        # self.wh_losses.append(wh_loss)
-        # self.obj_losses.append(obj_loss)
-        # self.no_obj_losses.append(no_obj_loss)
-        # self.class_losses.append(class_loss)
+        self.wh_losses.update_state(wh_loss)
+        self.obj_losses.update_state(obj_loss)
+        self.no_obj_losses.update_state(no_obj_loss)
+        self.class_losses.update_state(class_loss)
         self.count_batches.assign_add(1)
         self.save_metrics()
 
@@ -330,27 +330,26 @@ class YoloLoss():
     @tf.function
     def save_metrics(self):
         if tf.equal(self.count_batches, self.num_batches):
-            tf.print('in')
             tf.summary.scalar('{}_xy_loss'.format(self.__name__),
                               step=self.epoch,
                               data=self.xy_losses.result())
-            # tf.summary.scalar('{}_wh_loss'.format(self.__name__),
-            #                   step=self.epoch,
-            #                   data=tf.reduce_mean(self.xy_losses))
-            # tf.summary.scalar('{}_obj_loss'.format(self.__name__),
-            #                   step=self.epoch,
-            #                   data=tf.reduce_mean(self.obj_losses))
-            # tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
-            #                   step=self.epoch,
-            #                   data=tf.reduce_mean(self.no_obj_losses))
-            # tf.summary.scalar('{}_class_loss'.format(self.__name__),
-            #                   step=self.epoch,
-            #                   data=tf.reduce_mean(self.class_losses))
+            tf.summary.scalar('{}_wh_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.xy_losses.result())
+            tf.summary.scalar('{}_obj_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.obj_losses.result())
+            tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.no_obj_losses.result())
+            tf.summary.scalar('{}_class_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.class_losses.result())
             self.xy_losses.reset_states()
-            # self.wh_losses = []
-            # self.obj_losses = []
-            # self.no_obj_losses = []
-            # self.class_losses = []
+            self.wh_losses.reset_states()
+            self.obj_losses.reset_states()
+            self.no_obj_losses.reset_states()
+            self.class_losses.reset_states()
             self.count_batches.assign(0)
             self.epoch.assign_add(1)
 
