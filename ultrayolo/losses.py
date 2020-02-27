@@ -304,6 +304,7 @@ class YoloLoss():
         obj_cross_entropy = tf.keras.losses.binary_crossentropy(
             true_obj, pred_obj, from_logits=False)
         obj_loss = obj_mask * obj_cross_entropy
+
         no_obj_loss = (1 - obj_mask) * ignore_mask * obj_cross_entropy
 
         class_loss = obj_mask * tf.keras.losses.binary_crossentropy(
@@ -315,7 +316,7 @@ class YoloLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
+        loss = xy_loss + wh_loss + 2 * obj_loss + no_obj_loss + class_loss
 
         self.xy_losses.update_state(xy_loss)
         self.wh_losses.update_state(wh_loss)
