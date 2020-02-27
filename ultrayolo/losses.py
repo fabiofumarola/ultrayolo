@@ -240,7 +240,6 @@ class YoloLoss():
             (box_2[..., 3] - box_2[..., 1])
         return int_area / (box_1_area + box_2_area - int_area)
 
-    @tf.function
     def __call__(self, y_true, y_pred, **kvargs):
         """[summary]
         
@@ -314,11 +313,11 @@ class YoloLoss():
 
         loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
 
-        self.xy_losses.extend(xy_loss)
-        self.wh_losses.extend(wh_loss)
-        self.obj_losses.extend(obj_loss)
-        self.no_obj_losses.extend(no_obj_loss)
-        self.class_losses.extend(class_loss)
+        self.xy_losses.append(xy_loss)
+        self.wh_losses.append(wh_loss)
+        self.obj_losses.append(obj_loss)
+        self.no_obj_losses.append(no_obj_loss)
+        self.class_losses.append(class_loss)
         self.count_batches += 1
         if self.count_batches == self.num_batches:
             self.save_metrics()
@@ -328,19 +327,20 @@ class YoloLoss():
     def save_metrics(self):
         tf.summary.scalar('{}_xy_loss'.format(self.__name__),
                           step=self.epoch,
-                          data=tf.reduce_mean(self.wh_losses))
-        tf.summary.scalar('{}_wh_loss'.format(self.__name__),
-                          step=self.epoch,
-                          data=tf.reduce_mean(self.xy_losses))
-        tf.summary.scalar('{}_obj_loss'.format(self.__name__),
-                          step=self.epoch,
-                          data=tf.reduce_mean(self.obj_losses))
-        tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
-                          step=self.epoch,
-                          data=tf.reduce_mean(self.no_obj_losses))
-        tf.summary.scalar('{}_class_loss'.format(self.__name__),
-                          step=self.epoch,
-                          data=tf.reduce_mean(self.class_losses))
+                          data=tf.reduce_mean(tf.concat(self.wh_losses,
+                                                        axis=-1)))
+        # tf.summary.scalar('{}_wh_loss'.format(self.__name__),
+        #                   step=self.epoch,
+        #                   data=tf.reduce_mean(self.xy_losses))
+        # tf.summary.scalar('{}_obj_loss'.format(self.__name__),
+        #                   step=self.epoch,
+        #                   data=tf.reduce_mean(self.obj_losses))
+        # tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
+        #                   step=self.epoch,
+        #                   data=tf.reduce_mean(self.no_obj_losses))
+        # tf.summary.scalar('{}_class_loss'.format(self.__name__),
+        #                   step=self.epoch,
+        #                   data=tf.reduce_mean(self.class_losses))
         self.xy_losses = []
         self.wh_losses = []
         self.obj_losses = []
