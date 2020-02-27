@@ -288,7 +288,7 @@ class CocoFormatDataset(tf.keras.utils.Sequence):
                 otherwise the images are resized to the img_shape (default: {True})
             image_folder {str} -- the subfodler where the images are stored
         """
-        self.grid_len = img_shape[0] / 32
+        self.grid_len = img_shape[0] / 64
         if img_shape[0] % 32 != 0:
             raise Exception(
                 'the image shape must have same height and width and be divisible per 32 '
