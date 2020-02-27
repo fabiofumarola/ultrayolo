@@ -197,7 +197,7 @@ class YoloLoss():
         self.num_classes = num_classes
         self.anchors_masks_scaled = self.anchor_masks / img_size
         self.__name__ = name
-        self.num_batches = num_batches
+        self.num_batches = tf.identity(num_batches)
 
         self.xy_losses = []
         self.wh_losses = []
@@ -320,7 +320,7 @@ class YoloLoss():
         self.class_losses.append(class_loss)
         self.count_batches.assign_add(1)
         tf.print(self.count_batches, self.num_batches)
-        if self.count_batches == self.num_batches:
+        if tf.equale(self.count_batches, self.num_batches):
             tf.print('in')
             self.save_metrics()
 
