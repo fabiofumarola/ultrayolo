@@ -60,7 +60,7 @@ def default_callbacks(model, run_path, lrate_mode, lrate_value, verbose=1):
     run_path = Path(run_path)
     run_path_str = str(run_path.absolute())
 
-    metrics = tf.summary.create_file_writer(run_path_str + '/metrics')
+    metrics = tf.summary.create_file_writer(run_path_str)
     metrics.set_as_default()
 
     callbacks = [
