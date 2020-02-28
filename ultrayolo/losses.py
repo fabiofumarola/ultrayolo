@@ -366,7 +366,7 @@ def make_loss(num_classes,
               masks,
               img_size,
               num_batches,
-              ignore_iou_threshold=0.7,
+              ignore_iou_threshold=0.5,
               loss_name='yolo'):
     """helper to create the losses
     
@@ -389,8 +389,11 @@ def make_loss(num_classes,
     elif loss_name == 'focal':
         loss_cls = FocalLoss
 
-    loss_fns = [
-        loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
-                 f'yolo_loss{i}', num_batches) for i, m in enumerate(masks)
-    ]
+    loss_fns = []
+    losses_names = ['large', 'medium', 'small']
+    for i, m in enumerate(masks):
+        loss_fns.append(
+            loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
+                     f'yolo_loss_{loss_name[i]}', num_batches))
+
     return loss_fns

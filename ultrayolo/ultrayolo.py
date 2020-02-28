@@ -67,8 +67,8 @@ class BaseModel(object):
     def __init__(self,
                  img_shape=(None, None, 3),
                  max_objects=100,
-                 iou_threshold=0.7,
-                 score_threshold=0.7,
+                 iou_threshold=0.5,
+                 score_threshold=0.5,
                  anchors=None,
                  num_classes=80,
                  training=False):
