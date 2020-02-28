@@ -53,7 +53,7 @@ def test_model_darknet(test_dataset, test_anchors, test_masks, test_classes):
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -73,7 +73,7 @@ def test_model_resnet50(test_dataset, test_anchors, test_masks, test_classes):
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -92,7 +92,7 @@ def test_model_resnet101(test_dataset, test_anchors, test_masks, test_classes):
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -111,7 +111,7 @@ def test_model_resnet152(test_dataset, test_anchors, test_masks, test_classes):
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -131,7 +131,7 @@ def test_model_DenseNet121(test_dataset, test_anchors, test_masks,
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -151,7 +151,7 @@ def test_model_DenseNet169(test_dataset, test_anchors, test_masks,
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -171,7 +171,7 @@ def test_model_DenseNet201(test_dataset, test_anchors, test_masks,
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -192,7 +192,7 @@ def test_model_MobileNetV2(test_dataset, test_anchors, test_masks,
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('sgd', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     res = model(test_dataset[0][0])
@@ -212,7 +212,7 @@ def test_reload_model(test_dataset, test_anchors, test_masks, test_classes):
                    training=True)
 
     loss_fn = losses.make_loss(model.num_classes, test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     optimizer = model.get_optimizer('adam', 1e-4)
     model.compile(optimizer, loss_fn, run_eagerly=True)
     model.fit(test_dataset, test_dataset, 1)
