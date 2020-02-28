@@ -390,7 +390,7 @@ def make_loss(num_classes,
         loss_cls = FocalLoss
 
     loss_fns = []
-    losses_names = ['large', 'medium', 'small']
+    loss_names = ['large', 'medium', 'small']
     for i, m in enumerate(masks):
         loss_fns.append(
             loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
