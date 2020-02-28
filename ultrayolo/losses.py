@@ -394,6 +394,6 @@ def make_loss(num_classes,
     for i, m in enumerate(masks):
         loss_fns.append(
             loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
-                     f'yolo_loss_{loss_name[i]}', num_batches))
+                     f'yolo_loss_{loss_names[i]}', num_batches))
 
     return loss_fns
