@@ -49,7 +49,7 @@ def test_loss_initialized_yolo(test_dataset, test_anchors, test_masks,
                    training=True)
 
     loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     x_true, y_true_grids = test_dataset[0]
     y_pred_grids = model(x_true)
 
@@ -63,7 +63,7 @@ def test_loss_initialized_yolo(test_dataset, test_anchors, test_masks,
 def test_yolo_loss(test_dataset, test_anchors, test_masks, test_classes):
     img_shape = test_dataset.target_shape
     loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     _, y_true_grids = test_dataset[0]
     y_pred_grids = y_true_grids
 
@@ -80,6 +80,7 @@ def test_focal_loss(test_dataset, test_anchors, test_masks, test_classes):
                                test_anchors,
                                test_masks,
                                img_shape[0],
+                               len(test_dataset),
                                loss_name='focal')
     _, y_true_grids = test_dataset[0]
     y_pred_grids = y_true_grids
@@ -100,7 +101,7 @@ def test_compare_losses(test_dataset, test_anchors, test_masks, test_classes):
                    training=True)
 
     loss_fn = losses.make_loss(len(test_classes), test_anchors, test_masks,
-                               img_shape[0])
+                               img_shape[0], len(test_dataset))
     x_true, y_true_grids = test_dataset[0]
     y_pred_grids = model(x_true)
     y_pred_grids_true = y_true_grids

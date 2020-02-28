@@ -64,16 +64,29 @@ def process_predictions(y_pred, num_classes, anchors_masks):
     return box_xyxy, pred_obj, pred_class, pred_xywh
 
 
-class FocalLoss():
+class BaseLoss():
 
     def __init__(self, anchor_masks, ignore_iou_threshold, img_size,
-                 num_classes, name):
+                 num_classes, name, num_batches):
         self.anchor_masks = anchor_masks.astype(np.float32)
         self.ignore_iou_threshold = ignore_iou_threshold
         self.img_size = img_size
         self.num_classes = num_classes
         self.anchors_masks_scaled = self.anchor_masks / img_size
         self.__name__ = name
+        self.num_batches = tf.convert_to_tensor(num_batches, dtype=tf.int32)
+
+        self.xy_losses = tf.keras.metrics.Mean()
+        self.wh_losses = tf.keras.metrics.Mean()
+        self.obj_losses = tf.keras.metrics.Mean()
+        self.no_obj_losses = tf.keras.metrics.Mean()
+        self.class_losses = tf.keras.metrics.Mean()
+        self.epoch = tf.Variable(initial_value=0,
+                                 trainable=False,
+                                 dtype=tf.int64)
+        self.count_batches = tf.Variable(initial_value=0,
+                                         trainable=False,
+                                         dtype=tf.int32)
 
     @staticmethod
     def broadcast_iou(box_1, box_2):
@@ -107,6 +120,49 @@ class FocalLoss():
         box_2_area = (box_2[..., 2] - box_2[..., 0]) * \
             (box_2[..., 3] - box_2[..., 1])
         return int_area / (box_1_area + box_2_area - int_area)
+
+    @tf.function
+    def save_metrics(self):
+        if tf.equal(self.count_batches, self.num_batches):
+            tf.summary.scalar('{}_xy_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.xy_losses.result())
+            tf.summary.scalar('{}_wh_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.xy_losses.result())
+            tf.summary.scalar('{}_obj_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.obj_losses.result())
+            tf.summary.scalar('{}_no_obj_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.no_obj_losses.result())
+            tf.summary.scalar('{}_class_loss'.format(self.__name__),
+                              step=self.epoch,
+                              data=self.class_losses.result())
+            self.xy_losses.reset_states()
+            self.wh_losses.reset_states()
+            self.obj_losses.reset_states()
+            self.no_obj_losses.reset_states()
+            self.class_losses.reset_states()
+            self.count_batches.assign(0)
+            self.epoch.assign_add(1)
+
+    def __call__(self, y_true, y_pred, **kvargs):
+        pass
+
+    def __str__(self):
+        return self.__name__
+
+    def __repr__(self):
+        return f'{self.__name__} at {hex(id(self))}'
+
+
+class FocalLoss(BaseLoss):
+
+    def __init__(self, anchor_masks, ignore_iou_threshold, img_size,
+                 num_classes, name, num_batches):
+        super().__init__(anchor_masks, ignore_iou_threshold, img_size,
+                         num_classes, name, num_batches)
 
     def __call__(self, y_true, y_pred, **kvargs):
 
@@ -171,65 +227,25 @@ class FocalLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
-        # tf.print('xy_loss', xy_loss)
-        # tf.print('wh_loss', wh_loss)
-        # tf.print('obj_loss', obj_loss)
-        # tf.print('no_obj_loss', 0.5 * no_obj_loss)
-        # tf.print('class_loss', class_loss)
+        loss = xy_loss + wh_loss + obj_loss + no_obj_loss + class_loss
+
+        self.xy_losses.update_state(xy_loss)
+        self.wh_losses.update_state(wh_loss)
+        self.obj_losses.update_state(obj_loss)
+        self.no_obj_losses.update_state(no_obj_loss)
+        self.class_losses.update_state(class_loss)
+        self.count_batches.assign_add(1)
+        self.save_metrics()
 
         return loss
 
-    def __str__(self):
-        return self.__name__
 
-    def __repr__(self):
-        return f'{self.__name__} at {hex(id(self))}'
-
-
-class YoloLoss():
+class YoloLoss(BaseLoss):
 
     def __init__(self, anchor_masks, ignore_iou_threshold, img_size,
-                 num_classes, name):
-        self.anchor_masks = anchor_masks.astype(np.float32)
-        self.ignore_iou_threshold = ignore_iou_threshold
-        self.img_size = img_size
-        self.num_classes = num_classes
-        self.anchors_masks_scaled = self.anchor_masks / img_size
-        self.__name__ = name
-
-    @staticmethod
-    def broadcast_iou(box_1, box_2):
-        """brodcast intersection over union
-
-        Arguments:
-            box_1 {tf.tensor} --  (..., (x1, y1, x2, y2))
-            box_2 {tf.tensor} --  (N, (x1, y1, x2, y2))
-
-        Returns:
-            tf.tensor  -- intersection over union
-        """
-
-        # broadcast boxes
-        box_1 = tf.expand_dims(box_1, -2)
-        box_2 = tf.expand_dims(box_2, 0)
-        # new_shape: (..., N, (x1, y1, x2, y2))
-        new_shape = tf.broadcast_dynamic_shape(tf.shape(box_1), tf.shape(box_2))
-        box_1 = tf.broadcast_to(box_1, new_shape)
-        box_2 = tf.broadcast_to(box_2, new_shape)
-
-        int_w = tf.maximum(
-            tf.minimum(box_1[..., 2], box_2[..., 2]) -
-            tf.maximum(box_1[..., 0], box_2[..., 0]), 0)
-        int_h = tf.maximum(
-            tf.minimum(box_1[..., 3], box_2[..., 3]) -
-            tf.maximum(box_1[..., 1], box_2[..., 1]), 0)
-        int_area = int_w * int_h
-        box_1_area = (box_1[..., 2] - box_1[..., 0]) * \
-            (box_1[..., 3] - box_1[..., 1])
-        box_2_area = (box_2[..., 2] - box_2[..., 0]) * \
-            (box_2[..., 3] - box_2[..., 1])
-        return int_area / (box_1_area + box_2_area - int_area)
+                 num_classes, name, num_batches):
+        super().__init__(anchor_masks, ignore_iou_threshold, img_size,
+                         num_classes, name, num_batches)
 
     def __call__(self, y_true, y_pred, **kvargs):
         """[summary]
@@ -291,6 +307,7 @@ class YoloLoss():
         obj_cross_entropy = tf.keras.losses.binary_crossentropy(
             true_obj, pred_obj, from_logits=False)
         obj_loss = obj_mask * obj_cross_entropy
+
         no_obj_loss = (1 - obj_mask) * ignore_mask * obj_cross_entropy
 
         class_loss = obj_mask * tf.keras.losses.binary_crossentropy(
@@ -302,27 +319,25 @@ class YoloLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
-        # tf.print('xy_loss', tf.reduce_mean(xy_loss))
-        # tf.print('wh_loss', tf.reduce_mean(wh_loss))
-        # tf.print('obj_loss', tf.reduce_mean(obj_loss))
-        # tf.print('no_obj_loss', tf.reduce_mean(no_obj_loss))
-        # tf.print('class_loss', tf.reduce_mean(class_loss))
+        loss = xy_loss + wh_loss + 10 * obj_loss + 2 * no_obj_loss + class_loss
+
+        self.xy_losses.update_state(xy_loss)
+        self.wh_losses.update_state(wh_loss)
+        self.obj_losses.update_state(obj_loss)
+        self.no_obj_losses.update_state(no_obj_loss)
+        self.class_losses.update_state(class_loss)
+        self.count_batches.assign_add(1)
+        self.save_metrics()
 
         return loss
-
-    def __str__(self):
-        return self.__name__
-
-    def __repr__(self):
-        return f'{self.__name__} at {hex(id(self))}'
 
 
 def make_loss(num_classes,
               anchors,
               masks,
               img_size,
-              ignore_iou_threshold=0.7,
+              num_batches,
+              ignore_iou_threshold=0.5,
               loss_name='yolo'):
     """helper to create the losses
     
@@ -331,6 +346,7 @@ def make_loss(num_classes,
         anchors {np.ndarray} -- the anchors used for the detection
         masks {np.ndarray} -- the mask used to filter the anchors
         img_size {tuple} -- the shape of the images
+        num_batches {int} -- the number of batches in the training 
     
     Keyword Arguments:
         ignore_iou_threshold {float} -- the value used to ignore predictions (default: {0.7})
@@ -345,8 +361,11 @@ def make_loss(num_classes,
     elif loss_name == 'focal':
         loss_cls = FocalLoss
 
-    loss_fns = [
-        loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
-                 f'yolo_loss{i}') for i, m in enumerate(masks)
-    ]
+    loss_fns = []
+    loss_names = ['large', 'medium', 'small']
+    for i, m in enumerate(masks):
+        loss_fns.append(
+            loss_cls(anchors[m], ignore_iou_threshold, img_size, num_classes,
+                     f'yolo_loss_{loss_names[i]}', num_batches))
+
     return loss_fns

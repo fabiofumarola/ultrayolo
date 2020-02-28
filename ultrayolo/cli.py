@@ -168,7 +168,7 @@ def run(dataset, model, fit, **kwargs):
             'dataset': dataset,
             'model': model,
             'fit': fit
-        }), str(model_run_path / 'run_config.yml'))
+        }), str(model_run_path / 'run_config.yaml'))
 
     train_dataset, val_dataset, anchors, masks = load_datasets(**dataset)
 
@@ -187,8 +187,9 @@ def run(dataset, model, fit, **kwargs):
         logger.info('reload weigths at path %s', model['reload_weights'])
         yolo_model.load_weights(model['reload_weights'])
 
-    logger.debug('using loss {}', model.loss)
-    loss = yolo_model.get_loss_function(model.loss)
+    logger.debug('using loss {}'.format(model.loss))
+    loss = yolo_model.get_loss_function(num_batches=len(train_dataset),
+                                        loss_name=model.loss)
 
     optimizer = yolo_model.get_optimizer(fit.optimizer.name,
                                          fit.optimizer.lrate.value)
