@@ -172,11 +172,6 @@ class FocalLoss():
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
         loss = xy_loss + wh_loss + obj_loss + 0.5 * no_obj_loss + class_loss
-        # tf.print('xy_loss', xy_loss)
-        # tf.print('wh_loss', wh_loss)
-        # tf.print('obj_loss', obj_loss)
-        # tf.print('no_obj_loss', 0.5 * no_obj_loss)
-        # tf.print('class_loss', class_loss)
 
         return loss
 
@@ -316,7 +311,7 @@ class YoloLoss():
         no_obj_loss = tf.reduce_sum(no_obj_loss, axis=(1, 2, 3))
         class_loss = tf.reduce_sum(class_loss, axis=(1, 2, 3))
 
-        loss = xy_loss + wh_loss + 10 * obj_loss + no_obj_loss + class_loss
+        loss = xy_loss + wh_loss + 10 * obj_loss + 2 * no_obj_loss + class_loss
 
         self.xy_losses.update_state(xy_loss)
         self.wh_losses.update_state(wh_loss)
