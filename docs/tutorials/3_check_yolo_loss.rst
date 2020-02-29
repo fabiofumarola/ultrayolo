@@ -1,11 +1,16 @@
 .. code:: ipython3
 
+    %load_ext autoreload
+    %autoreload 2
+
+.. code:: ipython3
+
     import sys
     if '..' not in sys.path:
         sys.path.append('..')
     
     from ultrayolo import YoloV3, losses
-    from ultrayolo.datasets import YoloDatasetSingleFile,common
+    from ultrayolo.datasets import CocoFormatDataset, common
     from ultrayolo.helpers import draw
     from pathlib import Path
     import numpy as np
@@ -29,15 +34,15 @@ The first create some random anchors and use the default masks
 
 .. parsed-literal::
 
-    array([[ 5., 10.],
-           [10., 14.],
-           [15., 19.],
-           [20., 22.],
-           [25., 32.],
-           [30., 37.],
-           [35., 44.],
-           [40., 42.],
-           [45., 45.]], dtype=float32)
+    array([[ 5.,  7.],
+           [10., 12.],
+           [15., 15.],
+           [20., 24.],
+           [25., 34.],
+           [30., 30.],
+           [35., 36.],
+           [40., 45.],
+           [45., 50.]], dtype=float32)
 
 
 
@@ -57,36 +62,31 @@ The first create some random anchors and use the default masks
 
 
 
-Download a toy dataset
-----------------------
-
-make the following cell executable to download the toy dataset
-
-%%capture
-
-!wget https://www.dropbox.com/s/drjtl8hjy42lq42/toy_dataset.tar.gz
-!tar -xf toy_dataset.tar.gz
-
 And load the dataset using the SequenceDataset
 ----------------------------------------------
 
 .. code:: ipython3
 
     filepath = Path('./toy_dataset/data_annotations_train.txt')
-    target_shape = (256, 256, 3)
+    target_shape = (512, 512, 3)
     batch_size = 2
-    gridlen = 8
     is_training = True
     max_objects = 10
     
     
-    train_seq = YoloDatasetSingleFile(filepath,
+    train_seq = CocoFormatDataset('../minicoco_dataset/hair_drier_toaster_bear.json',
                                       target_shape,
                                       max_objects,
                                       batch_size, 
                                       anchors,
                                       masks,
-                                      is_training=True)
+                                      is_training=is_training)
+
+
+.. parsed-literal::
+
+    load coco annotations: 100%|██████████| 1714/1714 [00:00<00:00, 852690.91it/s]
+
 
 .. code:: ipython3
 
@@ -97,7 +97,7 @@ And load the dataset using the SequenceDataset
 
 .. parsed-literal::
 
-    ['chat', 'rat', 'test', 'none']
+    [(23, 'bear'), (80, 'toaster'), (89, 'hair drier')]
 
 
 
@@ -119,7 +119,7 @@ The batch contains: - 2 images
 
 .. parsed-literal::
 
-    (2, 256, 256, 3)
+    (2, 512, 512, 3)
 
 
 
@@ -133,9 +133,9 @@ The batch contains: - 2 images
 
 .. parsed-literal::
 
-    0 --> (2, 8, 8, 3, 9) 32.0
-    1 --> (2, 16, 16, 3, 9) 16.0
-    2 --> (2, 32, 32, 3, 9) 8.0
+    0 --> (2, 16, 16, 3, 8) 32.0
+    1 --> (2, 32, 32, 3, 8) 16.0
+    2 --> (2, 64, 64, 3, 8) 8.0
 
 
 The third value plotted represents the size in number of pixel of grid
@@ -163,6 +163,8 @@ Check that the dataset transformed is correct
                 box_xyxy = (y_data_grid_img[grid_y,grid_x,box, :4] * target_shape[0]).astype(int)
                 class_id = np.argwhere(y_data_grid_img[grid_y,grid_x,box, 5:])[0][0]
                 draw.rect(ax, box_xyxy, 'white', 1)
+                print(y_data_grid_img[grid_y,grid_x,box, :4])
+                print(box_xyxy)
     
                 rect_resp = np.array([grid_x, grid_y]) * grid_cell_size
                 rect_resp = np.concatenate([rect_resp, rect_resp + grid_cell_size])
@@ -175,53 +177,50 @@ Check that the dataset transformed is correct
 .. parsed-literal::
 
     Show annotations for image 0
+    [0.         0.00375439 0.8535156  0.587484  ]
+    [  0   1 437 300]
 
 
 
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_17_1.png
+.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_16_1.png
 
 
 
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_17_2.png
+.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_16_2.png
 
 
 
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_17_3.png
+.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_16_3.png
 
 
 .. parsed-literal::
 
     Show annotations for image 1
+    [0.44003123 0.464507   0.48345312 0.5184867 ]
+    [225 237 247 265]
 
 
 
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_17_5.png
+.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_16_5.png
 
 
 
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_17_6.png
+.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_16_6.png
 
 
 
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_17_7.png
+.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_16_7.png
 
 
 Create the model
 
 .. code:: ipython3
 
-    model = YoloV3(target_shape, max_objects, anchors=anchors, num_classes=train_seq.num_classes, training=True)
+    model = YoloV3(target_shape, max_objects, 
+                   anchors=anchors, num_classes=train_seq.num_classes, 
+                   training=True, backbone='DarkNet')
 
-.. code:: ipython3
-
-    tf.keras.utils.plot_model(model.model, show_shapes=True)
-
-
-
-
-.. image:: 3_check_yolo_loss_files/3_check_yolo_loss_20_0.png
-
-
+tf.keras.utils.plot_model(model.model, show_shapes=True)
 
 Evaluate how the loss works
 ---------------------------
@@ -242,9 +241,9 @@ We consider two cases:
 
 .. parsed-literal::
 
-    (2, 8, 8, 3, 9)
-    (2, 16, 16, 3, 9)
-    (2, 32, 32, 3, 9)
+    (2, 16, 16, 3, 8)
+    (2, 32, 32, 3, 8)
+    (2, 64, 64, 3, 8)
 
 
 We take i=0 since all the images are in the first grid
@@ -254,9 +253,10 @@ We take i=0 since all the images are in the first grid
     i = 0
     y_true = y_true_grids[i]
     y_pred = y_pred_grids[i]
+    y_pred = tf.slice(y_pred, begin=[0,0,0,0,0], size=y_true.shape)
     anchors_masks = anchors[masks[i]]
     img_size = target_shape[0]
-    loss_fn = losses.make_loss(train_seq.num_classes, anchors, masks, img_size)
+    loss_fn = losses.make_loss(train_seq.num_classes, anchors, masks, img_size, len(train_seq))
     ignore_threshold = 0.7
 
 First Case
@@ -264,14 +264,73 @@ First Case
 
 .. code:: ipython3
 
-    from ultrayolo.losses import Loss
+    from ultrayolo.losses import YoloLoss
+
+.. code:: ipython3
+
+    def to_box_xyxy(box_xy, box_wh, grid_size, anchors_masks):
+        """convert the given boxes into the xy_min xy_max format
+        Arguments:
+            box_xy {tf.tensor} --
+            box_wh {tf,tensor} --
+            grid_size {float} -- the size of the grid used
+            anchors_masks {tf.tensor} -- the anchor masks
+        Returns:
+            tf.tensor -- the boxes
+        """
+        # !!! grid[x][y] == (y, x)
+        grid = tf.meshgrid(tf.range(grid_size), tf.range(grid_size))
+        grid = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)    # [gx, gy, 1, 2]
+        grid = tf.cast(grid, tf.float32)
+    
+        box_xy = (box_xy + grid) / tf.cast(grid_size, tf.float32)
+        box_wh = tf.exp(box_wh) * anchors_masks
+    
+        box_wh = tf.where(tf.math.is_inf(box_wh), tf.zeros_like(box_wh), box_wh)
+    
+        box_x1y1 = box_xy - box_wh / 2
+        box_x2y2 = box_xy + box_wh / 2
+        box_xyxy = tf.concat([box_x1y1, box_x2y2], axis=-1)
+    
+        return box_xyxy
+    
+    def process_predictions(y_pred, num_classes, anchors_masks):
+        """process the predictions to transform from:
+        -  pred_xy, pred_wh, pred_obj, pred_class
+        into
+        - box_xyxy, pred_obj, pred_class, pred_xywh
+    
+        Arguments:
+            y_pred {tf.tensor} -- the predictions in the format 
+                (NBATCH, x_center, y_center, width, heigth, obj, one_hot_classes)
+            num_classes {int} -- the number of classes
+            anchors_masks {tf.tensor} -- the anchors masks
+    
+        Returns:
+            tuple -- box_xyxy, pred_obj, pred_class, pred_xywh
+        """
+        # anchors_masks = tf.gather(anchors, masks)
+    
+        pred_xy, pred_wh, pred_obj, pred_class = tf.split(y_pred,
+                                                          (2, 2, 1, num_classes),
+                                                          axis=-1)
+    
+        pred_xy = tf.sigmoid(pred_xy)
+        pred_obj = tf.sigmoid(pred_obj)
+        pred_class = tf.sigmoid(pred_class)
+        pred_xywh = tf.concat((pred_xy, pred_wh), axis=-1)
+    
+        grid_size = tf.shape(y_pred)[1]
+        box_xyxy = to_box_xyxy(pred_xy, pred_wh, grid_size, anchors_masks)
+    
+        return box_xyxy, pred_obj, pred_class, pred_xywh
 
 .. code:: ipython3
 
     # 1. transform all pred outputs
     # y_pred: (batch_size, grid, grid, anchors, (x, y, w, h, obj, ...cls))
     anchors_masks_scaled = anchors_masks / img_size
-    pred_xyxy, pred_obj, pred_class, pred_xywh = losses.process_predictions(
+    pred_xyxy, pred_obj, pred_class, pred_xywh = process_predictions(
                 tf.cast(y_pred, tf.float32), train_seq.num_classes, anchors_masks_scaled
     )
     pred_xy = pred_xywh[..., 0:2]
@@ -293,7 +352,7 @@ While considering ``pred_xyxy`` it should be around 0.5
 .. parsed-literal::
 
     average xy tf.Tensor(0.5, shape=(), dtype=float32)
-    average hw tf.Tensor(3.8821852e-11, shape=(), dtype=float32)
+    average hw tf.Tensor(1.2739657e-09, shape=(), dtype=float32)
     average xyxy tf.Tensor(0.5, shape=(), dtype=float32)
 
 
@@ -356,7 +415,7 @@ contain objects and should be considered in the **no object loss**
     # ignore false positive when iou is over threshold
     true_box_mask = tf.boolean_mask(
         true_box_xyxy, tf.cast(obj_mask, tf.bool))
-    best_iou = tf.reduce_max(Loss.broadcast_iou(
+    best_iou = tf.reduce_max(YoloLoss.broadcast_iou(
         pred_xyxy, true_box_mask), axis=-1)
     ignore_mask = tf.cast(best_iou < ignore_threshold, tf.float32)
 
@@ -409,7 +468,7 @@ You can check the whenever the loss is different to zero in the
 
 .. parsed-literal::
 
-    <tf.Tensor: shape=(2,), dtype=float32, numpy=array([197.02797, 193.08067], dtype=float32)>
+    <tf.Tensor: shape=(2,), dtype=float32, numpy=array([545.8325, 535.0147], dtype=float32)>
 
 
 
@@ -422,7 +481,7 @@ Second Case
 
     i = 0
     y_true = y_true_grids[i]
-    y_pred = y_true_grids[i]
+    y_pred = y_true
 
 -  Remember that y_pred is in format xy_min xy_max
 
@@ -452,7 +511,7 @@ Second Case
     # ignore false positive when iou is over threshold
     true_box_mask = tf.boolean_mask(
         true_box_xyxy, tf.cast(obj_mask, tf.bool))
-    best_iou = tf.reduce_max(Loss.broadcast_iou(
+    best_iou = tf.reduce_max(YoloLoss.broadcast_iou(
         pred_xyxy, true_box_mask), axis=-1)
     ignore_mask = tf.cast(best_iou < ignore_threshold, tf.float32)
 

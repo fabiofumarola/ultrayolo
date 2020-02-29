@@ -54,8 +54,8 @@ load default weights from `Yolo <https://pjreddie.com/darknet/yolo/>`__
 
 .. parsed-literal::
 
-    18020 MainThread loading checkpoint from /Users/fumarolaf/git/ultrayolo/notebooks/yolov3.weights
-     18022 MainThread version major 0, minor 2, revision 0, seen 32013312
+     12814 MainThread loading checkpoint from /Users/fumarolaf/git/ultrayolo/notebooks/yolov3.weights
+     12816 MainThread version major 0, minor 2, revision 0, seen 32013312
 
 
 Predict
@@ -124,6 +124,5 @@ Show the image with the discovered objects
 
 
 
-.. image:: 1_predict_yolo_model_files/1_predict_yolo_model_17_0.svg
-
+.. image:: 1_predict_yolo_model_files/1_predict_yolo_model_17_0.png
 

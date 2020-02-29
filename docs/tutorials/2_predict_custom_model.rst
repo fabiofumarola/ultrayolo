@@ -73,14 +73,8 @@ load a custom model from `here <add%20a%20valid%20link%20here>`__
 .. code:: ipython3
 
     w_path = Path('./weights.117-9.932.h5')
-    # w_path = Path('./weights.h5')
-    model.load_weights(w_path)
-
-
-.. parsed-literal::
-
-     62375 MainThread loading checkpoint from /Users/fumarolaf/git/tfyolo3/notebooks/weights.117-9.932.h5
-
+    model.model.load_weights(str(w_path))
+    # model.load_weights(w_path)
 
 Predict
 -------
@@ -157,4 +151,5 @@ Show the image with the discovered objects
 
 
 .. image:: 2_predict_custom_model_files/2_predict_custom_model_17_1.png
+
 
