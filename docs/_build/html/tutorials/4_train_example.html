@@ -1,0 +1,665 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sample to train Yolo for object detection &mdash; ultrayolo 0.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Augmentation" href="5_data_augmentation_considerations.html" />
+    <link rel="prev" title="Yolo Loss Tutorial" href="3_check_yolo_loss.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_predict_custom_dataset.html">Predict using a custom pretrained model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#evaluate-model-loss">Evaluate model Loss</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#yolo-loss-for-large-sized-objects">Yolo loss for large-sized objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#yolo-loss-for-medium-sized-objects">Yolo loss for medium-sized objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#yolo-loss-for-small-sized-objects">Yolo loss for small-sized objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5_data_augmentation_considerations.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Untitled.html">Network with Variable Grid</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Sample to train Yolo for object detection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/4_train_example.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># add the code path</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+</pre></div>
+</div>
+<div class="section" id="sample-to-train-yolo-for-object-detection">
+<h1>Sample to train Yolo for object detection<a class="headerlink" href="#sample-to-train-yolo-for-object-detection" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ultrayolo</span> <span class="kn">import</span> <span class="n">YoloV3</span><span class="p">,</span> <span class="n">callbacks</span>
+<span class="kn">from</span> <span class="nn">ultrayolo</span> <span class="kn">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">ultrayolo</span> <span class="kn">import</span> <span class="n">losses</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+<p>Define the parameters for the run</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">image_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">256</span><span class="p">,</span><span class="mi">256</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">batch_shape</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">max_objects</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">train_dataset_path</span> <span class="o">=</span> <span class="s1">&#39;../tests/data/manifest.txt&#39;</span>
+<span class="n">anchors</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_anchors</span><span class="p">(</span><span class="s1">&#39;../tests/data/yolov3_anchors.txt&#39;</span><span class="p">)</span>
+<span class="n">classes</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_classes</span><span class="p">(</span><span class="s1">&#39;../tests/data/classes.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create the model</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YoloV3</span><span class="p">(</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">,</span>
+               <span class="n">anchors</span><span class="o">=</span><span class="n">anchors</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">),</span>
+               <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backbone</span><span class="o">=</span><span class="s1">&#39;MobileNetV2&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/4_train_example_8_0.png" src="../_images/4_train_example_8_0.png" />
+<p>Create the dataset</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">YoloDatasetMultiFile</span><span class="p">(</span>
+    <span class="n">train_dataset_path</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">anchors</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">masks</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;num batches&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num</span> <span class="n">batches</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Make optimizer and loss</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_optimizer</span><span class="p">(</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">)</span>
+<span class="n">model_loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_loss_function</span><span class="p">(</span><span class="n">num_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">9596</span> <span class="n">MainThread</span> <span class="n">using</span> <span class="n">adam</span> <span class="n">optimize</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_loss</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">yolo_loss_large</span> <span class="n">at</span> <span class="mh">0x15bded350</span><span class="p">,</span>
+ <span class="n">yolo_loss_medium</span> <span class="n">at</span> <span class="mh">0x15bdeddd0</span><span class="p">,</span>
+ <span class="n">yolo_loss_small</span> <span class="n">at</span> <span class="mh">0x15be3a310</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>compile the model</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">model_loss</span><span class="p">,</span> <span class="n">run_eagerly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create the callbacks</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_callbacks</span> <span class="o">=</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">default_callbacks</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">run_path</span><span class="o">=</span><span class="s1">&#39;./checkpoints&#39;</span><span class="p">,</span> <span class="n">lrate_mode</span><span class="o">=</span><span class="s1">&#39;exp_range&#39;</span><span class="p">,</span>
+    <span class="n">lrate_value</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the model in transfer mode</p>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">set_mode_transfer</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">164272</span> <span class="n">MainThread</span> <span class="n">freeze</span> <span class="n">backbone</span>
+</pre></div>
+</div>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">model_callbacks</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">164428</span> <span class="n">MainThread</span> <span class="n">training</span> <span class="k">for</span> <span class="mi">5</span> <span class="n">epochs</span> <span class="n">on</span> <span class="n">the</span> <span class="n">dataset</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">fumarolaf</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">ultrayolo</span><span class="o">/</span><span class="n">notebooks</span><span class="o">/../</span><span class="n">tests</span><span class="o">/</span><span class="n">data</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Train</span> <span class="k">for</span> <span class="mi">2</span> <span class="n">steps</span><span class="p">,</span> <span class="n">validate</span> <span class="k">for</span> <span class="mi">2</span> <span class="n">steps</span>
+<span class="n">Epoch</span> <span class="mi">1</span><span class="o">/</span><span class="mi">5</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">2</span> <span class="p">[</span><span class="o">==============================</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="n">s</span> <span class="mi">2</span><span class="n">s</span><span class="o">/</span><span class="n">step</span> <span class="o">-</span> <span class="n">loss</span><span class="p">:</span> <span class="mf">934.6033</span> <span class="o">-</span> <span class="n">yolo_output_0_loss</span><span class="p">:</span> <span class="mf">23.9461</span> <span class="o">-</span> <span class="n">yolo_output_1_loss</span><span class="p">:</span> <span class="mf">50.1620</span> <span class="o">-</span> <span class="n">yolo_output_2_loss</span><span class="p">:</span> <span class="mf">759.6201</span> <span class="o">-</span> <span class="n">val_loss</span><span class="p">:</span> <span class="mf">5264.7634</span> <span class="o">-</span> <span class="n">val_yolo_output_0_loss</span><span class="p">:</span> <span class="mf">1555.0167</span> <span class="o">-</span> <span class="n">val_yolo_output_1_loss</span><span class="p">:</span> <span class="mf">199.1157</span> <span class="o">-</span> <span class="n">val_yolo_output_2_loss</span><span class="p">:</span> <span class="mf">3409.6306</span>
+<span class="n">Epoch</span> <span class="mi">2</span><span class="o">/</span><span class="mi">5</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">2</span> <span class="p">[</span><span class="o">==============================</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="n">s</span> <span class="mi">3</span><span class="n">s</span><span class="o">/</span><span class="n">step</span> <span class="o">-</span> <span class="n">loss</span><span class="p">:</span> <span class="mf">915.7275</span> <span class="o">-</span> <span class="n">yolo_output_0_loss</span><span class="p">:</span> <span class="mf">23.5616</span> <span class="o">-</span> <span class="n">yolo_output_1_loss</span><span class="p">:</span> <span class="mf">48.3204</span> <span class="o">-</span> <span class="n">yolo_output_2_loss</span><span class="p">:</span> <span class="mf">742.7931</span> <span class="o">-</span> <span class="n">val_loss</span><span class="p">:</span> <span class="mf">4735.4019</span> <span class="o">-</span> <span class="n">val_yolo_output_0_loss</span><span class="p">:</span> <span class="mf">1105.7004</span> <span class="o">-</span> <span class="n">val_yolo_output_1_loss</span><span class="p">:</span> <span class="mf">219.6431</span> <span class="o">-</span> <span class="n">val_yolo_output_2_loss</span><span class="p">:</span> <span class="mf">3308.8633</span>
+<span class="n">Epoch</span> <span class="mi">3</span><span class="o">/</span><span class="mi">5</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">2</span> <span class="p">[</span><span class="o">==============================</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="n">s</span> <span class="mi">2</span><span class="n">s</span><span class="o">/</span><span class="n">step</span> <span class="o">-</span> <span class="n">loss</span><span class="p">:</span> <span class="mf">890.7028</span> <span class="o">-</span> <span class="n">yolo_output_0_loss</span><span class="p">:</span> <span class="mf">22.7319</span> <span class="o">-</span> <span class="n">yolo_output_1_loss</span><span class="p">:</span> <span class="mf">45.7045</span> <span class="o">-</span> <span class="n">yolo_output_2_loss</span><span class="p">:</span> <span class="mf">721.0179</span> <span class="o">-</span> <span class="n">val_loss</span><span class="p">:</span> <span class="mf">4345.3047</span> <span class="o">-</span> <span class="n">val_yolo_output_0_loss</span><span class="p">:</span> <span class="mf">814.5522</span> <span class="o">-</span> <span class="n">val_yolo_output_1_loss</span><span class="p">:</span> <span class="mf">223.1448</span> <span class="o">-</span> <span class="n">val_yolo_output_2_loss</span><span class="p">:</span> <span class="mf">3206.2117</span>
+<span class="n">Epoch</span> <span class="mi">4</span><span class="o">/</span><span class="mi">5</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">2</span> <span class="p">[</span><span class="o">==============================</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="n">s</span> <span class="mi">3</span><span class="n">s</span><span class="o">/</span><span class="n">step</span> <span class="o">-</span> <span class="n">loss</span><span class="p">:</span> <span class="mf">859.4015</span> <span class="o">-</span> <span class="n">yolo_output_0_loss</span><span class="p">:</span> <span class="mf">21.0472</span> <span class="o">-</span> <span class="n">yolo_output_1_loss</span><span class="p">:</span> <span class="mf">42.8375</span> <span class="o">-</span> <span class="n">yolo_output_2_loss</span><span class="p">:</span> <span class="mf">694.0692</span> <span class="o">-</span> <span class="n">val_loss</span><span class="p">:</span> <span class="mf">4047.0514</span> <span class="o">-</span> <span class="n">val_yolo_output_0_loss</span><span class="p">:</span> <span class="mf">618.8140</span> <span class="o">-</span> <span class="n">val_yolo_output_1_loss</span><span class="p">:</span> <span class="mf">223.1597</span> <span class="o">-</span> <span class="n">val_yolo_output_2_loss</span><span class="p">:</span> <span class="mf">3103.4873</span>
+<span class="n">Epoch</span> <span class="mi">5</span><span class="o">/</span><span class="mi">5</span>
+<span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="p">[</span><span class="o">==============&gt;...............</span><span class="p">]</span> <span class="o">-</span> <span class="n">ETA</span><span class="p">:</span> <span class="mi">1</span><span class="n">s</span> <span class="o">-</span> <span class="n">loss</span><span class="p">:</span> <span class="mf">815.9636</span> <span class="o">-</span> <span class="n">yolo_output_0_loss</span><span class="p">:</span> <span class="mf">17.7589</span> <span class="o">-</span> <span class="n">yolo_output_1_loss</span><span class="p">:</span> <span class="mf">40.5396</span> <span class="o">-</span> <span class="n">yolo_output_2_loss</span><span class="p">:</span> <span class="mf">656.0746</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---------------------------------------------------------------------------</span>
+
+<span class="n">NotFoundError</span>                             <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">on_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="mi">766</span>     <span class="k">try</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">767</span>       <span class="k">yield</span> <span class="n">epoch_logs</span>
+    <span class="mi">768</span>     <span class="k">finally</span><span class="p">:</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">validation_split</span><span class="p">,</span> <span class="n">validation_data</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">class_weight</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">initial_epoch</span><span class="p">,</span> <span class="n">steps_per_epoch</span><span class="p">,</span> <span class="n">validation_steps</span><span class="p">,</span> <span class="n">validation_freq</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">use_multiprocessing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">341</span>                 <span class="n">training_context</span><span class="o">=</span><span class="n">training_context</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">342</span>                 <span class="n">total_epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">)</span>
+    <span class="mi">343</span>             <span class="n">cbks</span><span class="o">.</span><span class="n">make_logs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch_logs</span><span class="p">,</span> <span class="n">training_result</span><span class="p">,</span> <span class="n">ModeKeys</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">)</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">run_one_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">iterator</span><span class="p">,</span> <span class="n">execution_function</span><span class="p">,</span> <span class="n">dataset_size</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">steps_per_epoch</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">training_context</span><span class="p">,</span> <span class="n">total_epochs</span><span class="p">)</span>
+    <span class="mi">127</span>       <span class="k">try</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">128</span>         <span class="n">batch_outs</span> <span class="o">=</span> <span class="n">execution_function</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+    <span class="mi">129</span>       <span class="k">except</span> <span class="p">(</span><span class="ne">StopIteration</span><span class="p">,</span> <span class="n">errors</span><span class="o">.</span><span class="n">OutOfRangeError</span><span class="p">):</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">execution_function</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+     <span class="mi">97</span>     <span class="k">return</span> <span class="n">nest</span><span class="o">.</span><span class="n">map_structure</span><span class="p">(</span><span class="n">_non_none_constant_value</span><span class="p">,</span>
+<span class="o">---&gt;</span> <span class="mi">98</span>                               <span class="n">distributed_function</span><span class="p">(</span><span class="n">input_fn</span><span class="p">))</span>
+     <span class="mi">99</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">distributed_function</span><span class="p">(</span><span class="n">input_iterator</span><span class="p">)</span>
+     <span class="mi">84</span>     <span class="n">outputs</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">experimental_run_v2</span><span class="p">(</span>
+<span class="o">---&gt;</span> <span class="mi">85</span>         <span class="n">per_replica_function</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+     <span class="mi">86</span>     <span class="c1"># Out of PerReplica outputs reduce or pick values to return.</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">distribute</span><span class="o">/</span><span class="n">distribute_lib</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">experimental_run_v2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">762</span>                                 <span class="n">convert_by_default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="o">--&gt;</span> <span class="mi">763</span>       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extended</span><span class="o">.</span><span class="n">call_for_each_replica</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">764</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">distribute</span><span class="o">/</span><span class="n">distribute_lib</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">call_for_each_replica</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+   <span class="mi">1818</span>     <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_container_strategy</span><span class="p">()</span><span class="o">.</span><span class="n">scope</span><span class="p">():</span>
+<span class="o">-&gt;</span> <span class="mi">1819</span>       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_for_each_replica</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+   <span class="mi">1820</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">distribute</span><span class="o">/</span><span class="n">distribute_lib</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_call_for_each_replica</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+   <span class="mi">2163</span>         <span class="n">replica_id_in_sync_group</span><span class="o">=</span><span class="n">constant_op</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">int32</span><span class="p">)):</span>
+<span class="o">-&gt;</span> <span class="mi">2164</span>       <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+   <span class="mi">2165</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">autograph</span><span class="o">/</span><span class="n">impl</span><span class="o">/</span><span class="n">api</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">257</span>     <span class="k">with</span> <span class="n">ag_ctx</span><span class="o">.</span><span class="n">ControlStatusCtx</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">ag_ctx</span><span class="o">.</span><span class="n">Status</span><span class="o">.</span><span class="n">UNSPECIFIED</span><span class="p">):</span>
+<span class="o">--&gt;</span> <span class="mi">258</span>       <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">259</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2_utils</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">train_on_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">class_weight</span><span class="p">,</span> <span class="n">reset_metrics</span><span class="p">,</span> <span class="n">standalone</span><span class="p">)</span>
+    <span class="mi">432</span>       <span class="n">sample_weights</span><span class="o">=</span><span class="n">sample_weights</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">433</span>       <span class="n">output_loss_metrics</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">_output_loss_metrics</span><span class="p">)</span>
+    <span class="mi">434</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_eager</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">train_on_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">sample_weights</span><span class="p">,</span> <span class="n">output_loss_metrics</span><span class="p">)</span>
+    <span class="mi">311</span>           <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">312</span>           <span class="n">output_loss_metrics</span><span class="o">=</span><span class="n">output_loss_metrics</span><span class="p">))</span>
+    <span class="mi">313</span>   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_eager</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_process_single_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">output_loss_metrics</span><span class="p">,</span> <span class="n">sample_weights</span><span class="p">,</span> <span class="n">training</span><span class="p">)</span>
+    <span class="mi">252</span>               <span class="n">sample_weights</span><span class="o">=</span><span class="n">sample_weights</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">253</span>               <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">))</span>
+    <span class="mi">254</span>       <span class="k">if</span> <span class="n">total_loss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_eager</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_model_loss</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">output_loss_metrics</span><span class="p">,</span> <span class="n">sample_weights</span><span class="p">,</span> <span class="n">training</span><span class="p">)</span>
+    <span class="mi">166</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="s1">&#39;reduction&#39;</span><span class="p">):</span>
+<span class="o">--&gt;</span> <span class="mi">167</span>           <span class="n">per_sample_losses</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">outs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="mi">168</span>           <span class="n">weighted_losses</span> <span class="o">=</span> <span class="n">losses_utils</span><span class="o">.</span><span class="n">compute_weighted_loss</span><span class="p">(</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">losses</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="mi">220</span>           <span class="n">y_pred</span><span class="p">,</span> <span class="n">y_true</span><span class="p">)</span>
+<span class="o">--&gt;</span> <span class="mi">221</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fn</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn_kwargs</span><span class="p">)</span>
+    <span class="mi">222</span>
+
+
+<span class="o">~/</span><span class="n">git</span><span class="o">/</span><span class="n">ultrayolo</span><span class="o">/</span><span class="n">ultrayolo</span><span class="o">/</span><span class="n">losses</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="o">**</span><span class="n">kvargs</span><span class="p">)</span>
+    <span class="mi">329</span>         <span class="bp">self</span><span class="o">.</span><span class="n">count_batches</span><span class="o">.</span><span class="n">assign_add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">--&gt;</span> <span class="mi">330</span>         <span class="bp">self</span><span class="o">.</span><span class="n">save_metrics</span><span class="p">()</span>
+    <span class="mi">331</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">def_function</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="mi">567</span>     <span class="k">else</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">568</span>       <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="mi">569</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">def_function</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="mi">605</span>       <span class="c1"># run the first trace but we should fail if variables are created.</span>
+<span class="o">--&gt;</span> <span class="mi">606</span>       <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateful_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="mi">607</span>       <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_created_variables</span><span class="p">:</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">function</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+   <span class="mi">2362</span>       <span class="n">graph_function</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_maybe_define_function</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+<span class="o">-&gt;</span> <span class="mi">2363</span>     <span class="k">return</span> <span class="n">graph_function</span><span class="o">.</span><span class="n">_filtered_call</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># pylint: disable=protected-access</span>
+   <span class="mi">2364</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">function</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_filtered_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+   <span class="mi">1610</span>                            <span class="n">resource_variable_ops</span><span class="o">.</span><span class="n">BaseResourceVariable</span><span class="p">))),</span>
+<span class="o">-&gt;</span> <span class="mi">1611</span>         <span class="bp">self</span><span class="o">.</span><span class="n">captured_inputs</span><span class="p">)</span>
+   <span class="mi">1612</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">function</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_call_flat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">captured_inputs</span><span class="p">,</span> <span class="n">cancellation_manager</span><span class="p">)</span>
+   <span class="mi">1691</span>       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_call_outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inference_function</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+<span class="o">-&gt;</span> <span class="mi">1692</span>           <span class="n">ctx</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">cancellation_manager</span><span class="o">=</span><span class="n">cancellation_manager</span><span class="p">))</span>
+   <span class="mi">1693</span>     <span class="n">forward_backward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_forward_and_backward_functions</span><span class="p">(</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">function</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">cancellation_manager</span><span class="p">)</span>
+    <span class="mi">544</span>               <span class="n">attrs</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;executor_type&quot;</span><span class="p">,</span> <span class="n">executor_type</span><span class="p">,</span> <span class="s2">&quot;config_proto&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">),</span>
+<span class="o">--&gt;</span> <span class="mi">545</span>               <span class="n">ctx</span><span class="o">=</span><span class="n">ctx</span><span class="p">)</span>
+    <span class="mi">546</span>         <span class="k">else</span><span class="p">:</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">eager</span><span class="o">/</span><span class="n">execute</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">quick_execute</span><span class="p">(</span><span class="n">op_name</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+     <span class="mi">66</span>       <span class="n">message</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span>
+<span class="o">---&gt;</span> <span class="mi">67</span>     <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">_status_to_exception</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">message</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+     <span class="mi">68</span>   <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">six</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">raise_from</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">from_value</span><span class="p">)</span>
+
+
+<span class="n">NotFoundError</span><span class="p">:</span>  <span class="n">Resource</span> <span class="n">localhost</span><span class="o">/</span><span class="n">_AnonymousVar408</span><span class="o">/</span><span class="n">N10tensorflow22SummaryWriterInterfaceE</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">exist</span><span class="o">.</span>
+     <span class="p">[[{{</span><span class="n">node</span> <span class="n">cond</span><span class="o">/</span><span class="n">then</span><span class="o">/</span><span class="n">_0</span><span class="o">/</span><span class="n">yolo_loss_large_xy_loss</span><span class="o">/</span><span class="n">write_summary</span><span class="p">}}]]</span> <span class="p">[</span><span class="n">Op</span><span class="p">:</span><span class="n">__inference_save_metrics_15892</span><span class="p">]</span>
+
+<span class="n">Function</span> <span class="n">call</span> <span class="n">stack</span><span class="p">:</span>
+<span class="n">save_metrics</span>
+
+
+
+<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
+
+
+<span class="ne">KeyError</span>                                  <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">)</span>
+
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">21</span><span class="o">-</span><span class="mi">0</span><span class="n">f662bf2a06d</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="o">----&gt;</span> <span class="mi">1</span> <span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">model_callbacks</span><span class="p">)</span>
+
+
+<span class="o">~/</span><span class="n">git</span><span class="o">/</span><span class="n">ultrayolo</span><span class="o">/</span><span class="n">ultrayolo</span><span class="o">/</span><span class="n">ultrayolo</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_dataset</span><span class="p">,</span> <span class="n">val_dataset</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">initial_epoch</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="p">)</span>
+    <span class="mi">233</span>                               <span class="n">max_queue_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="mi">234</span>                               <span class="n">initial_epoch</span><span class="o">=</span><span class="n">initial_epoch</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">235</span>                               <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="mi">236</span>
+    <span class="mi">237</span>     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">save_format</span><span class="o">=</span><span class="s1">&#39;h5&#39;</span><span class="p">):</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">validation_split</span><span class="p">,</span> <span class="n">validation_data</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">class_weight</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">initial_epoch</span><span class="p">,</span> <span class="n">steps_per_epoch</span><span class="p">,</span> <span class="n">validation_steps</span><span class="p">,</span> <span class="n">validation_freq</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">use_multiprocessing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">817</span>         <span class="n">max_queue_size</span><span class="o">=</span><span class="n">max_queue_size</span><span class="p">,</span>
+    <span class="mi">818</span>         <span class="n">workers</span><span class="o">=</span><span class="n">workers</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">819</span>         <span class="n">use_multiprocessing</span><span class="o">=</span><span class="n">use_multiprocessing</span><span class="p">)</span>
+    <span class="mi">820</span>
+    <span class="mi">821</span>   <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">validation_split</span><span class="p">,</span> <span class="n">validation_data</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">,</span> <span class="n">class_weight</span><span class="p">,</span> <span class="n">sample_weight</span><span class="p">,</span> <span class="n">initial_epoch</span><span class="p">,</span> <span class="n">steps_per_epoch</span><span class="p">,</span> <span class="n">validation_steps</span><span class="p">,</span> <span class="n">validation_freq</span><span class="p">,</span> <span class="n">max_queue_size</span><span class="p">,</span> <span class="n">workers</span><span class="p">,</span> <span class="n">use_multiprocessing</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="mi">395</span>                       <span class="n">total_epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="mi">396</span>                   <span class="n">cbks</span><span class="o">.</span><span class="n">make_logs</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epoch_logs</span><span class="p">,</span> <span class="n">eval_result</span><span class="p">,</span> <span class="n">ModeKeys</span><span class="o">.</span><span class="n">TEST</span><span class="p">,</span>
+<span class="o">--&gt;</span> <span class="mi">397</span>                                  <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;val_&#39;</span><span class="p">)</span>
+    <span class="mi">398</span>
+    <span class="mi">399</span>     <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">history</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">contextlib</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span>
+    <span class="mi">128</span>                 <span class="n">value</span> <span class="o">=</span> <span class="nb">type</span><span class="p">()</span>
+    <span class="mi">129</span>             <span class="k">try</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">130</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">gen</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span>
+    <span class="mi">131</span>             <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="mi">132</span>                 <span class="c1"># Suppress StopIteration *unless* it&#39;s the same exception that</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">engine</span><span class="o">/</span><span class="n">training_v2</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">on_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="mi">769</span>       <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">ModeKeys</span><span class="o">.</span><span class="n">TRAIN</span><span class="p">:</span>
+    <span class="mi">770</span>         <span class="c1"># Epochs only apply to `fit`.</span>
+<span class="o">--&gt;</span> <span class="mi">771</span>         <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_logs</span><span class="p">)</span>
+    <span class="mi">772</span>       <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">epoch_logs</span><span class="p">)</span>
+    <span class="mi">773</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">callbacks</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="p">)</span>
+    <span class="mi">300</span>     <span class="n">logs</span> <span class="o">=</span> <span class="n">logs</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="mi">301</span>     <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">302</span>       <span class="n">callback</span><span class="o">.</span><span class="n">on_epoch_end</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="p">)</span>
+    <span class="mi">303</span>
+    <span class="mi">304</span>   <span class="k">def</span> <span class="nf">on_train_batch_begin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">callbacks</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">on_epoch_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="p">)</span>
+    <span class="mi">990</span>           <span class="bp">self</span><span class="o">.</span><span class="n">_save_model</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="n">logs</span><span class="p">)</span>
+    <span class="mi">991</span>       <span class="k">else</span><span class="p">:</span>
+<span class="o">--&gt;</span> <span class="mi">992</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_save_model</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="o">=</span><span class="n">logs</span><span class="p">)</span>
+    <span class="mi">993</span>     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_in_multi_worker_mode</span><span class="p">():</span>
+    <span class="mi">994</span>       <span class="c1"># For multi-worker training, back up the weights and current training</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">callbacks</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_save_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="p">)</span>
+   <span class="mi">1009</span>                   <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">epochs_since_last_save</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">:</span>
+   <span class="mi">1010</span>       <span class="bp">self</span><span class="o">.</span><span class="n">epochs_since_last_save</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="o">-&gt;</span> <span class="mi">1011</span>       <span class="n">filepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_path</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="p">)</span>
+   <span class="mi">1012</span>
+   <span class="mi">1013</span>       <span class="k">try</span><span class="p">:</span>
+
+
+<span class="o">~/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">dl</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">tensorflow_core</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">keras</span><span class="o">/</span><span class="n">callbacks</span><span class="o">.</span><span class="n">py</span> <span class="ow">in</span> <span class="n">_get_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">logs</span><span class="p">)</span>
+   <span class="mi">1053</span>     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_in_multi_worker_mode</span><span class="p">(</span>
+   <span class="mi">1054</span>     <span class="p">)</span> <span class="ow">or</span> <span class="n">multi_worker_util</span><span class="o">.</span><span class="n">should_save_checkpoint</span><span class="p">():</span>
+<span class="o">-&gt;</span> <span class="mi">1055</span>       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="o">=</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">logs</span><span class="p">)</span>
+   <span class="mi">1056</span>     <span class="k">else</span><span class="p">:</span>
+   <span class="mi">1057</span>       <span class="c1"># If this is multi-worker training, and this worker should not</span>
+
+
+<span class="ne">KeyError</span><span class="p">:</span> <span class="s1">&#39;val_loss&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="evaluate-model-loss">
+<h1>Evaluate model Loss<a class="headerlink" href="#evaluate-model-loss" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># &quot;bo&quot; is for &quot;blue dot&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="s1">&#39;bo&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Training loss&#39;</span><span class="p">)</span>
+<span class="c1"># b is for &quot;solid blue line&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Validation loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="yolo-loss-for-large-sized-objects">
+<h2>Yolo loss for large-sized objects<a class="headerlink" href="#yolo-loss-for-large-sized-objects" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;yolo_output_0_loss&#39;</span><span class="p">]</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_yolo_output_0_loss&#39;</span><span class="p">]</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># &quot;bo&quot; is for &quot;blue dot&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="s1">&#39;bo&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Training loss large size object&#39;</span><span class="p">)</span>
+<span class="c1"># b is for &quot;solid blue line&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Validation loss large size object&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="yolo-loss-for-medium-sized-objects">
+<h2>Yolo loss for medium-sized objects<a class="headerlink" href="#yolo-loss-for-medium-sized-objects" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;yolo_output_1_loss&#39;</span><span class="p">]</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_yolo_output_1_loss&#39;</span><span class="p">]</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># &quot;bo&quot; is for &quot;blue dot&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="s1">&#39;bo&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Training loss medium size object&#39;</span><span class="p">)</span>
+<span class="c1"># b is for &quot;solid blue line&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Validation loss medium size object&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="yolo-loss-for-small-sized-objects">
+<h2>Yolo loss for small-sized objects<a class="headerlink" href="#yolo-loss-for-small-sized-objects" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;yolo_output_2_loss&#39;</span><span class="p">]</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_yolo_output_2_loss&#39;</span><span class="p">]</span>
+
+<span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># &quot;bo&quot; is for &quot;blue dot&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="s1">&#39;bo&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Training loss small size object&#39;</span><span class="p">)</span>
+<span class="c1"># b is for &quot;solid blue line&quot;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Validation loss small size object&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Training and validation loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epochs&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>model.save(‘./save_model/model.h5’)</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="5_data_augmentation_considerations.html" class="btn btn-neutral float-right" title="Data Augmentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="3_check_yolo_loss.html" class="btn btn-neutral float-left" title="Yolo Loss Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

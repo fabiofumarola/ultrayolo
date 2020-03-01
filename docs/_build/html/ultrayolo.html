@@ -1,0 +1,729 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultrayolo package &mdash; ultrayolo 0.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ultrayolo.datasets package" href="ultrayolo.datasets.html" />
+    <link rel="prev" title="ultrayolo" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ultrayolo</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ultrayolo package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.datasets.html">ultrayolo.datasets package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.helpers.html">ultrayolo.helpers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.layers.html">ultrayolo.layers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ultrayolo.cli">ultrayolo.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ultrayolo.learningrates">ultrayolo.learningrates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ultrayolo.losses">ultrayolo.losses module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ultrayolo.ultrayolo">ultrayolo.ultrayolo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ultrayolo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_dataset.html">Predict using a custom pretrained model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html#evaluate-model-loss">Evaluate model Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/5_data_augmentation_considerations.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/Untitled.html">Network with Variable Grid</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ultrayolo</a> &raquo;</li>
+        
+      <li>ultrayolo package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ultrayolo.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultrayolo-package">
+<h1>ultrayolo package<a class="headerlink" href="#ultrayolo-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ultrayolo.datasets.html">ultrayolo.datasets package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.datasets.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.datasets.html#module-ultrayolo.datasets.common">ultrayolo.datasets.common module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.datasets.html#module-ultrayolo.datasets.datasets">ultrayolo.datasets.datasets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.datasets.html#module-ultrayolo.datasets.genanchors">ultrayolo.datasets.genanchors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.datasets.html#module-ultrayolo.datasets">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultrayolo.helpers.html">ultrayolo.helpers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.helpers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.helpers.html#module-ultrayolo.helpers.callbacks">ultrayolo.helpers.callbacks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.helpers.html#module-ultrayolo.helpers.darknet">ultrayolo.helpers.darknet module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.helpers.html#module-ultrayolo.helpers.draw">ultrayolo.helpers.draw module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.helpers.html#module-ultrayolo.helpers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultrayolo.layers.html">ultrayolo.layers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.layers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.layers.html#module-ultrayolo.layers.core">ultrayolo.layers.core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultrayolo.layers.html#module-ultrayolo.layers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ultrayolo.cli">
+<span id="ultrayolo-cli-module"></span><h2>ultrayolo.cli module<a class="headerlink" href="#module-ultrayolo.cli" title="Permalink to this headline">¶</a></h2>
+<p>Console script for ultrayolo.</p>
+<dl class="function">
+<dt id="ultrayolo.cli.load_datasets">
+<code class="descclassname">ultrayolo.cli.</code><code class="descname">load_datasets</code><span class="sig-paren">(</span><em>mode: str, image_shape: Tuple[int, int, int], max_objects: int, batch_size: int, base_grid_size: int, anchors: numpy.ndarray, train_path: str, val_path: str, augment: bool, pad_to_fixed_size: bool, **kwargs</em><span class="sig-paren">)</span> &#x2192; Tuple[ultrayolo.datasets.datasets.BaseDataset, ultrayolo.datasets.datasets.BaseDataset]<a class="reference internal" href="_modules/ultrayolo/cli.html#load_datasets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.cli.load_datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a dataset given the configurations</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>mode {str} – a value in singlefile, multifile, coco. Repreents the format of the dataset
+image_shape {Image} – the shape of the image
+max_objects {int} – [description]
+batch_size {int} – the size of the batch
+base_grid_size {int} – the base size of the grid
+anchors {np.ndarray} – the anchors
+train_path {str} – the path to the training annotations
+val_path {str} – the path to the validation annotations
+augment {bool} – True of False to apply data augmentations
+pad_to_fixed_size {bool} – True to pad the images to fixed size without distorting the image</dd>
+<dt>Returns:</dt>
+<dd>Tuple[datasets.BaseDataset, datasets.BaseDataset] – a valid instance of the training and validation dataset</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.cli.load_model">
+<code class="descclassname">ultrayolo.cli.</code><code class="descname">load_model</code><span class="sig-paren">(</span><em>masks: numpy.ndarray</em>, <em>dataset: ultrayolo.datasets.datasets.BaseDataset</em>, <em>iou: float</em>, <em>backbone: str</em>, <em>**kwargs</em><span class="sig-paren">)</span> &#x2192; ultrayolo.ultrayolo.BaseModel<a class="reference internal" href="_modules/ultrayolo/cli.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.cli.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>load the model for the training</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>masks {np.ndarray} – the mask used
+dataset {datasets.BaseDataset} – the dataset used to train the model
+iou {float} – the value of the intersection over union
+backbone {str} – the backbone used for the model</dd>
+<dt>Returns:</dt>
+<dd>[BaseModel] – an instance of the Yolo model</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.cli.load_or_compute_anchors">
+<code class="descclassname">ultrayolo.cli.</code><code class="descname">load_or_compute_anchors</code><span class="sig-paren">(</span><em>mode: str</em>, <em>number: int</em>, <em>path: str</em>, <em>ds_mode: str</em>, <em>ds_train_path: str</em>, <em>image_shape: Tuple</em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="_modules/ultrayolo/cli.html#load_or_compute_anchors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.cli.load_or_compute_anchors" title="Permalink to this definition">¶</a></dt>
+<dd><p>load or compute the anchors given a dataset</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>mode {str} – siniglefile, multifile, coco
+number {int} – the number of anchors
+path {str} – the path to the anchors
+ds_mode {str} – the mode of the dataset
+ds_train_path {str} – the path to the dataset
+image_shape {tuple} – the shape of the image</dd>
+<dt>Returns:</dt>
+<dd>np.ndarray – the anchors for the algorithm</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.cli.main">
+<code class="descclassname">ultrayolo.cli.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/cli.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.cli.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.cli.make_augmentations">
+<code class="descclassname">ultrayolo.cli.</code><code class="descname">make_augmentations</code><span class="sig-paren">(</span><em>percentage: float = 0.2</em><span class="sig-paren">)</span> &#x2192; imgaug.augmenters.meta.Sequential<a class="reference internal" href="_modules/ultrayolo/cli.html#make_augmentations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.cli.make_augmentations" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply data augmentations to the dataset</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd>percentage {float} – the percentage of the dataset to augment for each epoch (default: 0.2)</dd>
+<dt>Returns:</dt>
+<dd>[iaa.Sequential] – a pipeline of transformations</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.cli.run">
+<code class="descclassname">ultrayolo.cli.</code><code class="descname">run</code><span class="sig-paren">(</span><em>dataset</em>, <em>model</em>, <em>fit</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/cli.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.cli.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>the main to train the algorithm</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>config {object} – the configurations to run the algorithm</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.learningrates">
+<span id="ultrayolo-learningrates-module"></span><h2>ultrayolo.learningrates module<a class="headerlink" href="#module-ultrayolo.learningrates" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.learningrates.cyclic_learning_rate">
+<code class="descclassname">ultrayolo.learningrates.</code><code class="descname">cyclic_learning_rate</code><span class="sig-paren">(</span><em>learning_rate=0.01</em>, <em>max_lr=0.1</em>, <em>step_size=20.0</em>, <em>gamma=0.99994</em>, <em>mode='triangular'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/learningrates.html#cyclic_learning_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.learningrates.cyclic_learning_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies cyclic learning rate (CLR).
+From the paper:
+Smith, Leslie N. “Cyclical learning
+rates for training neural networks.” 2017.
+[<a class="reference external" href="https://arxiv.org/pdf/1506.01186.pdf">https://arxiv.org/pdf/1506.01186.pdf</a>]</p>
+<blockquote>
+<div>This method lets the learning rate cyclically</div></blockquote>
+<p>vary between reasonable boundary values
+achieving improved classification accuracy and
+often in fewer iterations.</p>
+<blockquote>
+<div>This code varies the learning rate linearly between the</div></blockquote>
+<dl class="docutils">
+<dt>minimum (learning_rate) and the maximum (max_lr).</dt>
+<dd><dl class="first docutils">
+<dt>It returns the cyclic learning rate. It is computed as:</dt>
+<dd><p class="first"><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+cycle = floor( 1 + global_step /</p>
+<blockquote class="last">
+<div>( 2 * step_size ) )</div></blockquote>
+</dd>
+</dl>
+<p>x = abs( global_step / step_size – 2 * cycle + 1 )
+clr = learning_rate +</p>
+<blockquote>
+<div><blockquote>
+<div>( max_lr – learning_rate ) * max( 0 , 1 - x )</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>Polices:</dt>
+<dd><dl class="first last docutils">
+<dt>‘triangular’:</dt>
+<dd><blockquote class="first">
+<div>Default, linearly increasing then linearly decreasing the
+learning rate at each cycle.</div></blockquote>
+<dl class="last docutils">
+<dt>‘triangular2’:</dt>
+<dd>The same as the triangular policy except the learning
+rate difference is cut in half at the end of each cycle.
+This means the learning rate difference drops after each cycle.</dd>
+<dt>‘exp_range’:</dt>
+<dd>The learning rate varies between the minimum and maximum
+boundaries and each boundary value declines by an exponential
+factor of: gamma^global_step.</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.learningrates.default_decay">
+<code class="descclassname">ultrayolo.learningrates.</code><code class="descname">default_decay</code><span class="sig-paren">(</span><em>num_epochs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/learningrates.html#default_decay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.learningrates.default_decay" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.losses">
+<span id="ultrayolo-losses-module"></span><h2>ultrayolo.losses module<a class="headerlink" href="#module-ultrayolo.losses" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ultrayolo.losses.BaseLoss">
+<em class="property">class </em><code class="descclassname">ultrayolo.losses.</code><code class="descname">BaseLoss</code><span class="sig-paren">(</span><em>anchor_masks</em>, <em>ignore_iou_threshold</em>, <em>img_size</em>, <em>num_classes</em>, <em>name</em>, <em>num_batches</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/losses.html#BaseLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.BaseLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="staticmethod">
+<dt id="ultrayolo.losses.BaseLoss.broadcast_iou">
+<em class="property">static </em><code class="descname">broadcast_iou</code><span class="sig-paren">(</span><em>box_1</em>, <em>box_2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/losses.html#BaseLoss.broadcast_iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.BaseLoss.broadcast_iou" title="Permalink to this definition">¶</a></dt>
+<dd><p>brodcast intersection over union</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>box_1 {tf.tensor} –  (…, (x1, y1, x2, y2))
+box_2 {tf.tensor} –  (N, (x1, y1, x2, y2))</dd>
+<dt>Returns:</dt>
+<dd>tf.tensor  – intersection over union</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ultrayolo.losses.BaseLoss.save_metrics">
+<code class="descname">save_metrics</code><a class="reference internal" href="_modules/ultrayolo/losses.html#BaseLoss.save_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.BaseLoss.save_metrics" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.losses.FocalLoss">
+<em class="property">class </em><code class="descclassname">ultrayolo.losses.</code><code class="descname">FocalLoss</code><span class="sig-paren">(</span><em>anchor_masks</em>, <em>ignore_iou_threshold</em>, <em>img_size</em>, <em>num_classes</em>, <em>name</em>, <em>num_batches</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/losses.html#FocalLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.FocalLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.losses.BaseLoss" title="ultrayolo.losses.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.losses.BaseLoss</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.losses.YoloLoss">
+<em class="property">class </em><code class="descclassname">ultrayolo.losses.</code><code class="descname">YoloLoss</code><span class="sig-paren">(</span><em>anchor_masks</em>, <em>ignore_iou_threshold</em>, <em>img_size</em>, <em>num_classes</em>, <em>name</em>, <em>num_batches</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/losses.html#YoloLoss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.YoloLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.losses.BaseLoss" title="ultrayolo.losses.BaseLoss"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.losses.BaseLoss</span></code></a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.losses.make_loss">
+<code class="descclassname">ultrayolo.losses.</code><code class="descname">make_loss</code><span class="sig-paren">(</span><em>num_classes</em>, <em>anchors</em>, <em>masks</em>, <em>img_size</em>, <em>num_batches</em>, <em>ignore_iou_threshold=0.5</em>, <em>loss_name='yolo'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/losses.html#make_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.make_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper to create the losses</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>num_classes {int} – the number of classes
+anchors {np.ndarray} – the anchors used for the detection
+masks {np.ndarray} – the mask used to filter the anchors
+img_size {tuple} – the shape of the images
+num_batches {int} – the number of batches in the training</dd>
+<dt>Keyword Arguments:</dt>
+<dd>ignore_iou_threshold {float} – the value used to ignore predictions (default: {0.7})
+loss_name {str} – the loss function used (default: {yolo}) (values: {yolo, focal})</dd>
+<dt>Returns:</dt>
+<dd>[type] – [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ultrayolo.losses.process_predictions">
+<code class="descclassname">ultrayolo.losses.</code><code class="descname">process_predictions</code><a class="reference internal" href="_modules/ultrayolo/losses.html#process_predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.process_predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>process the predictions to transform from:
+-  pred_xy, pred_wh, pred_obj, pred_class
+into
+- box_xyxy, pred_obj, pred_class, pred_xywh</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first docutils">
+<dt>y_pred {tf.tensor} – the predictions in the format </dt>
+<dd>(NBATCH, x_center, y_center, width, heigth, obj, one_hot_classes)</dd>
+</dl>
+<p class="last">num_classes {int} – the number of classes
+anchors_masks {tf.tensor} – the anchors masks</p>
+</dd>
+<dt>Returns:</dt>
+<dd>tuple – box_xyxy, pred_obj, pred_class, pred_xywh</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ultrayolo.losses.to_box_xyxy">
+<code class="descclassname">ultrayolo.losses.</code><code class="descname">to_box_xyxy</code><a class="reference internal" href="_modules/ultrayolo/losses.html#to_box_xyxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.losses.to_box_xyxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert the given boxes into the xy_min xy_max format
+Arguments:</p>
+<blockquote>
+<div>box_xy {tf.tensor} –
+box_wh {tf,tensor} –
+grid_size {float} – the size of the grid used
+anchors_masks {tf.tensor} – the anchor masks</div></blockquote>
+<dl class="docutils">
+<dt>Returns:</dt>
+<dd>tf.tensor – the boxes</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.ultrayolo">
+<span id="ultrayolo-ultrayolo-module"></span><h2>ultrayolo.ultrayolo module<a class="headerlink" href="#module-ultrayolo.ultrayolo" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ultrayolo.ultrayolo.BaseModel">
+<em class="property">class </em><code class="descclassname">ultrayolo.ultrayolo.</code><code class="descname">BaseModel</code><span class="sig-paren">(</span><em>img_shape=(None</em>, <em>None</em>, <em>3)</em>, <em>max_objects=100</em>, <em>iou_threshold=0.5</em>, <em>score_threshold=0.5</em>, <em>anchors=None</em>, <em>num_classes=80</em>, <em>base_grid_size: int = 32</em>, <em>backbone='DarkNet'</em>, <em>training=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.compile">
+<code class="descname">compile</code><span class="sig-paren">(</span><em>optimizer</em>, <em>loss</em>, <em>run_eagerly</em>, <em>summary=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>compile the model</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>optimizer {tf.keras.optimizers} – a valid tensorflow optimizer
+loss {ultrayolo.losses.Loss} – the loss function for yolo
+run_eagerly {bool} – if True is uses eager mode, that is you can see more explainable stack traces</dd>
+<dt>Keyword Arguments:</dt>
+<dd>summary {bool} – if True print the summary of the model (default: {True})</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>train_dataset</em>, <em>val_dataset</em>, <em>epochs</em>, <em>initial_epoch=0</em>, <em>callbacks=None</em>, <em>workers=1</em>, <em>max_queue_size=64</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>train the model</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>train_dataset {ultrayolo.datasets.Dataset} – an instance of the dataset
+val_dataset {ultrayolo.datasets.Dataset} – an instance of the dataset
+epochs {int} – the number of epochs</dd>
+<dt>Keyword Arguments:</dt>
+<dd>initial_epoch {int} – the inital epoch (default: {0})
+callbacks {[type]} – a list of callbacks for the model (default: {None})
+workers {int} – the number of workers (default: {1})
+max_queue_size {int} – the max size of the queue (default: {64})</dd>
+<dt>Returns:</dt>
+<dd>[type] – [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.get_loss_function">
+<code class="descname">get_loss_function</code><span class="sig-paren">(</span><em>num_batches</em>, <em>loss_name: str = 'yolo'</em><span class="sig-paren">)</span> &#x2192; List[T]<a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.get_loss_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.get_loss_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>utility to create the loss function</p>
+<dl class="docutils">
+<dt>Keyword Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt>loss_fn {str} – a literal value for Yolo and Focal loss (default: {‘yolo’})</dt>
+<dd>(values: {‘yolo’, ‘focal’})</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>List – [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.get_optimizer">
+<code class="descname">get_optimizer</code><span class="sig-paren">(</span><em>optimizer_name</em>, <em>lrate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.get_optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.get_optimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper to create the optimizer using the class defined members</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>optimizer_name {str} – the name of the optimizer to use: (values: adam, rmsprop, sgd)
+lrate {float} – a valid starting value for the learning rate</dd>
+<dt>Raises:</dt>
+<dd>Exception: raise an exception if the optimizer is not supported</dd>
+<dt>Returns:</dt>
+<dd>tensorflow.keras.optimizer – an instance of the selected optimizer</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.load_weights">
+<code class="descname">load_weights</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.load_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.load_weights" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>load:</dt>
+<dd><ul class="first last simple">
+<li>saved checkpoints in h5 format</li>
+<li>saved weights in darknet format</li>
+</ul>
+</dd>
+<dt>Arguments:</dt>
+<dd>path {str} – the path where the weights are saved
+backbone {str} – the name of the backbone used</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>path</em>, <em>save_format='h5'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save the model to the given path</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>path {str|pathlib.Path} – the path to save the checkpoint</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.set_mode_fine_tuning">
+<code class="descname">set_mode_fine_tuning</code><span class="sig-paren">(</span><em>num_layers_to_train</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.set_mode_fine_tuning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.set_mode_fine_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>unfreeze the backbone and freeze the first <cite>num_layers_to_train</cite> layers</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>num_layers_to_train {[type]} – [description]</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.set_mode_train">
+<code class="descname">set_mode_train</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.set_mode_train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.set_mode_train" title="Permalink to this definition">¶</a></dt>
+<dd><p>unfreeze all the net read for a full training</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.set_mode_transfer">
+<code class="descname">set_mode_transfer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.set_mode_transfer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.set_mode_transfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>freeze the backbone of the network, check that the head and output layers are unfreezed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.ultrayolo.BaseModel.summary">
+<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#BaseModel.summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.BaseModel.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the tensorflow model summary</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.ultrayolo.YoloV3">
+<em class="property">class </em><code class="descclassname">ultrayolo.ultrayolo.</code><code class="descname">YoloV3</code><span class="sig-paren">(</span><em>img_shape=(None</em>, <em>None</em>, <em>3)</em>, <em>max_objects=100</em>, <em>iou_threshold=0.5</em>, <em>score_threshold=0.5</em>, <em>anchors=None</em>, <em>num_classes=80</em>, <em>base_grid_size: int = 32</em>, <em>backbone='DarkNet'</em>, <em>training=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#YoloV3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.YoloV3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.ultrayolo.BaseModel" title="ultrayolo.ultrayolo.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.ultrayolo.BaseModel</span></code></a></p>
+<dl class="attribute">
+<dt id="ultrayolo.ultrayolo.YoloV3.default_anchors">
+<code class="descname">default_anchors</code><em class="property"> = array([[ 10.,  13.],        [ 16.,  30.],        [ 33.,  23.],        [ 30.,  61.],        [ 62.,  45.],        [ 59., 119.],        [116.,  90.],        [156., 198.],        [373., 326.]], dtype=float32)</em><a class="headerlink" href="#ultrayolo.ultrayolo.YoloV3.default_anchors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ultrayolo.ultrayolo.YoloV3.default_masks">
+<code class="descname">default_masks</code><em class="property"> = array([[6, 7, 8],        [3, 4, 5],        [0, 1, 2]])</em><a class="headerlink" href="#ultrayolo.ultrayolo.YoloV3.default_masks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.ultrayolo.YoloV3Tiny">
+<em class="property">class </em><code class="descclassname">ultrayolo.ultrayolo.</code><code class="descname">YoloV3Tiny</code><span class="sig-paren">(</span><em>img_shape=(None</em>, <em>None</em>, <em>3)</em>, <em>max_objects=100</em>, <em>iou_threshold=0.7</em>, <em>score_threshold=0.7</em>, <em>anchors=None</em>, <em>num_classes=80</em>, <em>base_grid_size: int = 32</em>, <em>backbone='DarknetTiny'</em>, <em>training=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#YoloV3Tiny"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.YoloV3Tiny" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.ultrayolo.BaseModel" title="ultrayolo.ultrayolo.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.ultrayolo.BaseModel</span></code></a></p>
+<dl class="attribute">
+<dt id="ultrayolo.ultrayolo.YoloV3Tiny.default_anchors">
+<code class="descname">default_anchors</code><em class="property"> = array([[ 10.,  14.],        [ 23.,  27.],        [ 37.,  58.],        [ 81.,  82.],        [135., 169.],        [344., 319.]], dtype=float32)</em><a class="headerlink" href="#ultrayolo.ultrayolo.YoloV3Tiny.default_anchors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ultrayolo.ultrayolo.YoloV3Tiny.default_masks">
+<code class="descname">default_masks</code><em class="property"> = array([[3, 4, 5],        [0, 1, 2]])</em><a class="headerlink" href="#ultrayolo.ultrayolo.YoloV3Tiny.default_masks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ultrayolo.ultrayolo.non_max_suppression">
+<code class="descclassname">ultrayolo.ultrayolo.</code><code class="descname">non_max_suppression</code><a class="reference internal" href="_modules/ultrayolo/ultrayolo.html#non_max_suppression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.ultrayolo.non_max_suppression" title="Permalink to this definition">¶</a></dt>
+<dd><p>an implementation of non max suppression</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd>outputs {tf.tensor} – the outputs of the yolo branches
+anchors {np.ndarray} – the anchors scaled in [0,1]
+masks {np.ndarray} – the list of the anchors to use
+classes {list} – the list of classes
+iou_threshold {float} – the minimum intersection over union threshold
+score_threshold {float} – the minimum confidence score to use
+max_boxes_per_image {int} – the number of maximum boxes to show
+img_size {int} – the size of the image</dd>
+<dt>Returns:</dt>
+<dd>(boxes, scores, classes, valid_detections) – a tuple of the results</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultrayolo" title="Permalink to this headline">¶</a></h2>
+<p>Top-level package for ultrayolo.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ultrayolo.datasets.html" class="btn btn-neutral float-right" title="ultrayolo.datasets package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="ultrayolo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

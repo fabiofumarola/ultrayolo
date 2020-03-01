@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultrayolo.layers.core &mdash; ultrayolo 0.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2_predict_custom_dataset.html">Predict using a custom pretrained model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/4_train_example.html">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/4_train_example.html#evaluate-model-loss">Evaluate model Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/5_data_augmentation_considerations.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/Untitled.html">Network with Variable Grid</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ultrayolo.layers.core</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ultrayolo.layers.core</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ZeroPadding2D</span><span class="p">,</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">LeakyReLU</span><span class="p">,</span> <span class="n">Add</span><span class="p">,</span>
+                                     <span class="n">MaxPool2D</span><span class="p">,</span> <span class="n">BatchNormalization</span><span class="p">,</span>
+                                     <span class="n">UpSampling2D</span><span class="p">,</span> <span class="n">Concatenate</span><span class="p">,</span> <span class="n">Lambda</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.regularizers</span> <span class="kn">import</span> <span class="n">l1_l2</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.applications</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ResNet50V2</span><span class="p">,</span> <span class="n">ResNet101V2</span><span class="p">,</span> <span class="n">ResNet152V2</span><span class="p">,</span>
+                                           <span class="n">DenseNet121</span><span class="p">,</span> <span class="n">DenseNet169</span><span class="p">,</span>
+                                           <span class="n">DenseNet201</span><span class="p">,</span> <span class="n">MobileNetV2</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DarknetConv"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.DarknetConv">[docs]</a><span class="k">def</span> <span class="nf">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">batch_norm</span><span class="p">,</span> <span class="n">downsample</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;the darknet convolution layer</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        x {tf.tensor} -- a valid tensor</span>
+<span class="sd">        filters {int} -- the number of filters for the convolution</span>
+<span class="sd">        kernel {int} -- the size of the kernel patch</span>
+<span class="sd">        batch_norm {boolean} -- to use batch normalization</span>
+<span class="sd">        downsample {boolean} -- to use o not the downsampling</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tf.tensor -- the output tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">downsample</span><span class="p">:</span>
+        <span class="c1"># top left half-padding</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ZeroPadding2D</span><span class="p">(((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="s1">&#39;valid&#39;</span>
+        <span class="n">strides</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="s1">&#39;same&#39;</span>
+        <span class="n">strides</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Conv2D</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+               <span class="n">kernel_size</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span>
+               <span class="n">strides</span><span class="o">=</span><span class="n">strides</span><span class="p">,</span>
+               <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">,</span>
+               <span class="n">use_bias</span><span class="o">=</span><span class="ow">not</span> <span class="n">batch_norm</span><span class="p">,</span>
+               <span class="n">kernel_regularizer</span><span class="o">=</span><span class="n">l1_l2</span><span class="p">(</span><span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.0005</span><span class="p">),</span>
+               <span class="n">kernel_initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span><span class="o">=</span><span class="mf">0.01</span><span class="p">))(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">batch_norm</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">BatchNormalization</span><span class="p">()(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">LeakyReLU</span><span class="p">(</span><span class="n">alpha</span><span class="o">=.</span><span class="mi">1</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="DarknetResidual"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.DarknetResidual">[docs]</a><span class="k">def</span> <span class="nf">DarknetResidual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A residual layer</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        x {tf.tensor} -- a valid tensor</span>
+<span class="sd">        filters {int} -- the number of filters</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tf.tensor -- the output tensor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">input_</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+                    <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="n">filters</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Add</span><span class="p">()([</span><span class="n">input_</span><span class="p">,</span> <span class="n">x</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="DarknetBody"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.DarknetBody">[docs]</a><span class="k">def</span> <span class="nf">DarknetBody</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;the body of the darknet model</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        name {str} -- the name of the model (default: {None})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tensorflow.keras.Model -- the tensorflow darknet model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Input_N_H_W_C&#39;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetResidual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetResidual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetResidual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x36</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetResidual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x61</span> <span class="o">=</span> <span class="n">x</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetResidual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResNetBody"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.ResNetBody">[docs]</a><span class="k">def</span> <span class="nf">ResNetBody</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;ResNet50V2&#39;</span><span class="p">,</span> <span class="n">num_branches</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;a Darknet body implemented via a ResNetV2</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        input_shape {tuple} -- a tuple of 3 values (example: {(X,X,3)})</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        version {str} -- [description] (default: {&#39;ResNet50V2&#39;}, values: [</span>
+<span class="sd">            &#39;ResNet50V2&#39;, &#39;ResNet101V2&#39;, &#39;ResNet152V2&#39;</span>
+<span class="sd">        ])</span>
+<span class="sd">        num_branches {int} -- [description] (default: {3}, values: [3,4])</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: in case a not valid value is provided</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tensorflow.keras.Model  --</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;ResNet50V2&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ResNet50V2</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;ResNet101V2&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ResNet101V2</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;ResNet152V2&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">ResNet152V2</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;invalid value </span><span class="si">{version}</span><span class="s1"> for the class name&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">input</span>
+    <span class="n">x36</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;conv3_block3_out&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="n">x61</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;conv4_block4_out&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="n">x96</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;conv4_block4_out&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">output</span>
+
+    <span class="k">if</span> <span class="n">num_branches</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x96</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">version</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DenseNetBody"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.DenseNetBody">[docs]</a><span class="k">def</span> <span class="nf">DenseNetBody</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;DenseNet121&#39;</span><span class="p">,</span> <span class="n">num_branches</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;a Yolo backbone using DenseNet</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        input_shape {tuple} -- a valid image shape tuple (values: {(X,X,3)})</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        version {str} -- a version of densnet (default: {&#39;DenseNet121&#39;},</span>
+<span class="sd">        values: [</span>
+<span class="sd">            &#39;DenseNet121&#39;, &#39;DenseNet169&#39;, &#39;DenseNet201&#39;</span>
+<span class="sd">        ])</span>
+<span class="sd">        num_branches {int} -- [description] (default: {3}, values: [3,4])</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: in case a not valid value is provided</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tensorflow.keras.Model  --</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;DenseNet121&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DenseNet121</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;DenseNet169&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DenseNet169</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;DenseNet201&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">DenseNet201</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;invalid value </span><span class="si">{version}</span><span class="s1"> for the class name&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">input</span>
+    <span class="n">x36</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;conv3_block12_concat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="n">x61</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;conv4_block24_concat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="n">x96</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;conv4_block24_concat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">output</span>
+
+    <span class="k">if</span> <span class="n">num_branches</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x96</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">version</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MobileNetBody"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.MobileNetBody">[docs]</a><span class="k">def</span> <span class="nf">MobileNetBody</span><span class="p">(</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;MobileNetV2&#39;</span><span class="p">,</span> <span class="n">num_branches</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;a yolo mobile net body</span>
+<span class="sd">    It suports only shapes as [96, 128, 160, 192, 224]</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        input_shape {tuple} -- [description]</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        version {str} -- a version of mobilenet (default: {&#39;MobileNetV2&#39;},</span>
+<span class="sd">            values: [&#39;MobileNetV2&#39;])</span>
+<span class="sd">        num_branches {int} -- [description] (default: {3}, values: [3,4])</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: in case a not valid value is provided</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tensorflow.keras.Model  --</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="s1">&#39;MobileNetV2&#39;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MobileNetV2</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">,</span> <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">input</span>
+        <span class="n">x36</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;block_5_add&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+        <span class="n">x61</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;block_12_add&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+        <span class="n">x96</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;block_12_add&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">output</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">output</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;invalid value </span><span class="si">{version}</span><span class="s1"> for the class name&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">num_branches</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x36</span><span class="p">,</span> <span class="n">x61</span><span class="p">,</span> <span class="n">x96</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">version</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DarknetBodyTiny"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.DarknetBodyTiny">[docs]</a><span class="k">def</span> <span class="nf">DarknetBodyTiny</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;the Tiny version of darknet</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        name {str} -- a name for the model (default: {None})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tensorflow.keras.Model -- an instance of the darknet tiny model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MaxPool2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MaxPool2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MaxPool2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MaxPool2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x_8</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                          <span class="n">filters</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+                          <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                          <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>    <span class="c1"># skip connection</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MaxPool2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">MaxPool2D</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;same&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+                    <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="n">x_8</span><span class="p">,</span> <span class="n">x</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="YoloHead"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.YoloHead">[docs]</a><span class="k">def</span> <span class="nf">YoloHead</span><span class="p">(</span><span class="n">x_inputs</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_tiny</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_inputs</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">x_inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">x_skip</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">x_inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_skip</span>
+
+        <span class="c1"># concat with skip connection</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+                        <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">UpSampling2D</span><span class="p">(</span><span class="mi">2</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Concatenate</span><span class="p">()([</span><span class="n">x</span><span class="p">,</span> <span class="n">x_skip</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">x_inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_tiny</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+                        <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                            <span class="n">filters</span><span class="o">=</span><span class="n">filters</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                            <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                            <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)(</span><span class="n">x_inputs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="YoloOutput"><a class="viewcode-back" href="../../../ultrayolo.layers.html#ultrayolo.layers.core.YoloOutput">[docs]</a><span class="k">def</span> <span class="nf">YoloOutput</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">num_mask</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">num_pooling</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">input_</span> <span class="o">=</span> <span class="n">Input</span><span class="p">(</span><span class="n">x_in</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="n">filters</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">batch_norm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">DarknetConv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                    <span class="n">filters</span><span class="o">=</span><span class="n">num_mask</span> <span class="o">*</span> <span class="p">(</span><span class="mi">5</span> <span class="o">+</span> <span class="n">num_classes</span><span class="p">),</span>
+                    <span class="n">kernel</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">batch_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">downsample</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_pooling</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">MaxPool2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">2</span><span class="p">],</span>
+                                        <span class="n">num_mask</span><span class="p">,</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">num_classes</span><span class="p">)))(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># add this layers to replace all the nan with 0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">is_nan</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">w</span><span class="p">))(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">input_</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)(</span><span class="n">x_in</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
