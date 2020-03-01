@@ -51,8 +51,7 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr .pytest_cache
 
 format: ## format the code
-	# autopep8 -ri --max-line-length 80 --aggressive .
-	yapf -ri .
+	yapf -ri ultrayolo tests
 
 lint: ## check style with flake8
 	flake8 ultrayolo tests

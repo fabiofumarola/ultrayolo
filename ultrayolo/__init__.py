@@ -6,7 +6,7 @@ __email__ = 'fabiofumarola@gmail.com'
 __version__ = '0.7.0'
 
 from ultrayolo.helpers import callbacks
-from ultrayolo.ultrayolo import YoloV3Tiny, YoloV3
+from ultrayolo.ultrayolo import YoloV3Tiny, YoloV3, BaseModel
 import logging
 logging.basicConfig(level=logging.INFO,
                     format='%(relativeCreated)6d %(threadName)s %(message)s')

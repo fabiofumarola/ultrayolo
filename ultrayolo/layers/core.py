@@ -292,7 +292,7 @@ def YoloHead(x_inputs, filters, name=None, is_tiny=False):
     return Model(inputs, x, name=name)(x_inputs)
 
 
-def YoloOutput(x_in, filters, num_mask, num_classes, name=None):
+def YoloOutput(x_in, filters, num_mask, num_classes, num_pooling, name=None):
     x = input_ = Input(x_in.shape[1:])
     x = DarknetConv(x,
                     filters=filters * 2,
@@ -304,9 +304,10 @@ def YoloOutput(x_in, filters, num_mask, num_classes, name=None):
                     kernel=1,
                     batch_norm=False,
                     downsample=False)
-    # FIXME add this when making the grid size a paramater
-    # x = tf.keras.layers.MaxPool2D(pool_size=(2, 2))(x)
-    # x = tf.keras.layers.MaxPool2D(pool_size=(2, 2))(x)
+
+    for _ in range(num_pooling):
+        x = tf.keras.layers.MaxPool2D(pool_size=(2, 2))(x)
+
     x = Lambda(lambda x: tf.reshape(x, (-1, tf.shape(x)[1], tf.shape(x)[2],
                                         num_mask, 5 + num_classes)))(x)
     # add this layers to replace all the nan with 0

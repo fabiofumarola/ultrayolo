@@ -1,56 +1,52 @@
 dataset:
   # support mode singlefile, multifile
-  mode: multifile
+  mode: coco
   # the size of the image (X,X,3)
-  image_shape: [256, 256, 3]
+  image_shape: [512, 512, 3]
   # max number of objects that can be detected
   max_objects: 50
   # the size of the batch
   batch_size: 2
-  anchors: 
+  # accepts 32,64,128,256
+  base_grid_size: 32
+  object_anchors:
     # anchors values: default, default_tiny, compute, path
-    mode: default
-   #the nunber of anchors can be 6 or 9, 12
+    mode: compute
+    #the nunber of anchors can be 6 or 9, 12
     number: 9
-    path: 
-  
-  pad_to_fixed_size: true
-
+    path:
   # path of the annotations
-  train_path: ./tests/data/manifest.txt
+  train_path: ./minicoco_dataset/hair_drier_toaster_bear.json
   # path of the annotations for validation
-  val_path: ./tests/data/manifest.txt
+  val_path: ./minicoco_dataset/hair_drier_toaster_bear.json
 
   # if use data augmentation true or false
-  augment: true
-  
+  augment: false
+  pad_to_fixed_size: true
+
 model:
-  # The backbone for the model, default DarkNet, accepted values (ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNet, MobileNetV2)
-  backbone: DarkNet
+  # The backbone for the model, default DarkNet, accepted values (ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNetV2)
+  backbone: MobileNetV2
   # the training mode: transfer, fine_tune, train
-  iou: 0.7
-  object_score: 0.7
-  reload_weights: ./yolov3.weights
-  
+  iou: 0.5
+  object_score: 0.5
+  # reload_weights: ./yolov3.weights
+  loss: yolo
+
 fit:
   #mode train, transfer, finetuning
   mode: train
   epochs:
-    transfer: 5
-    finetuning: 20
-    train: 50
+    transfer: 2
+    finetuning: 5
+    train: 2
   # number of the layers freezed for fine tuning it accepts positive and negate values (e.g. first 80 layers, last -10 layers)
-  freezed_layers: -10
-  run_eagerly: False
+  freezed_layers: -70
+  run_eagerly: True
   optimizer:
     # sgd | rmsprop | adam ...
     name: adam
     lrate:
       # cyclic | exp_range | reduce_on_plateau
-      mode: exp_range
+      mode: reduce_on_plateau
       value: 0.0001
-
-
-
-
-  
