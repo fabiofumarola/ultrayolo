@@ -118,14 +118,29 @@ def prepare_data(annotations_path, image_shape, datasetmode):
         [type] -- [description]
     """
     if datasetmode == 'singlefile':
-        dataset = YoloDatasetSingleFile(annotations_path, image_shape, 20, 1,
-                                        None, None, False)
+        dataset = YoloDatasetSingleFile(annotations_path,
+                                        image_shape,
+                                        20,
+                                        1,
+                                        None,
+                                        None,
+                                        is_training=False)
     elif datasetmode == 'multifile':
-        dataset = YoloDatasetMultiFile(annotations_path, image_shape, 20, 1,
-                                       None, None, False)
+        dataset = YoloDatasetMultiFile(annotations_path,
+                                       image_shape,
+                                       20,
+                                       1,
+                                       None,
+                                       None,
+                                       is_training=False)
     elif datasetmode == 'coco':
-        dataset = CocoFormatDataset(annotations_path, image_shape, 20, 1, None,
-                                    None, False)
+        dataset = CocoFormatDataset(annotations_path,
+                                    image_shape,
+                                    20,
+                                    1,
+                                    None,
+                                    None,
+                                    is_training=False)
 
     boxes = []
     for _, batch_boxes, _ in tqdm(dataset):

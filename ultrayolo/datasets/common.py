@@ -5,6 +5,7 @@ import imgaug.augmenters as iaa
 from imgaug.augmentables.bbs import BoundingBox, BoundingBoxesOnImage
 from imgaug.augmentables.batches import Batch
 from pathlib import Path
+import math
 
 
 def load_anchors(path):
@@ -488,11 +489,35 @@ def best_anchors_iou(boxes, anchors):
     return best_anchors_idx
 
 
+def get_grid_sizes(image_shape, base_grid_size):
+    """utility function that compute the sizes of the grid system
+    
+    Arguments:
+        image_shape {tuple} -- the shape of the image
+        base_grid_size {int} -- the size of the cell in base grid
+    
+    Returns:
+        list -- a list of the grid sizes
+    """
+    if base_grid_size == 32:
+        return [int(image_shape[0] / x) for x in [32, 16, 8]]
+    else:
+        values = []
+        for x in [base_grid_size, base_grid_size / 2, base_grid_size / 4]:
+            # if image_shape[0] % x != 0:
+            #     raise ValueError(
+            #         f'the base grid size {base_grid_size} is not divisible per the image size'
+            #     )
+            values.append(int(image_shape[0] / x))
+
+        return values
+
+
 def transform_target(boxes_data,
                      classes_data,
                      anchors,
                      anchor_masks,
-                     grid_len,
+                     grid_sizes,
                      num_classes,
                      target_shape,
                      classes=None):
@@ -503,7 +528,7 @@ def transform_target(boxes_data,
         classes_data {np.ndarray} -- an array of shape (NBATCH, 1)
         anchors {np.ndarray} -- an array of shape (6 or 9, 2)
         anchor_masks {np.ndarray} -- an array of mask to select the anchors
-        grid_len {int} -- the number of elements 
+        grid_sizes {list} -- the list of the grid sizes
         num_classes {int} -- the number of classes
         target_shape {tuple} -- thet target shape of the images
     
@@ -520,10 +545,9 @@ def transform_target(boxes_data,
 
     y_data_transformed = []
 
-    num_grid_cells = grid_len
-    for masks in anchor_masks:
+    for k, masks in enumerate(anchor_masks):
 
-        y_out = np.zeros((len(boxes_data), num_grid_cells, num_grid_cells,
+        y_out = np.zeros((len(boxes_data), grid_sizes[k], grid_sizes[k],
                           len(masks), 4 + 1 + num_classes),
                          dtype=np.float32)
 
@@ -544,7 +568,7 @@ def transform_target(boxes_data,
 
                     anchor_idx = np.where(valid_anchor)
                     grid_xy = (bot_center_width_heigth[:2] //
-                               (1 / num_grid_cells)).astype(np.int32)
+                               (1 / grid_sizes[k])).astype(np.int32)
 
                     one_hot = np.zeros(num_classes, np.float32)
                     # FIXME
@@ -560,6 +584,5 @@ def transform_target(boxes_data,
                     # print([*box, 1, *one_hot])
 
         y_data_transformed.append(y_out)
-        num_grid_cells *= 2
 
     return tuple(y_data_transformed)
