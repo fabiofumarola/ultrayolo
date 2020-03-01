@@ -12,6 +12,7 @@ from . import losses, helpers
 from .helpers import darknet
 import multiprocessing
 from typing import List
+import math
 
 import logging
 logger = logging.getLogger(__name__)
@@ -71,13 +72,19 @@ class BaseModel(object):
                  score_threshold=0.5,
                  anchors=None,
                  num_classes=80,
+                 base_grid_size: int = 32,
+                 backbone='DarkNet',
                  training=False):
         self.img_shape = img_shape
         self.max_objects = max_objects
         self.iou_threshold = iou_threshold
         self.score_threshold = score_threshold
-        self.num_classes = num_classes
         self.anchors = None
+        self.num_classes = num_classes
+        self.base_grid_size = base_grid_size
+        self.backbone = backbone
+        self.training = training
+
         self.anchors_scaled = None
         self.masks = None
         self.model = None
@@ -262,30 +269,35 @@ class YoloV3(BaseModel):
                  img_shape=(None, None, 3),
                  max_objects=100,
                  iou_threshold=0.5,
-                 score_threshold=0.7,
+                 score_threshold=0.5,
                  anchors=None,
                  num_classes=80,
-                 training=False,
-                 backbone='DarkNet'):
-        """The class that implement yolo v3
-
+                 base_grid_size: int = 32,
+                 backbone='DarkNet',
+                 training=False):
+        """Yolo 3 classs
+        
         Keyword Arguments:
-            img_shape {tuple} -- the tuple (Height, Width, Channel) to represent the target image shape (default: {(None, None, 3)})
-            max_objects {int} -- the maximum number of objects that can be detected (default: {100})
-            iou_threshold {float} -- the intersection over union threshold used to filter out the multiple boxes for the same object (default: {0.5}),
-                an higher value generate more candidates while a lower prunes away duplicates
-            score_threshold {float} -- the minimum confidence score for the output (default: {0.7})
-            anchors {np.ndarray} -- the list of the anchors used for the detection (default: {None})
+            img_shape {tuple} -- the tuple (Height, Width, Channel) to represent 
+                the target image shape (default: {(None, None, 3)}) (default: {(None, None, 3)})
+            max_objects {int} -- the maximum number of objects that can be detected  (default: {100})
+            iou_threshold {float} -- the intersection over union threshold used to filter out 
+                the multiple boxes for the same object (default: {0.5})
+            score_threshold {float} -- the minimum confidence score for the output (default: {0.5})
+            anchors {[type]} -- the list of the anchors used for the detection (default: {None})
             num_classes {int} -- the number of classes (default: {80})
-            training {bool} -- True if the model is used for training (default: {False})
+            base_grid_size {int} -- the grid used for the images in pixels (default: {32})
             backbone {str} -- a valid backbone among the following: (default: {'DarkNet'})
-                    * DarkNet
+                    * 'DarkNet', 'DarknetTiny'
                     * 'ResNet50V2', 'ResNet101V2', 'ResNet152V2'
                     * 'DenseNet121', 'DenseNet169', 'DenseNet201'
                     * 'MobileNetV2'
+            training {bool} -- True if the model is used for training (default: {False})
         """
+
         super().__init__(img_shape, max_objects, iou_threshold, score_threshold,
-                         anchors, num_classes)
+                         anchors, num_classes, base_grid_size, backbone,
+                         training)
 
         self.masks = self.default_masks
         if anchors is None:
@@ -293,9 +305,6 @@ class YoloV3(BaseModel):
         else:
             self.anchors = anchors.astype(np.float32)
         self.anchors_scaled = self.anchors / img_shape[1]
-        self.training = training
-        self.backbone = backbone
-        self.tiny = False
 
         x = inputs = Input(shape=img_shape)
         if backbone == 'DarkNet':
@@ -313,11 +322,19 @@ class YoloV3(BaseModel):
         anchors = self.anchors.copy()
         anchors_scaled = self.anchors_scaled.copy()
 
+        if int(img_shape[0] / base_grid_size) == 0:
+            raise ValueError(
+                f'the base_grid_size={base_grid_size} is too large')
+
+        num_pooling = int(math.log2(base_grid_size) - math.log2(32))
+        print('num pooling', num_pooling)
+
         x = YoloHead(x, 512, name='yolo_head_0')
         output0 = YoloOutput(x,
                              512,
                              len(masks[0]),
                              num_classes,
+                             num_pooling,
                              name='yolo_output_0')
 
         x = YoloHead((x, x61), 256, name='yolo_head_1')
@@ -325,6 +342,7 @@ class YoloV3(BaseModel):
                              256,
                              len(masks[1]),
                              num_classes,
+                             num_pooling,
                              name='yolo_output_1')
 
         x = YoloHead((x, x36), 128, name='yolo_head_2')
@@ -332,6 +350,7 @@ class YoloV3(BaseModel):
                              128,
                              len(masks[2]),
                              num_classes,
+                             num_pooling,
                              name='yolo_output_2')
 
         if training:
@@ -373,6 +392,8 @@ class YoloV3Tiny(BaseModel):
                  score_threshold=0.7,
                  anchors=None,
                  num_classes=80,
+                 base_grid_size: int = 32,
+                 backbone='DarknetTiny',
                  training=False):
         """The class that implement yolo v3 tiny
 
@@ -399,11 +420,15 @@ class YoloV3Tiny(BaseModel):
         x = inputs = Input(shape=img_shape)
         x8, x = DarknetBodyTiny(name='DarkNet')(x)
 
+        num_pooling = int(math.log2(base_grid_size) - math.log2(32))
+        print('num pooling', num_pooling)
+
         x = YoloHead(x, 256, name='yolo_head_0', is_tiny=True)
         output0 = YoloOutput(x,
                              256,
                              len(self.masks[0]),
                              self.num_classes,
+                             num_pooling,
                              name='yolo_output_0')
 
         x = YoloHead((x, x8), 128, name='yolo_head_1', is_tiny=True)
@@ -411,6 +436,7 @@ class YoloV3Tiny(BaseModel):
                              128,
                              len(self.masks[1]),
                              self.num_classes,
+                             num_pooling,
                              name='yolo_output_1')
 
         if training:

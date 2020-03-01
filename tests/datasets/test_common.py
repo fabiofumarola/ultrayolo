@@ -246,8 +246,9 @@ def test_transform_target():
 
     masks = np.array([[6, 7, 8], [3, 4, 5], [0, 1, 2]])
 
+    grid_sizes = common.get_grid_sizes((256, 256, 3), 32)
     y_data_prepared = common.transform_target(boxes_data, classes_data, anchors,
-                                              masks, 8, 4, (256, 256))
+                                              masks, grid_sizes, 4, (256, 256, 3))
 
     assert y_data_prepared[0].shape == (1, 8, 8, 3, 9)
 

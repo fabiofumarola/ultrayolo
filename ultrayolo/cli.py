@@ -2,17 +2,23 @@
 """Console script for ultrayolo."""
 from argparse import ArgumentParser
 import imgaug.augmenters as iaa
-from ultrayolo import datasets, YoloV3, YoloV3Tiny
+from ultrayolo import datasets, YoloV3, YoloV3Tiny, BaseModel
 from ultrayolo import helpers
 from pathlib import Path
 from omegaconf import OmegaConf
+from typing import Tuple
+import numpy as np
 
 import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 logger = logging.getLogger('ultrayolo')
 
+Image = Tuple[int, int, int]
 
-def load_anchors(mode, number, path, ds_mode, ds_train_path, image_shape):
+
+def load_or_compute_anchors(mode: str, number: int, path: str, ds_mode: str,
+                            ds_train_path: str,
+                            image_shape: Tuple) -> np.ndarray:
     """load or compute the anchors given a dataset
 
     Arguments:
@@ -89,23 +95,30 @@ def make_augmentations(percentage: float = 0.2) -> iaa.Sequential:
     return pipeline
 
 
-def load_datasets(mode, image_shape, anchors, train_path, val_path, augment,
-                  max_objects, batch_size, pad_to_fixed_size):
-    """load a dataset from configs
+def load_datasets(
+        mode: str, image_shape: Image, max_objects: int, batch_size: int,
+        base_grid_size: int, anchors: np.ndarray, train_path: str,
+        val_path: str, augment: bool, pad_to_fixed_size: bool,
+        **kwargs) -> Tuple[datasets.BaseDataset, datasets.BaseDataset]:
+    """Load a dataset given the configurations
 
     Arguments:
-        ds_conf {object} -- the configutations
-
+        mode {str} -- a value in singlefile, multifile, coco. Repreents the format of the dataset
+        image_shape {Image} -- the shape of the image
+        max_objects {int} -- [description]
+        batch_size {int} -- the size of the batch
+        base_grid_size {int} -- the base size of the grid
+        anchors {np.ndarray} -- the anchors
+        train_path {str} -- the path to the training annotations
+        val_path {str} -- the path to the validation annotations
+        augment {bool} -- True of False to apply data augmentations
+        pad_to_fixed_size {bool} -- True to pad the images to fixed size without distorting the image
+    
     Returns:
-        tuple -- train and test dataset tf.keras.Sequence objects
+        Tuple[datasets.BaseDataset, datasets.BaseDataset] -- a valid instance of the training and validation dataset
     """
 
-    anchors = load_anchors(ds_mode=mode,
-                           ds_train_path=train_path,
-                           image_shape=image_shape,
-                           **anchors)
     masks = datasets.make_masks(len(anchors))
-
     augmenters = make_augmentations() if augment else None
 
     if mode == 'multifile':
@@ -119,20 +132,33 @@ def load_datasets(mode, image_shape, anchors, train_path, val_path, augment,
         val_dataset = datasets.CocoFormatDataset
 
     train_dataset = train_dataset(train_path, image_shape, max_objects,
-                                  batch_size, anchors, masks, True, augmenters,
-                                  pad_to_fixed_size)
+                                  batch_size, anchors, masks, base_grid_size,
+                                  True, augmenters, pad_to_fixed_size)
     val_dataset = val_dataset(val_path, image_shape, max_objects, batch_size,
-                              anchors, masks, True, None, pad_to_fixed_size)
-    return train_dataset, val_dataset, anchors, masks
+                              anchors, masks, base_grid_size, True, None,
+                              pad_to_fixed_size)
+    return train_dataset, val_dataset
 
 
-def load_model(num_masks, dataset, iou, object_score, backbone, **kwargs):
-    if num_masks == 6:
+def load_model(masks: np.ndarray, dataset: datasets.BaseDataset, iou: float,
+               backbone: str, **kwargs) -> BaseModel:
+    """load the model for the training
+    
+    Arguments:
+        masks {np.ndarray} -- the mask used
+        dataset {datasets.BaseDataset} -- the dataset used to train the model
+        iou {float} -- the value of the intersection over union
+        backbone {str} -- the backbone used for the model
+    
+    Returns:
+        [BaseModel] -- an instance of the Yolo model
+    """
+    if len(masks) == 6:
         logger.info('loading tiny model')
         model = YoloV3Tiny(img_shape=dataset.target_shape,
                            max_objects=dataset.max_objects,
                            iou_threshold=iou,
-                           score_threshold=object_score,
+                           score_threshold=None,
                            anchors=dataset.anchors,
                            num_classes=dataset.num_classes,
                            training=True)
@@ -141,7 +167,7 @@ def load_model(num_masks, dataset, iou, object_score, backbone, **kwargs):
         model = YoloV3(img_shape=dataset.target_shape,
                        max_objects=dataset.max_objects,
                        iou_threshold=iou,
-                       score_threshold=object_score,
+                       score_threshold=None,
                        anchors=dataset.anchors,
                        num_classes=dataset.num_classes,
                        training=True,
@@ -170,7 +196,14 @@ def run(dataset, model, fit, **kwargs):
             'fit': fit
         }), str(model_run_path / 'run_config.yaml'))
 
-    train_dataset, val_dataset, anchors, masks = load_datasets(**dataset)
+    anchors = load_or_compute_anchors(ds_train_path=dataset.train_path,
+                                      ds_mode=dataset.mode,
+                                      image_shape=dataset.image_shape,
+                                      **dataset.object_anchors)
+
+    train_dataset, val_dataset = load_datasets(**dataset, anchors=anchors)
+    anchors = train_dataset.anchors
+    masks = train_dataset.anchor_masks
 
     # save classes
     with open(model_run_path / 'classes.txt', 'w') as fp:
@@ -182,6 +215,11 @@ def run(dataset, model, fit, **kwargs):
         fp.write(datasets.anchors_to_string(anchors))
 
     yolo_model = load_model(len(masks), train_dataset, **model)
+
+    # check the grid size of the dataset and the model are the sames
+    # out_test = yolo_model(train_dataset[0][0])
+    # for out, exp in zip(out_test, train_dataset[0][1]):
+    #     assert out.shape == exp.shape
 
     if ('reload_weights' in model) and model['reload_weights']:
         logger.info('reload weigths at path %s', model['reload_weights'])
