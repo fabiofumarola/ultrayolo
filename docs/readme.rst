@@ -23,16 +23,24 @@ Tensorflow 2 implementation of yolo version 3. You only look once (YOLO) is a st
 Features
 --------
 
-Ultrayolo implements YOLO object detection paper with the following backbones:
+Ultrayolo implements YOLO object detection paper with the following extensions:
+
+Custom Backbones
+^^^^^^^^^^^^^^^^^
 
 - `Darknet <https://pjreddie.com/darknet/yolo/>`_: the original architecture
 - `ResNet <https://arxiv.org/abs/1512.03385>`_: *ResNet50V2, ResNet101V2, ResNet152V2*
 - `DenseNet <https://arxiv.org/abs/1608.06993>`_: *DenseNet121, DenseNet169, DenseNet201*
 - `MobileNetV2 <https://arxiv.org/abs/1608.06993>`_: *MobileNetV2*
 
-Moreover, it supports the size of the grid as parameter. By Default YOLO used a grid system that divides the images in cells of *32, 16, and 8* pixels. 
-Ultrayolo is modified so that it can take as base value multples of 32. 
-That is, given an image of shape **(608,608,3)** you can use as base grid *32, 64, 128 and 256*
+Customizable grid size
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+By Default YOLO used a grid system that divides the images in cells of *32, 16, and 8* pixels. 
+Ultrayolo is modified so that it accepts values multiples of 32. 
+That is, given an image of shape *(608,608,3)* it can use *32, 64, 128 and 256* as base grid. 
+This parameter can be applied to several image shapes, but sometimes can generate mismatch in the target shape of the network and/or the dataset.
+The general rule is to avoid using a value of base grid size greater than image widht and height.
 
 * Free software: Apache Software License 2.0
 * Documentation: https://ultrayolo.readthedocs.io.
@@ -41,7 +49,6 @@ That is, given an image of shape **(608,608,3)** you can use as base grid *32, 6
 TODO
 =====
 
-* [ ] add support to tf.data to load datasets
 * [ ] add mean average precision evaluation script
 
 Credits
