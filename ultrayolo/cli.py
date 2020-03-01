@@ -217,9 +217,9 @@ def run(dataset, model, fit, **kwargs):
     yolo_model = load_model(masks, train_dataset, **model)
 
     # check the grid size of the dataset and the model are the sames
-    # out_test = yolo_model(train_dataset[0][0])
-    # for out, exp in zip(out_test, train_dataset[0][1]):
-    #     assert out.shape == exp.shape
+    out_test = yolo_model(train_dataset[0][0])
+    for out, exp in zip(out_test, train_dataset[0][1]):
+        assert out.shape == exp.shape
 
     if ('reload_weights' in model) and model['reload_weights']:
         logger.info('reload weigths at path %s', model['reload_weights'])
