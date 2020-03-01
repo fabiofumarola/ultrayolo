@@ -219,6 +219,7 @@ def run(dataset, model, fit, **kwargs):
     # check the grid size of the dataset and the model are the sames
     out_test = yolo_model(train_dataset[0][0])
     for out, exp in zip(out_test, train_dataset[0][1]):
+        print(out.shape, exp.shape)
         assert out.shape == exp.shape
 
     if ('reload_weights' in model) and model['reload_weights']:
