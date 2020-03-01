@@ -214,7 +214,7 @@ def run(dataset, model, fit, **kwargs):
     with open(model_run_path / 'anchors.txt', 'w') as fp:
         fp.write(datasets.anchors_to_string(anchors))
 
-    yolo_model = load_model(len(masks), train_dataset, **model)
+    yolo_model = load_model(masks, train_dataset, **model)
 
     # check the grid size of the dataset and the model are the sames
     # out_test = yolo_model(train_dataset[0][0])
