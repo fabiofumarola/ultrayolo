@@ -26,7 +26,7 @@ dataset:
   pad_to_fixed_size: true
 
 model:
-  # The backbone for the model, default DarkNet, accepted values (DarknetTiny, ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNet, MobileNetV2)
+  # The backbone for the model, default DarkNet, accepted values (DarkNetTiny, ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNet, MobileNetV2)
   backbone: ResNet50V2
   # the training mode: transfer, fine_tune, train
   iou: 0.5

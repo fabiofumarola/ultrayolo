@@ -153,7 +153,7 @@ def load_model(masks: np.ndarray, dataset: datasets.BaseDataset, iou: float,
     Returns:
         [BaseModel] -- an instance of the Yolo model
     """
-    if len(masks) == 6:
+    if backbone == 'DarkNetTiny':
         logger.info('loading tiny model')
         model = YoloV3Tiny(img_shape=dataset.target_shape,
                            max_objects=dataset.max_objects,
@@ -161,6 +161,7 @@ def load_model(masks: np.ndarray, dataset: datasets.BaseDataset, iou: float,
                            score_threshold=None,
                            anchors=dataset.anchors,
                            num_classes=dataset.num_classes,
+                           base_grid_size=dataset.base_grid_size,
                            training=True)
     else:
         logger.info('loading large model')
@@ -170,8 +171,10 @@ def load_model(masks: np.ndarray, dataset: datasets.BaseDataset, iou: float,
                        score_threshold=None,
                        anchors=dataset.anchors,
                        num_classes=dataset.num_classes,
-                       training=True,
-                       backbone=backbone)
+                       base_grid_size=dataset.base_grid_size,
+                       backbone=backbone,
+                       training=True)
+
     return model
 
 
