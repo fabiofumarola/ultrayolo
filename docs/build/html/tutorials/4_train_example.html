@@ -107,7 +107,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="5_data_augmentation_considerations.html">Data Augmentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Untitled.html">Network with Variable Grid</a></li>
 </ul>
 
             
@@ -227,7 +226,10 @@
 <p>Create the model</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YoloV3</span><span class="p">(</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">,</span>
                <span class="n">anchors</span><span class="o">=</span><span class="n">anchors</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">),</span>
-               <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backbone</span><span class="o">=</span><span class="s1">&#39;MobileNetV2&#39;</span><span class="p">)</span>
+               <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backbone</span><span class="o">=</span><span class="s1">&#39;MobileNetV2&#39;</span><span class="p">,</span> <span class="n">base_grid_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num</span> <span class="n">pooling</span> <span class="mi">1</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">plot_model</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">show_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -237,7 +239,7 @@
 <p>Create the dataset</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">YoloDatasetMultiFile</span><span class="p">(</span>
     <span class="n">train_dataset_path</span><span class="p">,</span> <span class="n">image_shape</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">anchors</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">masks</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">anchors</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">masks</span><span class="p">,</span> <span class="mi">64</span>
 <span class="p">)</span>
 </pre></div>
 </div>

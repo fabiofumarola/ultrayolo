@@ -38,7 +38,13 @@ Create the model
 
     model = YoloV3(image_shape, max_objects, 
                    anchors=anchors, num_classes=len(classes), 
-                   training=True, backbone='MobileNetV2')
+                   training=True, backbone='MobileNetV2', base_grid_size=64)
+
+
+.. parsed-literal::
+
+    num pooling 1
+
 
 .. code:: ipython3
 
@@ -57,7 +63,7 @@ Create the dataset
 
     train_dataset = datasets.YoloDatasetMultiFile(
         train_dataset_path, image_shape, max_objects, batch_shape, 
-        model.anchors, model.masks, len(classes)
+        model.anchors, model.masks, 64
     )
 
 .. code:: ipython3

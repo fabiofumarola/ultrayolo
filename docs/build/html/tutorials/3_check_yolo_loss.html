@@ -113,7 +113,6 @@
 <li class="toctree-l1"><a class="reference internal" href="4_train_example.html">Sample to train Yolo for object detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="4_train_example.html#evaluate-model-loss">Evaluate model Loss</a></li>
 <li class="toctree-l1"><a class="reference internal" href="5_data_augmentation_considerations.html">Data Augmentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Untitled.html">Network with Variable Grid</a></li>
 </ul>
 
             
@@ -228,15 +227,15 @@
 <span class="n">anchors</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([[</span> <span class="mf">5.</span><span class="p">,</span>  <span class="mf">7.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">20.</span><span class="p">,</span> <span class="mf">24.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">25.</span><span class="p">,</span> <span class="mf">34.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">30.</span><span class="p">,</span> <span class="mf">30.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">35.</span><span class="p">,</span> <span class="mf">36.</span><span class="p">],</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">array</span><span class="p">([[</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">16.</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">15.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">20.</span><span class="p">,</span> <span class="mf">21.</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">25.</span><span class="p">,</span> <span class="mf">26.</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">30.</span><span class="p">,</span> <span class="mf">39.</span><span class="p">],</span>
+       <span class="p">[</span><span class="mf">35.</span><span class="p">,</span> <span class="mf">41.</span><span class="p">],</span>
        <span class="p">[</span><span class="mf">40.</span><span class="p">,</span> <span class="mf">45.</span><span class="p">],</span>
-       <span class="p">[</span><span class="mf">45.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
+       <span class="p">[</span><span class="mf">45.</span><span class="p">,</span> <span class="mf">47.</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">masks</span> <span class="o">=</span> <span class="n">YoloV3</span><span class="o">.</span><span class="n">default_masks</span>
@@ -263,10 +262,11 @@
                                   <span class="n">batch_size</span><span class="p">,</span>
                                   <span class="n">anchors</span><span class="p">,</span>
                                   <span class="n">masks</span><span class="p">,</span>
+                                  <span class="n">base_grid_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
                                   <span class="n">is_training</span><span class="o">=</span><span class="n">is_training</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>load coco annotations: 100%|██████████| 1714/1714 [00:00&lt;00:00, 852690.91it/s]
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>load coco annotations: 100%|██████████| 1714/1714 [00:00&lt;00:00, 797895.34it/s]
 </pre></div>
 </div>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_seq</span><span class="o">.</span><span class="n">classes</span>
@@ -295,9 +295,9 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;--&gt;&#39;</span><span class="p">,</span> <span class="n">y_true_grids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">y_true_grids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">--&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="mf">32.0</span>
-<span class="mi">1</span> <span class="o">--&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="mf">16.0</span>
-<span class="mi">2</span> <span class="o">--&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="mf">8.0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">--&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="mf">128.0</span>
+<span class="mi">1</span> <span class="o">--&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="mf">64.0</span>
+<span class="mi">2</span> <span class="o">--&gt;</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="mf">32.0</span>
 </pre></div>
 </div>
 <p>The third value plotted represents the size in number of pixel of grid
@@ -334,16 +334,18 @@ cells</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Show</span> <span class="n">annotations</span> <span class="k">for</span> <span class="n">image</span> <span class="mi">0</span>
-<span class="p">[</span><span class="mf">0.</span>         <span class="mf">0.00375439</span> <span class="mf">0.8535156</span>  <span class="mf">0.587484</span>  <span class="p">]</span>
-<span class="p">[</span>  <span class="mi">0</span>   <span class="mi">1</span> <span class="mi">437</span> <span class="mi">300</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">0.86732817</span> <span class="mf">0.36640626</span> <span class="mf">0.9580156</span>  <span class="mf">0.45892185</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">444</span> <span class="mi">187</span> <span class="mi">490</span> <span class="mi">234</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">0.8681094</span>  <span class="mf">0.48279685</span> <span class="mf">0.9980469</span>  <span class="mf">0.6025</span>    <span class="p">]</span>
+<span class="p">[</span><span class="mi">444</span> <span class="mi">247</span> <span class="mi">511</span> <span class="mi">308</span><span class="p">]</span>
 </pre></div>
 </div>
 <img alt="../_images/3_check_yolo_loss_16_1.png" src="../_images/3_check_yolo_loss_16_1.png" />
 <img alt="../_images/3_check_yolo_loss_16_2.png" src="../_images/3_check_yolo_loss_16_2.png" />
 <img alt="../_images/3_check_yolo_loss_16_3.png" src="../_images/3_check_yolo_loss_16_3.png" />
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Show</span> <span class="n">annotations</span> <span class="k">for</span> <span class="n">image</span> <span class="mi">1</span>
-<span class="p">[</span><span class="mf">0.44003123</span> <span class="mf">0.464507</span>   <span class="mf">0.48345312</span> <span class="mf">0.5184867</span> <span class="p">]</span>
-<span class="p">[</span><span class="mi">225</span> <span class="mi">237</span> <span class="mi">247</span> <span class="mi">265</span><span class="p">]</span>
+<span class="p">[</span><span class="mf">0.09103125</span> <span class="mf">0.06715625</span> <span class="mf">0.9980469</span>  <span class="mf">0.65957814</span><span class="p">]</span>
+<span class="p">[</span> <span class="mi">46</span>  <span class="mi">34</span> <span class="mi">511</span> <span class="mi">337</span><span class="p">]</span>
 </pre></div>
 </div>
 <img alt="../_images/3_check_yolo_loss_16_5.png" src="../_images/3_check_yolo_loss_16_5.png" />
@@ -352,7 +354,10 @@ cells</p>
 <p>Create the model</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YoloV3</span><span class="p">(</span><span class="n">target_shape</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">,</span>
                <span class="n">anchors</span><span class="o">=</span><span class="n">anchors</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">train_seq</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
-               <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backbone</span><span class="o">=</span><span class="s1">&#39;DarkNet&#39;</span><span class="p">)</span>
+               <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">backbone</span><span class="o">=</span><span class="s1">&#39;DarkNet&#39;</span><span class="p">,</span> <span class="n">base_grid_size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num</span> <span class="n">pooling</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p>tf.keras.utils.plot_model(model.model, show_shapes=True)</p>
@@ -371,9 +376,9 @@ to zero</p></li>
     <span class="nb">print</span><span class="p">(</span><span class="n">y_pred</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
-<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
-<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We take i=0 since all the images are in the first grid</p>
@@ -470,7 +475,7 @@ close to 0.5</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">average</span> <span class="n">xy</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
-<span class="n">average</span> <span class="n">hw</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="mf">1.2739657e-09</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">average</span> <span class="n">hw</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="mf">6.6419275e-09</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
 <span class="n">average</span> <span class="n">xyxy</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -568,7 +573,7 @@ contain objects and should be considered in the <strong>no object loss</strong><
 <span class="n">loss</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">,</span> <span class="n">numpy</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">545.8325</span><span class="p">,</span> <span class="mf">535.0147</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">,</span> <span class="n">numpy</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mf">35.51542</span><span class="p">,</span> <span class="mf">47.17279</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>

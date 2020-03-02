@@ -34,15 +34,15 @@ The first create some random anchors and use the default masks
 
 .. parsed-literal::
 
-    array([[ 5.,  7.],
-           [10., 12.],
-           [15., 15.],
-           [20., 24.],
-           [25., 34.],
-           [30., 30.],
-           [35., 36.],
+    array([[ 5., 14.],
+           [10., 16.],
+           [15., 21.],
+           [20., 21.],
+           [25., 26.],
+           [30., 39.],
+           [35., 41.],
            [40., 45.],
-           [45., 50.]], dtype=float32)
+           [45., 47.]], dtype=float32)
 
 
 
@@ -80,12 +80,13 @@ And load the dataset using the SequenceDataset
                                       batch_size, 
                                       anchors,
                                       masks,
+                                      base_grid_size=128,
                                       is_training=is_training)
 
 
 .. parsed-literal::
 
-    load coco annotations: 100%|██████████| 1714/1714 [00:00<00:00, 852690.91it/s]
+    load coco annotations: 100%|██████████| 1714/1714 [00:00<00:00, 797895.34it/s]
 
 
 .. code:: ipython3
@@ -133,9 +134,9 @@ The batch contains: - 2 images
 
 .. parsed-literal::
 
-    0 --> (2, 16, 16, 3, 8) 32.0
-    1 --> (2, 32, 32, 3, 8) 16.0
-    2 --> (2, 64, 64, 3, 8) 8.0
+    0 --> (2, 4, 4, 3, 8) 128.0
+    1 --> (2, 8, 8, 3, 8) 64.0
+    2 --> (2, 16, 16, 3, 8) 32.0
 
 
 The third value plotted represents the size in number of pixel of grid
@@ -177,8 +178,10 @@ Check that the dataset transformed is correct
 .. parsed-literal::
 
     Show annotations for image 0
-    [0.         0.00375439 0.8535156  0.587484  ]
-    [  0   1 437 300]
+    [0.86732817 0.36640626 0.9580156  0.45892185]
+    [444 187 490 234]
+    [0.8681094  0.48279685 0.9980469  0.6025    ]
+    [444 247 511 308]
 
 
 
@@ -196,8 +199,8 @@ Check that the dataset transformed is correct
 .. parsed-literal::
 
     Show annotations for image 1
-    [0.44003123 0.464507   0.48345312 0.5184867 ]
-    [225 237 247 265]
+    [0.09103125 0.06715625 0.9980469  0.65957814]
+    [ 46  34 511 337]
 
 
 
@@ -218,7 +221,13 @@ Create the model
 
     model = YoloV3(target_shape, max_objects, 
                    anchors=anchors, num_classes=train_seq.num_classes, 
-                   training=True, backbone='DarkNet')
+                   training=True, backbone='DarkNet', base_grid_size=128)
+
+
+.. parsed-literal::
+
+    num pooling 2
+
 
 tf.keras.utils.plot_model(model.model, show_shapes=True)
 
@@ -241,9 +250,9 @@ We consider two cases:
 
 .. parsed-literal::
 
+    (2, 4, 4, 3, 8)
+    (2, 8, 8, 3, 8)
     (2, 16, 16, 3, 8)
-    (2, 32, 32, 3, 8)
-    (2, 64, 64, 3, 8)
 
 
 We take i=0 since all the images are in the first grid
@@ -352,7 +361,7 @@ While considering ``pred_xyxy`` it should be around 0.5
 .. parsed-literal::
 
     average xy tf.Tensor(0.5, shape=(), dtype=float32)
-    average hw tf.Tensor(1.2739657e-09, shape=(), dtype=float32)
+    average hw tf.Tensor(6.6419275e-09, shape=(), dtype=float32)
     average xyxy tf.Tensor(0.5, shape=(), dtype=float32)
 
 
@@ -468,7 +477,7 @@ You can check the whenever the loss is different to zero in the
 
 .. parsed-literal::
 
-    <tf.Tensor: shape=(2,), dtype=float32, numpy=array([545.8325, 535.0147], dtype=float32)>
+    <tf.Tensor: shape=(2,), dtype=float32, numpy=array([35.51542, 47.17279], dtype=float32)>
 
 
 
