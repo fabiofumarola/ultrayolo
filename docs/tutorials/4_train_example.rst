@@ -9,8 +9,8 @@
     %load_ext autoreload
     %autoreload 2
 
-Sample to train Yolo for object detection
------------------------------------------
+Example to train Yolo for object detection
+------------------------------------------
 
 .. code:: ipython3
 
