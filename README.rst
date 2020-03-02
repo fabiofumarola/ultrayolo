@@ -8,9 +8,9 @@ Ultrayolo
 .. image:: https://img.shields.io/travis/fabiofumarola/ultrayolo.svg
         :target: https://travis-ci.org/fabiofumarola/ultrayolo
 
-.. image:: https://readthedocs.org/projects/ultrayolo/badge/?version=latest
-        :target: https://ultrayolo.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+.. .. image:: https://readthedocs.org/projects/ultrayolo/badge/?version=latest
+..         :target: https://ultrayolo.readthedocs.io/en/latest/?badge=latest
+..         :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/fabiofumarola/ultrayolo/shield.svg
      :target: https://pyup.io/repos/github/fabiofumarola/ultrayolo/
