@@ -21,7 +21,7 @@ Tensorflow 2.1 implementation of yolo version 3. You only look once (YOLO) is a 
 .. image:: ./images/example_image.png
 
 * Free software: Apache Software License 2.0
-* Documentation: https://ultrayolo.readthedocs.io.
+* Documentation: https://fabiofumarola.github.io/ultrayolo.
 
 Features
 --------
