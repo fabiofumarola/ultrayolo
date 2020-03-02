@@ -1,0 +1,796 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultrayolo.datasets.common &mdash; ultrayolo 0.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2_predict_custom_dataset.html">Predict using a custom pretrained model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/4_train_example.html">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/4_train_example.html#evaluate-model-loss">Evaluate model Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/5_data_augmentation_considerations.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/Untitled.html">Network with Variable Grid</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ultrayolo.datasets.common</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ultrayolo.datasets.common</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">imageio</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">imgaug.augmenters</span> <span class="k">as</span> <span class="nn">iaa</span>
+<span class="kn">from</span> <span class="nn">imgaug.augmentables.bbs</span> <span class="kn">import</span> <span class="n">BoundingBox</span><span class="p">,</span> <span class="n">BoundingBoxesOnImage</span>
+<span class="kn">from</span> <span class="nn">imgaug.augmentables.batches</span> <span class="kn">import</span> <span class="n">Batch</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="load_anchors"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.load_anchors">[docs]</a><span class="k">def</span> <span class="nf">load_anchors</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;read the anchors from a file saved in the format</span>
+<span class="sd">    x1,y1, x2,y2, ..., x9, y9</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        path {str} -- the path of the file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray -- an array of tuples [(x1,y1), (x2,y2), ..., (x9, y9)]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">anchors</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pair</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">anchors</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="anchors_to_string"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.anchors_to_string">[docs]</a><span class="k">def</span> <span class="nf">anchors_to_string</span><span class="p">(</span><span class="n">anchors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;transform the anchors into a strting</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        anchors {np.ndarrary} -- the anchors</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str -- the anchors in yolo format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">anchors</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pair</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="load_classes"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.load_classes">[docs]</a><span class="k">def</span> <span class="nf">load_classes</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">as_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;it expect to read a file with one class per line sorted in the same order with respect</span>
+<span class="sd">        to the class name.</span>
+<span class="sd">        example:</span>
+<span class="sd">        dog</span>
+<span class="sd">        cat</span>
+<span class="sd">        will be codified as</span>
+<span class="sd">        dog -&gt; 0</span>
+<span class="sd">        cat -&gt; 1</span>
+<span class="sd">        .... -&gt; 2</span>
+<span class="sd">        The index 0 is used to represent no class</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        path {str} -- the path where the file is saved</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        as_dict {bool} -- load the classes as dictionary (idx, class) (default: {False})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list|dict -- the list of the classes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">as_dict</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">classes</span></div>
+
+
+<div class="viewcode-block" id="make_masks"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.make_masks">[docs]</a><span class="k">def</span> <span class="nf">make_masks</span><span class="p">(</span><span class="n">nelems</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;generate the default masks for the model</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        nelems {int} -- the number of elements for the mask</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray -- a numpy array with the masks</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nelems</span><span class="p">)</span>
+    <span class="n">masks</span> <span class="o">=</span> <span class="n">masks</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">masks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="open_image"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.open_image">[docs]</a><span class="k">def</span> <span class="nf">open_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Open an image using imageio</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        path {str} -- the path of the image</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray -- format (H,W,C)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">img3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">img3d</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img3d</span>
+    <span class="k">return</span> <span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="batch_open_image"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.batch_open_image">[docs]</a><span class="k">def</span> <span class="nf">batch_open_image</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[</span><span class="n">open_image</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">images</span></div>
+
+
+<div class="viewcode-block" id="open_boxes"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.open_boxes">[docs]</a><span class="k">def</span> <span class="nf">open_boxes</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read the boxes from a file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes_class</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes_class</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">boxes_class</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span></div>
+
+
+<div class="viewcode-block" id="open_boxes_batch"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.open_boxes_batch">[docs]</a><span class="k">def</span> <span class="nf">open_boxes_batch</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;parses bounding boxes and classes from a list of paths</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        paths {[list]} -- a list of paths</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [tuple] -- a tuple (boxes, class) of shape (M,4) and (M,1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">open_boxes</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">bc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">bc</span> <span class="ow">in</span> <span class="n">boxes_classes</span><span class="p">]</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">bc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">bc</span> <span class="ow">in</span> <span class="n">boxes_classes</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span></div>
+
+
+<div class="viewcode-block" id="save_image"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.save_image">[docs]</a><span class="k">def</span> <span class="nf">save_image</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;save an image</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        img {numpy.ndarray} -- an image as numpy array</span>
+<span class="sd">        path {str} -- the path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">imageio</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parse_boxes"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.parse_boxes">[docs]</a><span class="k">def</span> <span class="nf">parse_boxes</span><span class="p">(</span><span class="n">str_boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse annotations in the form x_min,y_min,x_max,y_max  x_min,y_min,x_max,y_max ...</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        str_boxes {str} -- annotations in the form x_min,y_min,x_max,y_max  x_min,y_min,x_max,y_max ...</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray -- a numpy array with the boxes extracted from the input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">str_boxes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">str_boxes</span> <span class="o">=</span> <span class="n">str_boxes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="n">boxes_class</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sbox</span> <span class="ow">in</span> <span class="n">str_boxes</span><span class="p">:</span>
+        <span class="n">sbox_split</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sbox</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+        <span class="n">boxes_class</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sbox_split</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+    <span class="n">boxes_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">boxes_class</span><span class="p">)</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes_class</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">boxes_class</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span></div>
+
+
+<div class="viewcode-block" id="parse_boxes_batch"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.parse_boxes_batch">[docs]</a><span class="k">def</span> <span class="nf">parse_boxes_batch</span><span class="p">(</span><span class="n">list_str_boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;parse a list of annotations</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        list_str_boxes {list} -- the list of the str annotations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">classes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">str_boxes</span> <span class="ow">in</span> <span class="n">list_str_boxes</span><span class="p">:</span>
+        <span class="n">box</span><span class="p">,</span> <span class="bp">cls</span> <span class="o">=</span> <span class="n">parse_boxes</span><span class="p">(</span><span class="n">str_boxes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">boxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">classes</span></div>
+
+
+<span class="k">def</span> <span class="nf">__transform</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">augmenters</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply a transformation over a given image and boxes</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    image: an image with shape (H,W,C)</span>
+<span class="sd">    augmenters: a pipeline of imgaug augmenters</span>
+<span class="sd">    boxes: an array of format (xmin, ymin, xmax, ymax)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    image_aug: the image transformed with the given augmenters</span>
+<span class="sd">    boxes_aug: the boxes transformed with the given augmenters (optional)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">boxes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bbs</span> <span class="o">=</span> <span class="n">BoundingBoxesOnImage</span><span class="p">([</span><span class="n">BoundingBox</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">],</span>
+                                   <span class="n">shape</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">image_aug</span><span class="p">,</span> <span class="n">boxes_aug</span> <span class="o">=</span> <span class="n">augmenters</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="o">=</span><span class="n">bbs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image_aug</span><span class="p">,</span> <span class="n">boxes_aug</span><span class="o">.</span><span class="n">to_xyxy_array</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">augmenters</span><span class="p">(</span><span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="pad_to_fixed_size"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.pad_to_fixed_size">[docs]</a><span class="k">def</span> <span class="nf">pad_to_fixed_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resize and pad images and boxes to the target shape</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    image: an image with shape (H,W,C)</span>
+<span class="sd">    target_shape: a shape of type (H,W,C)</span>
+<span class="sd">    boxes: an array of format (xmin, ymin, xmax, ymax)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    image_pad: the image padded</span>
+<span class="sd">    boxes_pad: the boxes padded (optional: if boxes is not None)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">augmenters</span> <span class="o">=</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+        <span class="n">iaa</span><span class="o">.</span><span class="n">Resize</span><span class="p">({</span>
+            <span class="s2">&quot;longer-side&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;shorter-side&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-aspect-ratio&quot;</span>
+        <span class="p">}),</span>
+        <span class="n">iaa</span><span class="o">.</span><span class="n">PadToFixedSize</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="n">width</span><span class="o">=</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                           <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="p">])</span>
+    <span class="k">return</span> <span class="n">__transform</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">augmenters</span><span class="p">,</span> <span class="n">boxes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resize"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.resize">[docs]</a><span class="k">def</span> <span class="nf">resize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_aspect_ratio</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resize images and boxes to the target shape</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    image: an image with shape (H,W,C)</span>
+<span class="sd">    target_shape: a shape of type (H,W,C)</span>
+<span class="sd">    boxes: an array of format (xmin, ymin, xmax, ymax)</span>
+<span class="sd">    keep_aspect_ratio: (default: True)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    image_resized: the image resized</span>
+<span class="sd">    boxes_resized: the boxes resized (optional: if boxes is not None)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">keep_aspect_ratio</span><span class="p">:</span>
+        <span class="n">aug</span> <span class="o">=</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">iaa</span><span class="o">.</span><span class="n">Resize</span><span class="p">({</span>
+                <span class="s2">&quot;longer-side&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;shorter-side&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-aspect-ratio&quot;</span>
+            <span class="p">}),</span>
+        <span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">aug</span> <span class="o">=</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">iaa</span><span class="o">.</span><span class="n">Resize</span><span class="p">({</span>
+                <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">}),</span>
+        <span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">__transform</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">aug</span><span class="p">,</span> <span class="n">boxes</span><span class="o">=</span><span class="n">boxes</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">__transform_batch</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">augmenters</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply a transformation over a given array of image and boxes</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    batch_images: a list of images with shape (H,W,C)</span>
+<span class="sd">    augmenters: a pipeline of imgaug augmenters</span>
+<span class="sd">    batch_boxes: an list of an array ob boxes with format (xmin, ymin, xmax, ymax)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    images_aug: a list of images transformed with the given augmenters</span>
+<span class="sd">    boxes_aug: a list of a list of boxes transformed with the given augmenters (optional: if boxes is not None)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">batch_boxes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">Batch</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">batch_images</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">batch_bbs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_images_clipped</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">image</span><span class="p">,</span> <span class="n">boxes</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="p">):</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="n">batch_images_clipped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">bbs</span> <span class="o">=</span> <span class="n">BoundingBoxesOnImage</span><span class="p">([</span><span class="n">BoundingBox</span><span class="p">(</span><span class="o">*</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">],</span>
+                                       <span class="n">shape</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">batch_bbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbs</span><span class="p">)</span>
+        <span class="c1"># create the batch</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">Batch</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">batch_images_clipped</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="o">=</span><span class="n">batch_bbs</span><span class="p">)</span>
+
+    <span class="c1"># process the data</span>
+    <span class="n">batch_processed</span> <span class="o">=</span> <span class="n">augmenters</span><span class="o">.</span><span class="n">augment_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">batch_processed</span><span class="o">.</span><span class="n">bounding_boxes_aug</span><span class="p">:</span>
+        <span class="n">boxes_aug</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">to_xyxy_array</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch_processed</span><span class="o">.</span><span class="n">bounding_boxes_aug</span>
+        <span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">boxes_aug</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">batch_processed</span><span class="o">.</span><span class="n">images_aug</span><span class="p">,</span> <span class="n">boxes_aug</span>
+
+
+<div class="viewcode-block" id="pad_batch_to_fixed_size"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.pad_batch_to_fixed_size">[docs]</a><span class="k">def</span> <span class="nf">pad_batch_to_fixed_size</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resize and pad images and boxes to the target shape</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    batch_images: an array of images with shape (H,W,C)</span>
+<span class="sd">    target_shape: a shape of type (H,W,C)</span>
+<span class="sd">    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    images_aug: a list of augmented images</span>
+<span class="sd">    boxes_aug: a list of augmented boxes (optional: if boxes is not None)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">aug</span> <span class="o">=</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+        <span class="n">iaa</span><span class="o">.</span><span class="n">Resize</span><span class="p">({</span>
+            <span class="s2">&quot;longer-side&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;shorter-side&quot;</span><span class="p">:</span> <span class="s2">&quot;keep-aspect-ratio&quot;</span>
+        <span class="p">}),</span>
+        <span class="n">iaa</span><span class="o">.</span><span class="n">PadToFixedSize</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="n">width</span><span class="o">=</span><span class="n">target_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                           <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="p">])</span>
+    <span class="n">images_aug</span><span class="p">,</span> <span class="n">boxes_aug</span> <span class="o">=</span> <span class="n">__transform_batch</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">aug</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">images_aug</span><span class="p">,</span> <span class="n">boxes_aug</span></div>
+
+
+<div class="viewcode-block" id="resize_batch"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.resize_batch">[docs]</a><span class="k">def</span> <span class="nf">resize_batch</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Resize and pad images and boxes to the target shape</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    batch_images: an array of images with shape (H,W,C)</span>
+<span class="sd">    target_shape: a shape of type (H,W,C)</span>
+<span class="sd">    batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    images_aug: a list of augmented images</span>
+<span class="sd">    boxes_aug: a list of augmented boxes (optional: if boxes is not None)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">aug</span> <span class="o">=</span> <span class="n">iaa</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+        <span class="n">iaa</span><span class="o">.</span><span class="n">Resize</span><span class="p">({</span>
+            <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">}),</span>
+    <span class="p">])</span>
+
+    <span class="n">images_aug</span><span class="p">,</span> <span class="n">boxes_aug</span> <span class="o">=</span> <span class="n">__transform_batch</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">aug</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">images_aug</span><span class="p">,</span> <span class="n">boxes_aug</span></div>
+
+
+<div class="viewcode-block" id="pad_boxes"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.pad_boxes">[docs]</a><span class="k">def</span> <span class="nf">pad_boxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pad boxes to desired size</span>
+<span class="sd">    Arguments</span>
+<span class="sd">    --------</span>
+<span class="sd">    boxes: an array of boxes with shape (N, X1, Y1, X2, Y2)</span>
+<span class="sd">    max_objects: the maximum number of boxes</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    ------</span>
+<span class="sd">    boxes: with shape (max_objects, X1, Y1, X2, Y2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">boxes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_objects</span><span class="p">:</span>
+        <span class="n">paddings</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+        <span class="n">boxes_padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">boxes</span><span class="p">[:</span><span class="n">max_objects</span><span class="p">],</span> <span class="n">paddings</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">paddings</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_objects</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">boxes</span><span class="p">)],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+        <span class="n">boxes_padded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">paddings</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;constant&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">boxes_padded</span></div>
+
+
+<div class="viewcode-block" id="pad_classes"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.pad_classes">[docs]</a><span class="k">def</span> <span class="nf">pad_classes</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        classes {[type]} -- [description]</span>
+<span class="sd">        max_objects {[type]} -- [description]</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        [type] -- [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_objects</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">num_elems</span> <span class="o">=</span> <span class="n">max_objects</span> <span class="k">if</span> <span class="n">max_objects</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">[:</span><span class="n">num_elems</span><span class="p">]</span> <span class="o">=</span> <span class="n">classes</span><span class="p">[:</span><span class="n">num_elems</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="prepare_batch"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.prepare_batch">[docs]</a><span class="k">def</span> <span class="nf">prepare_batch</span><span class="p">(</span><span class="n">batch_images</span><span class="p">,</span>
+                  <span class="n">batch_boxes</span><span class="p">,</span>
+                  <span class="n">batch_classes</span><span class="p">,</span>
+                  <span class="n">target_shape</span><span class="p">,</span>
+                  <span class="n">max_objects</span><span class="p">,</span>
+                  <span class="n">augmenters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">pad</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;prepare a batch of images and boxes:</span>
+<span class="sd">        - resize all the images to the same size</span>
+<span class="sd">        - update the size of the boxes basing on the new image size</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        batch_images {numpy.ndarry} -- an array of images with shape (H,W,C)</span>
+<span class="sd">        batch_boxes {np.ndarray} --</span>
+<span class="sd">            an array of array with format (xmin, ymin, xmax, ymax)</span>
+<span class="sd">        target_shape {tuple} -- a shape of type (H,W,C)</span>
+<span class="sd">        max_objects {int} -- the maximum number of boxes to track</span>
+
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        augmenters {imgaug.augmenters} -- ImgAug augmenters (default: {None})</span>
+<span class="sd">        pad {bool} -- if the images should be padded (default: {True})</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple -- a Tuple with batch_images, batch_boxes and batch_classes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resize_batch_func</span> <span class="o">=</span> <span class="n">pad_batch_to_fixed_size</span> <span class="k">if</span> <span class="n">pad</span> <span class="k">else</span> <span class="n">resize_batch</span>
+    <span class="n">batch_images_pad</span><span class="p">,</span> <span class="n">batch_boxes_pad</span> <span class="o">=</span> <span class="n">resize_batch_func</span><span class="p">(</span>
+        <span class="n">batch_images</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">,</span> <span class="n">batch_boxes</span><span class="p">)</span>
+
+    <span class="c1"># apply augmentation if defined</span>
+    <span class="k">if</span> <span class="n">augmenters</span><span class="p">:</span>
+        <span class="n">batch_images_pad</span><span class="p">,</span> <span class="n">batch_boxes_pad</span> <span class="o">=</span> <span class="n">__transform_batch</span><span class="p">(</span>
+            <span class="n">batch_images_pad</span><span class="p">,</span> <span class="n">augmenters</span><span class="p">,</span> <span class="n">batch_boxes_pad</span><span class="p">)</span>
+
+    <span class="c1"># pad boxes to the max_objects</span>
+    <span class="n">batch_boxes_pad</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">pad_boxes</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">)</span> <span class="k">for</span> <span class="n">boxes</span> <span class="ow">in</span> <span class="n">batch_boxes_pad</span>
+    <span class="p">]</span>
+
+    <span class="n">batch_images_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">batch_images_pad</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">batch_boxes_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">batch_boxes_pad</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="c1"># clip the values to the max size of the immage</span>
+    <span class="n">batch_boxes_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">batch_boxes_pad</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">batch_classes</span><span class="p">:</span>
+        <span class="n">batch_classes_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">pad_classes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">max_objects</span><span class="p">)</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">batch_classes</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">batch_classes_pad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+    <span class="c1"># scale images</span>
+    <span class="n">batch_images_pad</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_images_pad</span> <span class="o">/</span> <span class="mf">255.</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">batch_images_pad</span><span class="p">,</span> <span class="n">batch_boxes_pad</span><span class="p">,</span> <span class="n">batch_classes_pad</span></div>
+
+
+<div class="viewcode-block" id="to_center_width_height"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.to_center_width_height">[docs]</a><span class="k">def</span> <span class="nf">to_center_width_height</span><span class="p">(</span><span class="n">boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;transform a numpy array of boxes from</span>
+<span class="sd">    [x_min, y_min, x_max, y_max] --in--&gt; [x_center, y_center, width, height]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">boxes</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">boxes_xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">boxes_wh</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">boxes_xy</span>
+    <span class="n">result</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">boxes_wh</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="best_anchors_iou"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.best_anchors_iou">[docs]</a><span class="k">def</span> <span class="nf">best_anchors_iou</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">anchors</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        boxes {np.ndarray} -- a numpy array of shape (num_examples, num_bboxes) of type (x_min, y_min, x_max, y_max)</span>
+<span class="sd">        anchors {np.ndarray} -- a numpy array with the anchors to be used for the object detection (num_anchors, (W, H))</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [np.ndarray] -- a numpy array that returns the best anchors fot the given object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">boxes_xywh</span> <span class="o">=</span> <span class="n">to_center_width_height</span><span class="p">(</span><span class="n">boxes</span><span class="p">)</span>
+    <span class="n">boxes_wh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">boxes_xywh</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">boxes_wh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">boxes_wh</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchors</span><span class="p">),</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">intersection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">boxes_wh</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span>\
+        <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">boxes_wh</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">anchors</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">anchors_area</span> <span class="o">=</span> <span class="n">anchors</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">anchors</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">boxes_area</span> <span class="o">=</span> <span class="n">boxes_wh</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">boxes_wh</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">iou</span> <span class="o">=</span> <span class="n">intersection</span> <span class="o">/</span> <span class="p">(</span><span class="n">boxes_area</span> <span class="o">+</span> <span class="n">anchors_area</span> <span class="o">-</span> <span class="n">intersection</span><span class="p">)</span>
+    <span class="n">best_anchors_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">iou</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">best_anchors_idx</span></div>
+
+
+<div class="viewcode-block" id="get_grid_sizes"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.get_grid_sizes">[docs]</a><span class="k">def</span> <span class="nf">get_grid_sizes</span><span class="p">(</span><span class="n">image_shape</span><span class="p">,</span> <span class="n">base_grid_size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;utility function that compute the sizes of the grid system</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        image_shape {tuple} -- the shape of the image</span>
+<span class="sd">        base_grid_size {int} -- the size of the cell in base grid</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list -- a list of the grid sizes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">base_grid_size</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">base_grid_size</span><span class="p">,</span> <span class="n">base_grid_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">base_grid_size</span> <span class="o">/</span> <span class="mi">4</span><span class="p">]:</span>
+            <span class="c1"># if image_shape[0] % x != 0:</span>
+            <span class="c1">#     raise ValueError(</span>
+            <span class="c1">#         f&#39;the base grid size {base_grid_size} is not divisible per the image size&#39;</span>
+            <span class="c1">#     )</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">image_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">values</span></div>
+
+
+<div class="viewcode-block" id="transform_target"><a class="viewcode-back" href="../../../ultrayolo.datasets.html#ultrayolo.datasets.common.transform_target">[docs]</a><span class="k">def</span> <span class="nf">transform_target</span><span class="p">(</span><span class="n">boxes_data</span><span class="p">,</span>
+                     <span class="n">classes_data</span><span class="p">,</span>
+                     <span class="n">anchors</span><span class="p">,</span>
+                     <span class="n">anchor_masks</span><span class="p">,</span>
+                     <span class="n">grid_sizes</span><span class="p">,</span>
+                     <span class="n">num_classes</span><span class="p">,</span>
+                     <span class="n">target_shape</span><span class="p">,</span>
+                     <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;transform the target data into yolo format</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        boxes_data {np.ndarray} -- an array of shape (NBATCH, x_min, y_min, x_max, y_max) </span>
+<span class="sd">        classes_data {np.ndarray} -- an array of shape (NBATCH, 1)</span>
+<span class="sd">        anchors {np.ndarray} -- an array of shape (6 or 9, 2)</span>
+<span class="sd">        anchor_masks {np.ndarray} -- an array of mask to select the anchors</span>
+<span class="sd">        grid_sizes {list} -- the list of the grid sizes</span>
+<span class="sd">        num_classes {int} -- the number of classes</span>
+<span class="sd">        target_shape {tuple} -- thet target shape of the images</span>
+<span class="sd">    </span>
+<span class="sd">    Keyword Arguments:</span>
+<span class="sd">        classes {list} -- a positional list that associate id_num to pos (default: {None})</span>
+<span class="sd">            This is used in the case where a dataset of created by filtering some classes </span>
+<span class="sd">            with respect to another dataset and the classes are not 0 indexed</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        [tuple] -- a tuple with the dataset transformed for coco training</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the anchor id</span>
+    <span class="n">obj_anchors_idx</span> <span class="o">=</span> <span class="n">best_anchors_iou</span><span class="p">(</span><span class="n">boxes_data</span><span class="p">,</span> <span class="n">anchors</span><span class="p">)</span>
+
+    <span class="n">y_data_transformed</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">masks</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">anchor_masks</span><span class="p">):</span>
+
+        <span class="n">y_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">boxes_data</span><span class="p">),</span> <span class="n">grid_sizes</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">grid_sizes</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                          <span class="nb">len</span><span class="p">(</span><span class="n">masks</span><span class="p">),</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">num_classes</span><span class="p">),</span>
+                         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">boxes_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">boxes_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">boxes_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="n">valid_anchor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">masks</span><span class="p">,</span>
+                                        <span class="n">obj_anchors_idx</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span>
+                                                        <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">valid_anchor</span><span class="p">):</span>
+                    <span class="c1"># TODO target shape can be removed if we scale the boxes in</span>
+
+                    <span class="n">box</span> <span class="o">=</span> <span class="n">boxes_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">target_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">bot_center_width_heigth</span> <span class="o">=</span> <span class="n">to_center_width_height</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+
+                    <span class="n">anchor_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">valid_anchor</span><span class="p">)</span>
+                    <span class="n">grid_xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">bot_center_width_heigth</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">//</span>
+                               <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">grid_sizes</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+                    <span class="n">one_hot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                    <span class="c1"># FIXME</span>
+                    <span class="k">if</span> <span class="n">classes</span><span class="p">:</span>
+                        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">classes</span> <span class="o">==</span> <span class="n">classes_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                        <span class="n">one_hot</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pos</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">one_hot</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">classes_data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="mf">1.</span>
+
+                    <span class="c1"># grid[i, y, x, anchor] = (tx, ty, bw, bh, obj, class)</span>
+                    <span class="n">y_out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">grid_xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">grid_xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="n">anchor_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">box</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">one_hot</span><span class="p">]</span>
+                    <span class="c1"># print([*box, 1, *one_hot])</span>
+
+        <span class="n">y_data_transformed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_out</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">y_data_transformed</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

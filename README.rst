@@ -16,7 +16,7 @@ Ultrayolo
      :target: https://pyup.io/repos/github/fabiofumarola/ultrayolo/
      :alt: Updates
 
-Tensorflow 2 implementation of yolo version 3. You only look once (YOLO) is a state-of-the-art, real-time object detection system
+Tensorflow 2.1 implementation of yolo version 3. You only look once (YOLO) is a state-of-the-art, real-time object detection system.
 
 .. image:: ./images/example_image.png
 
