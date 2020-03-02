@@ -10,6 +10,7 @@ __pycache__/
 .Python
 env/
 build/
+!docs/build
 develop-eggs/
 dist/
 downloads/
@@ -63,7 +64,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+# docs/_build/
 
 # PyBuilder
 target/
@@ -142,4 +143,3 @@ notebooks/mini_classes.txt
 notebooks/Untitled*
 
 docs/doctrees/
-docssource/_build

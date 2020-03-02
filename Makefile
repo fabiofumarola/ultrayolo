@@ -70,21 +70,20 @@ coverage: ## check code coverage quickly with the default Python
 
 docs: ## generate Sphinx HTML documentation, including API docs
 	# cp README.rst docssource/readme.rst
-	cp -rf images docssource
-	rm -f docssource/ultrayolo.rst
-	rm -f docssource/modules.rst
-	rm -rf docssource/tutorials
-	mkdir -p docssource/tutorials
-	cp -rf notebooks/*.ipynb docssource/tutorials
-	jupyter nbconvert docssource/tutorials/*.ipynb --to rst
-	sphinx-apidoc -o docssource/ ultrayolo
-	# $(MAKE) -C docssource clean
-	$(MAKE) -C docssource html
-	# $(BROWSER) docssource/_build/html/index.html
-	$(BROWSER) docs/index.html
+	cp -rf images docs
+	rm -f docs/ultrayolo.rst
+	rm -f docs/modules.rst
+	rm -rf docs/tutorials
+	mkdir -p docs/tutorials
+	cp -rf notebooks/*.ipynb docs/tutorials
+	jupyter nbconvert docs/tutorials/*.ipynb --to rst
+	sphinx-apidoc -o docs/ ultrayolo
+	$(MAKE) -C docs clean
+	$(MAKE) -C docs html
+	$(BROWSER) docs/build/html/index.html
 
 servedocs: docs ## compile the docs watching for changes
-	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docssource html' -R -D .
+	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
 release: dist ## package and upload a release
 	twine upload dist/*
