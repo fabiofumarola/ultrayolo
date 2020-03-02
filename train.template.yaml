@@ -10,7 +10,7 @@ dataset:
   # the base size of the grid in pixels used by yolo for the detection
   # the standard value is 32, it can be any value but consider that it should divisible per the image shape width and height
   # note that base on the values used some backbone could not be used as pretrained layers for the training
-  base_grid_size: 32
+  base_grid_size: 256
   object_anchors:
     # anchors values: default, default_tiny, compute, path
     mode: compute
