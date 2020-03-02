@@ -1,0 +1,683 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultrayolo.datasets package &mdash; ultrayolo 0.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ultrayolo.helpers package" href="ultrayolo.helpers.html" />
+    <link rel="prev" title="ultrayolo package" href="ultrayolo.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ultrayolo</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ultrayolo.html">ultrayolo package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ultrayolo.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ultrayolo.datasets package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.helpers.html">ultrayolo.helpers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.layers.html">ultrayolo.layers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.cli">ultrayolo.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.learningrates">ultrayolo.learningrates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.losses">ultrayolo.losses module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.ultrayolo">ultrayolo.ultrayolo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_dataset.html">Predict using a custom pretrained model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html#evaluate-model-loss">Evaluate model Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/5_data_augmentation_considerations.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/Untitled.html">Network with Variable Grid</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ultrayolo</a> &raquo;</li>
+        
+          <li><a href="ultrayolo.html">ultrayolo package</a> &raquo;</li>
+        
+      <li>ultrayolo.datasets package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ultrayolo.datasets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultrayolo-datasets-package">
+<h1>ultrayolo.datasets package<a class="headerlink" href="#ultrayolo-datasets-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ultrayolo.datasets.common">
+<span id="ultrayolo-datasets-common-module"></span><h2>ultrayolo.datasets.common module<a class="headerlink" href="#module-ultrayolo.datasets.common" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.datasets.common.anchors_to_string">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">anchors_to_string</code><span class="sig-paren">(</span><em class="sig-param">anchors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#anchors_to_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.anchors_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform the anchors into a strting</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>anchors {np.ndarrary} – the anchors</p>
+</dd>
+<dt>Returns:</dt><dd><p>str – the anchors in yolo format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.batch_open_image">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">batch_open_image</code><span class="sig-paren">(</span><em class="sig-param">paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#batch_open_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.batch_open_image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.best_anchors_iou">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">best_anchors_iou</code><span class="sig-paren">(</span><em class="sig-param">boxes</em>, <em class="sig-param">anchors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#best_anchors_iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.best_anchors_iou" title="Permalink to this definition">¶</a></dt>
+<dd><p>[summary]</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>boxes {np.ndarray} – a numpy array of shape (num_examples, num_bboxes) of type (x_min, y_min, x_max, y_max)
+anchors {np.ndarray} – a numpy array with the anchors to be used for the object detection (num_anchors, (W, H))</p>
+</dd>
+<dt>Returns:</dt><dd><p>[np.ndarray] – a numpy array that returns the best anchors fot the given object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.get_grid_sizes">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">get_grid_sizes</code><span class="sig-paren">(</span><em class="sig-param">image_shape</em>, <em class="sig-param">base_grid_size</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#get_grid_sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.get_grid_sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>utility function that compute the sizes of the grid system</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>image_shape {tuple} – the shape of the image
+base_grid_size {int} – the size of the cell in base grid</p>
+</dd>
+<dt>Returns:</dt><dd><p>list – a list of the grid sizes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.load_anchors">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">load_anchors</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#load_anchors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.load_anchors" title="Permalink to this definition">¶</a></dt>
+<dd><p>read the anchors from a file saved in the format
+x1,y1, x2,y2, …, x9, y9</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>path {str} – the path of the file to read</p>
+</dd>
+<dt>Returns:</dt><dd><p>numpy.ndarray – an array of tuples [(x1,y1), (x2,y2), …, (x9, y9)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.load_classes">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">load_classes</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">as_dict=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#load_classes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.load_classes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>it expect to read a file with one class per line sorted in the same order with respect</dt><dd><p>to the class name.
+example:
+dog
+cat
+will be codified as
+dog -&gt; 0
+cat -&gt; 1
+…. -&gt; 2
+The index 0 is used to represent no class</p>
+</dd>
+<dt>Arguments:</dt><dd><p>path {str} – the path where the file is saved</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><p>as_dict {bool} – load the classes as dictionary (idx, class) (default: {False})</p>
+</dd>
+<dt>Returns:</dt><dd><p>list|dict – the list of the classes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.make_masks">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">make_masks</code><span class="sig-paren">(</span><em class="sig-param">nelems</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#make_masks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.make_masks" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate the default masks for the model</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>nelems {int} – the number of elements for the mask</p>
+</dd>
+<dt>Returns:</dt><dd><p>np.ndarray – a numpy array with the masks</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.open_boxes">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">open_boxes</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#open_boxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.open_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the boxes from a file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.open_boxes_batch">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">open_boxes_batch</code><span class="sig-paren">(</span><em class="sig-param">paths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#open_boxes_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.open_boxes_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>parses bounding boxes and classes from a list of paths</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>paths {[list]} – a list of paths</p>
+</dd>
+<dt>Returns:</dt><dd><p>[tuple] – a tuple (boxes, class) of shape (M,4) and (M,1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.open_image">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">open_image</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#open_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.open_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open an image using imageio</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>path {str} – the path of the image</p>
+</dd>
+<dt>Returns:</dt><dd><p>numpy.ndarray – format (H,W,C)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.pad_batch_to_fixed_size">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">pad_batch_to_fixed_size</code><span class="sig-paren">(</span><em class="sig-param">batch_images</em>, <em class="sig-param">target_shape</em>, <em class="sig-param">batch_boxes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#pad_batch_to_fixed_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.pad_batch_to_fixed_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize and pad images and boxes to the target shape
+Arguments
+——–
+batch_images: an array of images with shape (H,W,C)
+target_shape: a shape of type (H,W,C)
+batch_boxes: an array of array with format (xmin, ymin, xmax, ymax)</p>
+<p>images_aug: a list of augmented images
+boxes_aug: a list of augmented boxes (optional: if boxes is not None)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.pad_boxes">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">pad_boxes</code><span class="sig-paren">(</span><em class="sig-param">boxes</em>, <em class="sig-param">max_objects</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#pad_boxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.pad_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pad boxes to desired size
+Arguments
+——–
+boxes: an array of boxes with shape (N, X1, Y1, X2, Y2)
+max_objects: the maximum number of boxes</p>
+<p>boxes: with shape (max_objects, X1, Y1, X2, Y2)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.pad_classes">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">pad_classes</code><span class="sig-paren">(</span><em class="sig-param">classes</em>, <em class="sig-param">max_objects</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#pad_classes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.pad_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>[summary]</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>classes {[type]} – [description]
+max_objects {[type]} – [description]</p>
+</dd>
+<dt>Returns:</dt><dd><p>[type] – [description]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.pad_to_fixed_size">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">pad_to_fixed_size</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">target_shape</em>, <em class="sig-param">boxes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#pad_to_fixed_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.pad_to_fixed_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize and pad images and boxes to the target shape
+Arguments
+——–
+image: an image with shape (H,W,C)
+target_shape: a shape of type (H,W,C)
+boxes: an array of format (xmin, ymin, xmax, ymax)</p>
+<p>image_pad: the image padded
+boxes_pad: the boxes padded (optional: if boxes is not None)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.parse_boxes">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">parse_boxes</code><span class="sig-paren">(</span><em class="sig-param">str_boxes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#parse_boxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.parse_boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse annotations in the form x_min,y_min,x_max,y_max  x_min,y_min,x_max,y_max …</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>str_boxes {str} – annotations in the form x_min,y_min,x_max,y_max  x_min,y_min,x_max,y_max …</p>
+</dd>
+<dt>Returns:</dt><dd><p>numpy.ndarray – a numpy array with the boxes extracted from the input</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.parse_boxes_batch">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">parse_boxes_batch</code><span class="sig-paren">(</span><em class="sig-param">list_str_boxes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#parse_boxes_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.parse_boxes_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse a list of annotations</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>list_str_boxes {list} – the list of the str annotations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.prepare_batch">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">prepare_batch</code><span class="sig-paren">(</span><em class="sig-param">batch_images</em>, <em class="sig-param">batch_boxes</em>, <em class="sig-param">batch_classes</em>, <em class="sig-param">target_shape</em>, <em class="sig-param">max_objects</em>, <em class="sig-param">augmenters=None</em>, <em class="sig-param">pad=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#prepare_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.prepare_batch" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>prepare a batch of images and boxes:</dt><dd><ul class="simple">
+<li><p>resize all the images to the same size</p></li>
+<li><p>update the size of the boxes basing on the new image size</p></li>
+</ul>
+</dd>
+<dt>Arguments:</dt><dd><p>batch_images {numpy.ndarry} – an array of images with shape (H,W,C)
+batch_boxes {np.ndarray} –</p>
+<blockquote>
+<div><p>an array of array with format (xmin, ymin, xmax, ymax)</p>
+</div></blockquote>
+<p>target_shape {tuple} – a shape of type (H,W,C)
+max_objects {int} – the maximum number of boxes to track</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><p>augmenters {imgaug.augmenters} – ImgAug augmenters (default: {None})
+pad {bool} – if the images should be padded (default: {True})</p>
+</dd>
+<dt>Returns:</dt><dd><p>Tuple – a Tuple with batch_images, batch_boxes and batch_classes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.resize">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">resize</code><span class="sig-paren">(</span><em class="sig-param">image</em>, <em class="sig-param">target_shape</em>, <em class="sig-param">boxes=None</em>, <em class="sig-param">keep_aspect_ratio=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize images and boxes to the target shape
+Arguments
+——–
+image: an image with shape (H,W,C)
+target_shape: a shape of type (H,W,C)
+boxes: an array of format (xmin, ymin, xmax, ymax)
+keep_aspect_ratio: (default: True)</p>
+<p>image_resized: the image resized
+boxes_resized: the boxes resized (optional: if boxes is not None)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.resize_batch">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">resize_batch</code><span class="sig-paren">(</span><em class="sig-param">batch_images</em>, <em class="sig-param">target_shape</em>, <em class="sig-param">batch_boxes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#resize_batch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.resize_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize and pad images and boxes to the target shape
+Arguments
+——–
+batch_images: an array of images with shape (H,W,C)
+target_shape: a shape of type (H,W,C)
+batch_boxes: an array of array with format (xmin, ymin, xmax, ymax, class_name)</p>
+<p>images_aug: a list of augmented images
+boxes_aug: a list of augmented boxes (optional: if boxes is not None)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.save_image">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">save_image</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#save_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.save_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>save an image</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>img {numpy.ndarray} – an image as numpy array
+path {str} – the path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.to_center_width_height">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">to_center_width_height</code><span class="sig-paren">(</span><em class="sig-param">boxes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#to_center_width_height"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.to_center_width_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform a numpy array of boxes from
+[x_min, y_min, x_max, y_max] –in–&gt; [x_center, y_center, width, height]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.common.transform_target">
+<code class="sig-prename descclassname">ultrayolo.datasets.common.</code><code class="sig-name descname">transform_target</code><span class="sig-paren">(</span><em class="sig-param">boxes_data</em>, <em class="sig-param">classes_data</em>, <em class="sig-param">anchors</em>, <em class="sig-param">anchor_masks</em>, <em class="sig-param">grid_sizes</em>, <em class="sig-param">num_classes</em>, <em class="sig-param">target_shape</em>, <em class="sig-param">classes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/common.html#transform_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.common.transform_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform the target data into yolo format</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>boxes_data {np.ndarray} – an array of shape (NBATCH, x_min, y_min, x_max, y_max) 
+classes_data {np.ndarray} – an array of shape (NBATCH, 1)
+anchors {np.ndarray} – an array of shape (6 or 9, 2)
+anchor_masks {np.ndarray} – an array of mask to select the anchors
+grid_sizes {list} – the list of the grid sizes
+num_classes {int} – the number of classes
+target_shape {tuple} – thet target shape of the images</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><dl class="simple">
+<dt>classes {list} – a positional list that associate id_num to pos (default: {None})</dt><dd><p>This is used in the case where a dataset of created by filtering some classes 
+with respect to another dataset and the classes are not 0 indexed</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>[tuple] – a tuple with the dataset transformed for coco training</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.datasets.datasets">
+<span id="ultrayolo-datasets-datasets-module"></span><h2>ultrayolo.datasets.datasets module<a class="headerlink" href="#module-ultrayolo.datasets.datasets" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ultrayolo.datasets.datasets.BaseDataset">
+<em class="property">class </em><code class="sig-prename descclassname">ultrayolo.datasets.datasets.</code><code class="sig-name descname">BaseDataset</code><span class="sig-paren">(</span><em class="sig-param">annotations_path: str, img_shape: Tuple[int, int, int], max_objects: int, batch_size: int, anchors: numpy.ndarray, anchor_masks: numpy.ndarray, base_grid_size: int = 32, is_training: bool = True, augmenters: imgaug.augmenters.meta.Sequential = None, pad_to_fixed_size: bool = True, images_folder='images'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#BaseDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.BaseDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.utils.data_utils.Sequence</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.datasets.datasets.CocoFormatDataset">
+<em class="property">class </em><code class="sig-prename descclassname">ultrayolo.datasets.datasets.</code><code class="sig-name descname">CocoFormatDataset</code><span class="sig-paren">(</span><em class="sig-param">annotations_path</em>, <em class="sig-param">img_shape</em>, <em class="sig-param">max_objects</em>, <em class="sig-param">batch_size</em>, <em class="sig-param">anchors</em>, <em class="sig-param">anchor_masks</em>, <em class="sig-param">base_grid_size: int = 32</em>, <em class="sig-param">is_training=True</em>, <em class="sig-param">augmenters=None</em>, <em class="sig-param">pad_to_fixed_size=True</em>, <em class="sig-param">images_folder='images'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#CocoFormatDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.CocoFormatDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.datasets.datasets.BaseDataset" title="ultrayolo.datasets.datasets.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.datasets.datasets.BaseDataset</span></code></a></p>
+<p>this class handles dataset into the <a class="reference external" href="http://cocodataset.org/">COCO format</a>.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>annotation{</dt><dd><p>“id”: int, 
+“image_id”: int, 
+“category_id”: int, 
+“segmentation”: RLE or [polygon], 
+“area”: float, 
+“bbox”: [x,y,width,height],
+“iscrowd”: 0 or 1,</p>
+</dd>
+</dl>
+<p>}
+categories[{
+“id”: int, “name”: str, “supercategory”: str,
+}]</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>Sequence {tf.kera.utils.Sequence} – [description]</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="ultrayolo.datasets.datasets.CocoFormatDataset.on_epoch_end">
+<code class="sig-name descname">on_epoch_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#CocoFormatDataset.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.CocoFormatDataset.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method called at the end of every epoch.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.datasets.datasets.YoloDatasetMultiFile">
+<em class="property">class </em><code class="sig-prename descclassname">ultrayolo.datasets.datasets.</code><code class="sig-name descname">YoloDatasetMultiFile</code><span class="sig-paren">(</span><em class="sig-param">annotations_path: str, img_shape: Tuple[int, int, int], max_objects: int, batch_size: int, anchors: numpy.ndarray, anchor_masks: numpy.ndarray, base_grid_size: int = 32, is_training: bool = True, augmenters: imgaug.augmenters.meta.Sequential = None, pad_to_fixed_size: bool = True, images_folder='images'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#YoloDatasetMultiFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.YoloDatasetMultiFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.datasets.datasets.BaseDataset" title="ultrayolo.datasets.datasets.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.datasets.datasets.BaseDataset</span></code></a></p>
+<dl class="method">
+<dt id="ultrayolo.datasets.datasets.YoloDatasetMultiFile.on_epoch_end">
+<code class="sig-name descname">on_epoch_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#YoloDatasetMultiFile.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.YoloDatasetMultiFile.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method called at the end of every epoch.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ultrayolo.datasets.datasets.YoloDatasetSingleFile">
+<em class="property">class </em><code class="sig-prename descclassname">ultrayolo.datasets.datasets.</code><code class="sig-name descname">YoloDatasetSingleFile</code><span class="sig-paren">(</span><em class="sig-param">annotations_path: str, img_shape: Tuple[int, int, int], max_objects: int, batch_size: int, anchors: numpy.ndarray, anchor_masks: numpy.ndarray, base_grid_size: int = 32, is_training: bool = True, augmenters: imgaug.augmenters.meta.Sequential = None, pad_to_fixed_size: bool = True, images_folder='images'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#YoloDatasetSingleFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.YoloDatasetSingleFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ultrayolo.datasets.datasets.BaseDataset" title="ultrayolo.datasets.datasets.BaseDataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultrayolo.datasets.datasets.BaseDataset</span></code></a></p>
+<dl class="method">
+<dt id="ultrayolo.datasets.datasets.YoloDatasetSingleFile.on_epoch_end">
+<code class="sig-name descname">on_epoch_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/ultrayolo/datasets/datasets.html#YoloDatasetSingleFile.on_epoch_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.datasets.YoloDatasetSingleFile.on_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method called at the end of every epoch.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.datasets.genanchors">
+<span id="ultrayolo-datasets-genanchors-module"></span><h2>ultrayolo.datasets.genanchors module<a class="headerlink" href="#module-ultrayolo.datasets.genanchors" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ultrayolo.datasets.genanchors.AnchorsGenerator">
+<em class="property">class </em><code class="sig-prename descclassname">ultrayolo.datasets.genanchors.</code><code class="sig-name descname">AnchorsGenerator</code><span class="sig-paren">(</span><em class="sig-param">num_clusters</em>, <em class="sig-param">scaling_factor</em>, <em class="sig-param">dist_fn=&lt;function median&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/genanchors.html#AnchorsGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.genanchors.AnchorsGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="ultrayolo.datasets.genanchors.AnchorsGenerator.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">boxes</em>, <em class="sig-param">random_seed=42</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/genanchors.html#AnchorsGenerator.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.genanchors.AnchorsGenerator.fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ultrayolo.datasets.genanchors.AnchorsGenerator.iou">
+<code class="sig-name descname">iou</code><span class="sig-paren">(</span><em class="sig-param">boxes</em>, <em class="sig-param">clusters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/genanchors.html#AnchorsGenerator.iou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.genanchors.AnchorsGenerator.iou" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.genanchors.gen_anchors">
+<code class="sig-prename descclassname">ultrayolo.datasets.genanchors.</code><code class="sig-name descname">gen_anchors</code><span class="sig-paren">(</span><em class="sig-param">boxes_xywh</em>, <em class="sig-param">num_clusters</em>, <em class="sig-param">scaling_factor=1.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/genanchors.html#gen_anchors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.genanchors.gen_anchors" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate anchors</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>boxes_xywh {np.ndarray} – the boxes used to crreate the anchors
+num_clusters {int} – the number of clusters to generate</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><p>scaling_factor {float} – a multiplicator factor to increase thebox size (default: {1.0})</p>
+</dd>
+<dt>Returns:</dt><dd><p>[type] – [description]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.genanchors.prepare_data">
+<code class="sig-prename descclassname">ultrayolo.datasets.genanchors.</code><code class="sig-name descname">prepare_data</code><span class="sig-paren">(</span><em class="sig-param">annotations_path</em>, <em class="sig-param">image_shape</em>, <em class="sig-param">datasetmode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/genanchors.html#prepare_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.genanchors.prepare_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a dataset and transform it into a list of boxes</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>annotations_path {str} – the path
+image_shape {[type]} – [description]
+datasetmode {[type]} – [description]</p>
+</dd>
+<dt>Returns:</dt><dd><p>[type] – [description]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.datasets.genanchors.save_anchors">
+<code class="sig-prename descclassname">ultrayolo.datasets.genanchors.</code><code class="sig-name descname">save_anchors</code><span class="sig-paren">(</span><em class="sig-param">outfilename</em>, <em class="sig-param">anchors</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/datasets/genanchors.html#save_anchors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.datasets.genanchors.save_anchors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.datasets">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultrayolo.datasets" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ultrayolo.helpers.html" class="btn btn-neutral float-right" title="ultrayolo.helpers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ultrayolo.html" class="btn btn-neutral float-left" title="ultrayolo package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

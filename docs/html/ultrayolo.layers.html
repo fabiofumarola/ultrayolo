@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultrayolo.layers package &mdash; ultrayolo 0.7.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="ultrayolo.helpers package" href="ultrayolo.helpers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> ultrayolo
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Ultrayolo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ultrayolo</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="ultrayolo.html">ultrayolo package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="ultrayolo.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.datasets.html">ultrayolo.datasets package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultrayolo.helpers.html">ultrayolo.helpers package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ultrayolo.layers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.cli">ultrayolo.cli module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.learningrates">ultrayolo.learningrates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.losses">ultrayolo.losses module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo.ultrayolo">ultrayolo.ultrayolo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ultrayolo.html#module-ultrayolo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/1_predict_yolo_model.html">Predict using default Yolo Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_dataset.html">Predict using a custom pretrained model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/2_predict_custom_model.html">Predict using a custom Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/3_check_yolo_loss.html">Yolo Loss Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html">Sample to train Yolo for object detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/4_train_example.html#evaluate-model-loss">Evaluate model Loss</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/5_data_augmentation_considerations.html">Data Augmentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/Untitled.html">Network with Variable Grid</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ultrayolo</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ultrayolo</a> &raquo;</li>
+        
+          <li><a href="ultrayolo.html">ultrayolo package</a> &raquo;</li>
+        
+      <li>ultrayolo.layers package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ultrayolo.layers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultrayolo-layers-package">
+<h1>ultrayolo.layers package<a class="headerlink" href="#ultrayolo-layers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ultrayolo.layers.core">
+<span id="ultrayolo-layers-core-module"></span><h2>ultrayolo.layers.core module<a class="headerlink" href="#module-ultrayolo.layers.core" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="ultrayolo.layers.core.DarknetBody">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">DarknetBody</code><span class="sig-paren">(</span><em class="sig-param">name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#DarknetBody"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.DarknetBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>the body of the darknet model</p>
+<dl class="simple">
+<dt>Keyword Arguments:</dt><dd><p>name {str} – the name of the model (default: {None})</p>
+</dd>
+<dt>Returns:</dt><dd><p>tensorflow.keras.Model – the tensorflow darknet model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.DarknetBodyTiny">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">DarknetBodyTiny</code><span class="sig-paren">(</span><em class="sig-param">name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#DarknetBodyTiny"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.DarknetBodyTiny" title="Permalink to this definition">¶</a></dt>
+<dd><p>the Tiny version of darknet</p>
+<dl class="simple">
+<dt>Keyword Arguments:</dt><dd><p>name {str} – a name for the model (default: {None})</p>
+</dd>
+<dt>Returns:</dt><dd><p>tensorflow.keras.Model – an instance of the darknet tiny model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.DarknetConv">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">DarknetConv</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">filters</em>, <em class="sig-param">kernel</em>, <em class="sig-param">batch_norm</em>, <em class="sig-param">downsample</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#DarknetConv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.DarknetConv" title="Permalink to this definition">¶</a></dt>
+<dd><p>the darknet convolution layer</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>x {tf.tensor} – a valid tensor
+filters {int} – the number of filters for the convolution
+kernel {int} – the size of the kernel patch
+batch_norm {boolean} – to use batch normalization
+downsample {boolean} – to use o not the downsampling</p>
+</dd>
+<dt>Returns:</dt><dd><p>tf.tensor – the output tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.DarknetResidual">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">DarknetResidual</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">filters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#DarknetResidual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.DarknetResidual" title="Permalink to this definition">¶</a></dt>
+<dd><p>A residual layer</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><p>x {tf.tensor} – a valid tensor
+filters {int} – the number of filters</p>
+</dd>
+<dt>Returns:</dt><dd><p>tf.tensor – the output tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.DenseNetBody">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">DenseNetBody</code><span class="sig-paren">(</span><em class="sig-param">input_shape</em>, <em class="sig-param">version='DenseNet121'</em>, <em class="sig-param">num_branches=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#DenseNetBody"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.DenseNetBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>a Yolo backbone using DenseNet</p>
+<dl>
+<dt>Arguments:</dt><dd><p>input_shape {tuple} – a valid image shape tuple (values: {(X,X,3)})</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><p>version {str} – a version of densnet (default: {‘DenseNet121’},
+values: [</p>
+<blockquote>
+<div><p>‘DenseNet121’, ‘DenseNet169’, ‘DenseNet201’</p>
+</div></blockquote>
+<p>])
+num_branches {int} – [description] (default: {3}, values: [3,4])</p>
+</dd>
+<dt>Raises:</dt><dd><p>Exception: in case a not valid value is provided</p>
+</dd>
+<dt>Returns:</dt><dd><p>tensorflow.keras.Model  –</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.MobileNetBody">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">MobileNetBody</code><span class="sig-paren">(</span><em class="sig-param">input_shape</em>, <em class="sig-param">version='MobileNetV2'</em>, <em class="sig-param">num_branches=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#MobileNetBody"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.MobileNetBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>a yolo mobile net body
+It suports only shapes as [96, 128, 160, 192, 224]</p>
+<dl>
+<dt>Arguments:</dt><dd><p>input_shape {tuple} – [description]</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><dl class="simple">
+<dt>version {str} – a version of mobilenet (default: {‘MobileNetV2’},</dt><dd><p>values: [‘MobileNetV2’])</p>
+</dd>
+</dl>
+<p>num_branches {int} – [description] (default: {3}, values: [3,4])</p>
+</dd>
+<dt>Raises:</dt><dd><p>Exception: in case a not valid value is provided</p>
+</dd>
+<dt>Returns:</dt><dd><p>tensorflow.keras.Model  –</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.ResNetBody">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">ResNetBody</code><span class="sig-paren">(</span><em class="sig-param">input_shape</em>, <em class="sig-param">version='ResNet50V2'</em>, <em class="sig-param">num_branches=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#ResNetBody"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.ResNetBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>a Darknet body implemented via a ResNetV2</p>
+<dl>
+<dt>Arguments:</dt><dd><p>input_shape {tuple} – a tuple of 3 values (example: {(X,X,3)})</p>
+</dd>
+<dt>Keyword Arguments:</dt><dd><dl class="simple">
+<dt>version {str} – [description] (default: {‘ResNet50V2’}, values: [</dt><dd><p>‘ResNet50V2’, ‘ResNet101V2’, ‘ResNet152V2’</p>
+</dd>
+</dl>
+<p>])
+num_branches {int} – [description] (default: {3}, values: [3,4])</p>
+</dd>
+<dt>Raises:</dt><dd><p>Exception: in case a not valid value is provided</p>
+</dd>
+<dt>Returns:</dt><dd><p>tensorflow.keras.Model  –</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.YoloHead">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">YoloHead</code><span class="sig-paren">(</span><em class="sig-param">x_inputs</em>, <em class="sig-param">filters</em>, <em class="sig-param">name=None</em>, <em class="sig-param">is_tiny=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#YoloHead"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.YoloHead" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="ultrayolo.layers.core.YoloOutput">
+<code class="sig-prename descclassname">ultrayolo.layers.core.</code><code class="sig-name descname">YoloOutput</code><span class="sig-paren">(</span><em class="sig-param">x_in</em>, <em class="sig-param">filters</em>, <em class="sig-param">num_mask</em>, <em class="sig-param">num_classes</em>, <em class="sig-param">num_pooling</em>, <em class="sig-param">name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ultrayolo/layers/core.html#YoloOutput"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ultrayolo.layers.core.YoloOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultrayolo.layers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultrayolo.layers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ultrayolo.helpers.html" class="btn btn-neutral float-left" title="ultrayolo.helpers package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Fabio Fumarola
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
