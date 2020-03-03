@@ -80,16 +80,18 @@ def make_augmentations(percentage: float = 0.2) -> iaa.Sequential:
     # Scale/zoom them, translate/move them, rotate them and shear them.
             iaa.Sometimes(
                 percentage,
-                iaa.Affine(scale={
-                    "x": (0.8, 1.5),
-                    "y": (0.8, 1.5)
-                },
-                           translate_percent={
-                               "x": (-0.3, 0.3),
-                               "y": (-0.3, 0.3)
-                           },
-                           rotate=(-30, 30),
-                           shear=(-10, 10))),
+                iaa.Affine(
+                    scale={
+                        "x": (0.8, 1.5),
+                        "y": (0.8, 1.5)
+                    },
+                    translate_percent={
+                        "x": (-0.3, 0.3),
+                        "y": (-0.3, 0.3)
+                    },
+    # consider rotations of -90, 0 and 90
+                    rotate=[-90, 0, 90],
+                    shear=(-10, 10))),
         ],
         random_order=True)
     return pipeline
