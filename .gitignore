@@ -143,3 +143,4 @@ notebooks/mini_classes.txt
 notebooks/Untitled*
 
 docs/build/doctrees/
+docs/build/html/.nojekyll
