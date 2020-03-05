@@ -8,10 +8,10 @@ dataset:
   # the size of the batch
   batch_size: 2
   # accepts 32,64,128,256
-  base_grid_size: 32
+  base_grid_size: 256
   object_anchors:
     # anchors values: default, default_tiny, compute, path
-    mode: compute
+    mode: default
     #the nunber of anchors can be 6 or 9, 12
     number: 9
     path:
@@ -26,12 +26,12 @@ dataset:
 
 model:
   # The backbone for the model, default DarkNet, accepted values (ResNet50V2, ResNet101V2, ResNet152V2, DenseNet121, DenseNet169, DenseNet201, MobileNetV2)
-  backbone: MobileNetV2
+  backbone: DenseNet121
   # the training mode: transfer, fine_tune, train
   iou: 0.5
   object_score: 0.5
   # reload_weights: ./yolov3.weights
-  loss: yolo
+  loss: focal
 
 fit:
   #mode train, transfer, finetuning
