@@ -125,10 +125,10 @@ notebooks/test.jpg
 
 *.gz
 
-*.yml
+*.yaml
 !.readthedocs.yml
-!train.template.yml
-!tests/data/train.yml
+!train.template.yaml
+!tests/data/train.yaml
 !.pyup.yml
 
 
